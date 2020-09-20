@@ -29,6 +29,8 @@ class Campaign(models.Model):
         "TrafficSource", on_delete=models.CASCADE, verbose_name="Traffic source", blank=False, null=False,
     )
 
+    status = models.CharField(verbose_name="Status", max_length=256, null=True, blank=False, default=None, )
+
     user = models.ForeignKey("User", verbose_name="User", on_delete=models.CASCADE, null=True, blank=False, )
 
     offers_list = models.ManyToManyField("Offer", related_name="campaigns_list", verbose_name="Offers", )
