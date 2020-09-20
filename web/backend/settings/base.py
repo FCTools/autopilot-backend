@@ -1,3 +1,8 @@
+"""
+Copyright © 2020 FC Tools. All rights reserved.
+Author: German Yakimov
+"""
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

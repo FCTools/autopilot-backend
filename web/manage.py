@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Django's command-line utility for administrative tasks."""
+"""
+Copyright © 2020 FC Tools. All rights reserved.
+Author: German Yakimov
+"""
+
 import os
 import sys
 
