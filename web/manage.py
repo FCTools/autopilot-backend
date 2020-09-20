@@ -7,6 +7,7 @@ Author: German Yakimov
 import os
 import sys
 
+sys.path.append('..')
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings.dev')

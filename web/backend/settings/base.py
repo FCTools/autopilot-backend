@@ -5,7 +5,7 @@ Author: German Yakimov
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..")
 
 DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+
+    'bot_manager'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,15 @@ REST_FRAMEWORK = {
     ]
 }
 
+TRAFFIC_GROUPS = (
+    ("ADMIN", "ADMIN"),
+    ("FPA/HSA/PWA", "FPA/HSA/PWA"),
+    ("INAPP traff", "INAPP traff"),
+    ("NATIVE traff", "NATIVE traff"),
+    ("POP traff", "POP traff"),
+    ("PUSH traff", "PUSH traff"),
+)
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -86,3 +97,5 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+BINOM_API_KEY = os.getenv("BINOM_API_KEY")

@@ -14,14 +14,17 @@ class Bot(models.Model):
     first type (1) - these bots check landings for each campaign and add these landings to black/white list
     second type (2) - these bots check campaigns and stop/start it depending on condition
     """
-    type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False, choices=(1, 2))
+    type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False, choices=((1, 1), (2, 2)))
 
-    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", null=False, blank=False, )
+    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", )
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False, )
 
     action = models.CharField(max_length=128, verbose_name="Action", null=False, blank=False,
-                              choices=("Stop campaign, Start campaign", "Add landing to BL", "Add landing to WL"), )
+                              choices=(("Stop campaign", "Stop campaign"),
+                                       ("Start campaign", "Start campaign"),
+                                       ("Add landing to BL", "Add landing to BL"),
+                                       ("Add landing to WL", "Add landing to WL"), ))
 
     checking_interval = models.TimeField(verbose_name="Condition checking interval", )
 
