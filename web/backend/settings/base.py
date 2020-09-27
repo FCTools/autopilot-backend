@@ -103,3 +103,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 BINOM_API_KEY = os.getenv("BINOM_API_KEY")
+TRACKER_URL = "https://fcttrk.com/"
