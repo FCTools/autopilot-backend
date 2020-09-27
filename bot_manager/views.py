@@ -59,12 +59,19 @@ class BotDetail(APIView):
     queryset = Bot.objects.all()
     serializer = BotSerializer
 
-    def get(self, request, pk):
+    def get(self, request):
         """
         Return a list of all user's bots.
         """
         permission_classes = [IsAuthenticated]
-        bot = get_object_or_404(Bot, pk=pk)
+
+        if 'bot_id' in request.data:
+            bot_id = request.data.get('bot_id')
+        else:
+            return Response(data={'success': False, 'error': 'bot id is required'},
+                            content_type='application/json')
+
+        bot = get_object_or_404(Bot, pk=bot_id)
         data = BotSerializer(bot).data
         return Response(data)
 
