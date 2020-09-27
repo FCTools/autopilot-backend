@@ -15,4 +15,5 @@ urlpatterns = [
     path('bots/<int:pk>/', BotDetail.as_view(), name='get_bot'),
     path('bots/startBot/', BotStarter.as_view(), name='start_bot'),
     path('bots/stopBot/', BotStopper.as_view(), name='stop_bot'),
+    path('bots/deleteBot/', BotDeleter.as_view(), name='delete_bot'),
 ]

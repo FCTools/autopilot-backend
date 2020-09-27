@@ -257,8 +257,19 @@ class BotDeleter(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
 
-    def post(self, request):
-        pass
+    def delete(self, request):
+        if 'bot_id' in request.data:
+            bot_id = request.data.get('bot_id')
+        else:
+            return Response(data={'success': False, 'error': 'bot id is required'},
+                            content_type='application/json')
+
+        bot = get_object_or_404(Bot, pk=bot_id)
+        bot.delete()
+
+        return Response(data={'success': True},
+                        content_type='application/json')
+
 
 class BotUpdater(APIView):
     authentication_classes = [authentication.TokenAuthentication]
