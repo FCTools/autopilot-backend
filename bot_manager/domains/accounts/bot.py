@@ -16,6 +16,8 @@ class Bot(models.Model):
     """
     type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False, choices=((1, 1), (2, 2)))
 
+    user = models.ForeignKey(to="User", verbose_name="User", null=False, blank=False, on_delete=models.CASCADE, )
+
     campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", )
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False, )

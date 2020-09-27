@@ -4,7 +4,7 @@ Author: German Yakimov
 """
 
 from rest_framework import serializers
-from .models import Bot
+from bot_manager.models import Bot
 
 
 class BotSerializer(serializers.ModelSerializer):

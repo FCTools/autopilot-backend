@@ -5,4 +5,9 @@ Author: German Yakimov
 
 from django.contrib import admin
 
-# Register your models here.
+from bot_manager.models import Bot
+
+
+@admin.register(Bot)
+class AdminBot(admin.ModelAdmin):
+    pass
