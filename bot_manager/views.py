@@ -213,3 +213,56 @@ class BotCreator(APIView):
 
         return Response(data={'success': True, 'bot_id': new_bot.id},
                         content_type='application/json')
+
+
+class BotStarter(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Bot.objects.all()
+
+    def post(self, request):
+        if 'bot_id' in request.data:
+            bot_id = request.data.get('bot_id')
+        else:
+            return Response(data={'success': False, 'error': 'bot id is required'},
+                            content_type='application/json')
+
+        bot = get_object_or_404(Bot, pk=bot_id)
+        bot.status = "enabled"
+        bot.save()
+
+        return Response(data={'success': True},
+                        content_type='application/json')
+
+
+class BotStopper(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Bot.objects.all()
+
+    def post(self, request):
+        if 'bot_id' in request.data:
+            bot_id = request.data.get('bot_id')
+        else:
+            return Response(data={'success': False, 'error': 'bot id is required'},
+                            content_type='application/json')
+
+        bot = get_object_or_404(Bot, pk=bot_id)
+        bot.status = "disabled"
+        bot.save()
+
+        return Response(data={'success': True},
+                        content_type='application/json')
+
+
+class BotDeleter(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Bot.objects.all()
+
+    def post(self, request):
+        pass
+
+class BotUpdater(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Bot.objects.all()
+
+    def post(self, request):
+        pass
