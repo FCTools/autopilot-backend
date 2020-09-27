@@ -31,7 +31,36 @@ class ListBots(APIView):
     queryset = Bot.objects.all()
     serializer = BotSerializer
 
-    def get(self, request, format=None):
+    def get(self, request):
+        """
+        Return a list of all user's bots.
+        """
+        permission_classes = [IsAuthenticated]
+        if 'user_id' not in request.data:
+            return Response(data={'success': False, 'error': 'user_id is required'},
+                            content_type='application/json')
+
+        user_id = request.data.get('user_id')
+
+        bots = Bot.objects.filter(user_id__exact=user_id)
+
+        data = BotSerializer(bots, many=True)
+
+        return Response(data.data)
+
+
+class BotDetail(APIView):
+    """
+    View to list all user bots in the system.
+
+    * Requires token authentication.
+    """
+
+    authentication_classes = [authentication.TokenAuthentication]
+    queryset = Bot.objects.all()
+    serializer = BotSerializer
+
+    def get(self, request, pk):
         """
         Return a list of all user's bots.
         """
