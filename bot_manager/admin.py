@@ -26,3 +26,8 @@ class AdminOffer(admin.ModelAdmin):
 @admin.register(TrafficSource)
 class AdminTrafficSource(admin.ModelAdmin):
     pass
+
+
+@admin.register(Campaign)
+class AdminCampaign(admin.ModelAdmin):
+    pass
