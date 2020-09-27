@@ -4,7 +4,7 @@ Author: German Yakimov
 """
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.views import APIView
@@ -45,7 +45,6 @@ class ListBots(APIView):
         bots = Bot.objects.filter(user_id__exact=user_id)
 
         data = BotSerializer(bots, many=True)
-
         return Response(data.data)
 
 
@@ -65,9 +64,9 @@ class BotDetail(APIView):
         Return a list of all user's bots.
         """
         permission_classes = [IsAuthenticated]
-
-        names = [bot.name for bot in Bot.objects.all()]
-        return Response(names)
+        bot = get_object_or_404(Bot, pk=pk)
+        data = BotSerializer(bot).data
+        return Response(data)
 
 
 class BotCreator(APIView):

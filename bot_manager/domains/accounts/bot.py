@@ -22,6 +22,9 @@ class Bot(models.Model):
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False, )
 
+    status = models.CharField(verbose_name="Status (enabled/disabled)", max_length=8, null=False, blank=False,
+                              default="disabled", choices=(("enabled", "enabled"), ("disabled", "disabled")))
+
     action = models.CharField(max_length=128, verbose_name="Action", null=False, blank=False,
                               choices=(("stop_campaign", "Stop campaign"),
                                        ("start_campaign", "Start campaign"),

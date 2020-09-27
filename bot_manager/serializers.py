@@ -11,4 +11,4 @@ class BotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bot
         fields = ['name', 'type', 'campaigns_list', 'condition', 'action', 'checking_interval', 'list_type',
-                  'landing_exceptions', ]
+                  'landing_exceptions', 'status', ]
