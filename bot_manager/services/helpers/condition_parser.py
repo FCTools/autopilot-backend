@@ -43,7 +43,6 @@ class ConditionParser:
         condition_copy = deepcopy(condition)
 
         tokens = list(condition_copy)
-        intervals = []
         first_condition_end = 0
 
         counter = 0
@@ -60,11 +59,15 @@ class ConditionParser:
         first_part = condition_copy[:first_condition_end + 1]
         conn = condition_copy[first_condition_end + 1:].strip().split()[0]
         second_part = condition_copy[first_condition_end + 3 + len(conn):]
-        print(first_part)
-        print(conn)
-        print(second_part)
 
         return first_part, conn, second_part
+
+    @staticmethod
+    def _check_elementary_condition(condition):
+        parts = condition.split()
+        var = parts[0]
+        relation = parts[1]
+        value = float(parts[2])
 
     @staticmethod
     def check(condition, campaign_id, landing=None):
