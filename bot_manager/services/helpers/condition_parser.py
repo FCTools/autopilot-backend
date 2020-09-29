@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 
-AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'or', 'and', 'not',
+AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads']
 
@@ -39,8 +39,50 @@ class ConditionParser:
         return len(condition_copy.replace(' ', '')) == 0
 
     @staticmethod
+    def _split_into_parts(condition):
+        condition_copy = deepcopy(condition)
+
+        tokens = list(condition_copy)
+        intervals = []
+        first_condition_end = 0
+
+        counter = 0
+        for n, symbol in enumerate(tokens):
+            if symbol == '(':
+                counter += 1
+            elif symbol == ')':
+                counter -= 1
+
+            if counter == 0:
+                first_condition_end = n
+                break
+
+        first_part = condition_copy[:first_condition_end + 1]
+        conn = condition_copy[first_condition_end + 1:].strip().split()[0]
+        second_part = condition_copy[first_condition_end + 3 + len(conn):]
+        print(first_part)
+        print(conn)
+        print(second_part)
+
+        return first_part, conn, second_part
+
+    @staticmethod
     def check(condition, campaign_id, landing=None):
-        pass
+        if not ConditionParser.is_valid(condition):
+            return False
+
+        # term recursion branch
+        if 'OR' not in condition and 'AND' not in condition:
+            pass
+
+        condition = condition[1:-1]
+
+        first_cond, conn, second_cond = ConditionParser._split_into_parts(condition)
+
+        if conn == 'AND':
+            return ConditionParser.check(first_cond, campaign_id) and ConditionParser.check(second_cond, campaign_id)
+        else:
+            return ConditionParser.check(first_cond, campaign_id) or ConditionParser.check(second_cond, campaign_id)
 
     @staticmethod
     def is_valid(condition):
@@ -53,4 +95,4 @@ class ConditionParser:
         return True
 
 
-print(ConditionParser.is_valid("((profit < 0) and (clicks > 1000))"))
+print(ConditionParser.check("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 0))
