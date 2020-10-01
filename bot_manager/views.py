@@ -104,8 +104,9 @@ class BotCreator(APIView):
             if bot_type == 1 and 'ignored_sources' in request.data:
                 ignored_sources = request.data.get('ignored_sources')
 
+            # how to remember ignored sources?
             new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action,
-                                         checking_interval=interval, user_id=user_id, list_type=list_type)
+                                         checking_interval=interval, user_id=user_id)
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)
@@ -131,7 +132,12 @@ class BotStarter(APIView):
             return Response(data={'status': False, 'error': 'bot id is required'},
                             content_type='application/json')
 
-        bot = get_object_or_404(Bot, pk=bot_id)
+        try:
+            bot = get_object_or_404(Bot, pk=bot_id)
+        except Http404:
+            return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
+                            content_type='application/json')
+
         bot.status = "enabled"
         bot.save()
 
@@ -147,14 +153,19 @@ class BotStopper(APIView):
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
         else:
-            return Response(data={'success': False, 'error': 'bot id is required'},
+            return Response(data={'status': False, 'error': 'bot id is required'},
                             content_type='application/json')
 
-        bot = get_object_or_404(Bot, pk=bot_id)
+        try:
+            bot = get_object_or_404(Bot, pk=bot_id)
+        except Http404:
+            return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
+                            content_type='application/json')
+
         bot.status = "disabled"
         bot.save()
 
-        return Response(data={'success': True},
+        return Response(data={'status': True},
                         content_type='application/json')
 
 
@@ -172,18 +183,71 @@ class BotDeleter(APIView):
         try:
             bot = get_object_or_404(Bot, pk=bot_id)
         except Http404:
-            return Response(data={'status': False, 'error': f"can't find bot with id {bot_id}"},
+            return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
                             content_type='application/json')
 
         bot.delete()
 
-        return Response(data={'success': True},
-                        content_type='application/json')
+        return Response(data={'success': True}, content_type='application/json')
 
 
 class BotUpdater(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
 
-    def post(self, request):
-        pass
+    def put(self, request):
+        permission_classes = [IsAuthenticated]
+
+        if 'user_id' in request.data:
+            return Response(data={'status': False, 'error': "user changing is not allowed"},
+                            content_type='application/json')
+
+        if 'bot_id' in request.data:
+            bot_id = request.data.get('bot_id')
+
+            try:
+                bot = get_object_or_404("Bot", pk=bot_id)
+            except Http404:
+                return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
+                                content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': "bot_id field is required"},
+                            content_type='application/json')
+
+        validator = Validator
+        validation_status, error_message = validator.validate_new_bot(request.data)
+
+        if validation_status is True:
+            bot.name = request.data.get('name')
+            bot.type = request.data.get('type')
+            bot.condition = request.data.get('condition')
+            bot.action = request.data.get('action')
+            bot.interval = request.data.get('checking_interval')
+
+            bot.save()
+
+            campaigns_ids = request.data.get('campaigns_ids')
+
+            for campaign in bot.campaigns_list:
+                if campaign.id not in campaigns_ids:
+                    bot.campaigns_list.remove(campaign)
+
+            for campaign_id in campaigns_ids:
+                campaign = Campaign.objects.get(id__exact=campaign_id)
+
+                if campaign not in bot.campaigns_list:
+                    bot.campaigns_list.add(campaign)
+
+            bot.save()
+
+            if bot.type == 1 and 'ignored_sources' in request.data:
+                ignored_sources = request.data.get('ignored_sources')
+
+            # how to remember ignored sources?
+
+            bot.save()
+
+            return Response(data={'status': True}, content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': error_message},
+                            content_type='application/json')

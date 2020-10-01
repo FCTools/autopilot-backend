@@ -18,7 +18,7 @@ class Bot(models.Model):
 
     user = models.ForeignKey(to="User", verbose_name="User", null=False, blank=False, on_delete=models.CASCADE, )
 
-    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", )
+    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", null=True, blank=False, )
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False, )
 
@@ -33,10 +33,5 @@ class Bot(models.Model):
 
     checking_interval = models.PositiveIntegerField(verbose_name="Condition checking interval", )
 
-    # following 2 fields are only for bots type 1
-
-    # list_type can be only 0 - white list, and 1 - black_list
-    list_type = models.PositiveSmallIntegerField(verbose_name="List type", null=True, blank=False, default=None, )
-
-    landing_exceptions = models.TextField(verbose_name="Landing exceptions", null=True, blank=True, default=None, )
+    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=True, default=None, )
 
