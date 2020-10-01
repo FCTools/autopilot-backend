@@ -4,6 +4,8 @@ Author: German Yakimov
 """
 
 import os
+from celery.schedules import crontab
+
 
 BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..")
 
@@ -104,3 +106,9 @@ STATIC_URL = '/static/'
 
 BINOM_API_KEY = os.getenv("BINOM_API_KEY")
 TRACKER_URL = "https://fcttrk.com/"
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6374'
+BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

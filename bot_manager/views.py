@@ -20,67 +20,6 @@ from bot_manager.services.helpers.validator import Validator
 AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
 
 
-class ListBots(APIView):
-    """
-    View to list all user bots in the system.
-
-    * Requires token authentication.
-    """
-
-    authentication_classes = [authentication.TokenAuthentication]
-    queryset = Bot.objects.all()
-    serializer = BotSerializer
-
-    def get(self, request):
-        """
-        Return a list of all user's bots.
-        """
-        permission_classes = [IsAuthenticated]
-        if 'user_id' not in request.data:
-            return Response(data={'status': False, 'error': 'user_id is required'},
-                            content_type='application/json')
-
-        user_id = request.data.get('user_id')
-
-        bots = Bot.objects.filter(user_id__exact=user_id)
-
-        data = BotSerializer(bots, many=True)
-        return Response(data.data)
-
-
-class BotDetail(APIView):
-    """
-    View to list all user bots in the system.
-
-    * Requires token authentication.
-    """
-
-    authentication_classes = [authentication.TokenAuthentication]
-    queryset = Bot.objects.all()
-    serializer = BotSerializer
-
-    def get(self, request):
-        """
-        Return a list of all user's bots.
-        """
-        permission_classes = [IsAuthenticated]
-
-        if 'bot_id' in request.data:
-            bot_id = request.data.get('bot_id')
-        else:
-            return Response(data={'status': False, 'error': 'bot id is required'},
-                            content_type='application/json')
-
-        try:
-            bot = get_object_or_404(Bot, pk=bot_id)
-        except Http404:
-            return Response(data={'status': False, 'error': f"can't find bot with id {bot_id}"},
-                            content_type='application/json')
-
-        data = BotSerializer(bot).data
-        return Response(data)
-
-
 class BotCreator(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
