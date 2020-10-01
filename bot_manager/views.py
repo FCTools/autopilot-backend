@@ -2,7 +2,6 @@
 Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
-import json
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -16,7 +15,7 @@ from bot_manager.domains.accounts.bot import Bot
 from bot_manager.serializers import BotSerializer
 from bot_manager.services.tracker.updater import Updater
 from bot_manager.models import User, Campaign
-
+from bot_manager.services.helpers.validator import Validator
 
 AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
 
@@ -89,143 +88,36 @@ class BotCreator(APIView):
     # handling bots/createBot is here
     def post(self, request, format=None):
         permission_classes = [IsAuthenticated]
-        updated = False
 
-        if 'name' in request.data:
+        validator = Validator
+        validation_status, error_message = validator.validate_new_bot(request.data)
+
+        if validation_status is True:
             name = request.data.get('name')
-
-            if len(name) == 0:
-                return Response(data={'status': False, 'error': "name field can't be empty"},
-                                content_type='application/json')
-            elif len(name) > 128:
-                return Response(data={'status': False, 'error': "too long name (max: 120 symbols)"},
-                                content_type='application/json')
-        else:
-            return Response(data={'status': False, 'error': 'name field is required'},
-                            content_type='application/json')
-
-        if 'type' in request.data:
-            try:
-                bot_type = int(request.data.get('type'))
-            except ValueError:
-                return Response(data={'status': False, 'error': 'invalid bot type - not a number'},
-                                content_type='application/json')
-
-            if bot_type != 1 and bot_type != 2:
-                return Response(data={'status': False, 'error': 'bot type can be only 1 or 2'},
-                                content_type='application/json')
-        else:
-            return Response(data={'status': False, 'error': 'type field is required'},
-                            content_type='application/json')
-
-        if 'condition' in request.data:
+            bot_type = request.data.get('type')
             condition = request.data.get('condition')
-        else:
-            return Response(data={'status': False, 'error': 'condition field is required'},
-                            content_type='application/json')
-
-        if 'action' in request.data:
             action = request.data.get('action')
-
-            if action not in AVAILABLE_ACTIONS:
-                return Response(data={'status': False, 'error': 'invalid action'},
-                                content_type='application/json')
-        else:
-            return Response(data={'status': False, 'error': 'action field is required'},
-                            content_type='application/json')
-
-        if 'interval' in request.data:
-            interval = request.data.get('interval')
-
-            if interval < 120:
-                return Response(data={'status': False, 'error': "checking interval can't be less than 120 seconds"},
-                                content_type='application/json')
-        else:
-            return Response(data={'status': False, 'error': 'interval field is required'},
-                            content_type='application/json')
-
-        if bot_type == 1:
-            if 'list_type' in request.data:
-                list_type = request.data.get('list_type')
-
-                if list_type == 'black':
-                    list_type = 1
-                elif list_type == 'white':
-                    list_type = 0
-                else:
-                    return Response(data={'status': False, 'error': 'invalid list type'},
-                                    content_type='application/json')
-            else:
-                return Response(data={'status': False, 'error': 'list_type is required for bots of type 1'},
-                                content_type='application/json')
-        else:
-            list_type = None
-
-        if 'user_id' in request.data:
+            interval = request.data.get('checking_interval')
             user_id = request.data.get('user_id')
-            user = list(User.objects.filter(id__exact=user_id))
+            campaigns_ids = request.data.get('campaigns_ids')
 
-            if not user:
-                Updater.update()
-                updated = True
+            if bot_type == 1 and 'ignored_sources' in request.data:
+                ignored_sources = request.data.get('ignored_sources')
 
-            user = list(User.objects.filter(id__exact=user_id))
-
-            if not user:
-                return Response(data={'status': False, 'error': 'unknown user'},
-                                content_type='application/json')
-
-        else:
-            return Response(data={'status': False, 'error': 'user_id field is required'},
-                            content_type='application/json')
-
-        if 'campaigns' in request.data:
-            campaigns_ids = request.data.get('campaigns')
+            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action,
+                                         checking_interval=interval, user_id=user_id, list_type=list_type)
 
             for campaign_id in campaigns_ids:
-                campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
+                campaign = Campaign.objects.get(id__exact=campaign_id)
+                new_bot.campaigns_list.add(campaign)
 
-                if not campaign_db:
-                    if not updated:
-                        Updater.update()
-                        updated = True
-                    else:
-                        return Response(data={'status': False, 'error': f'unknown campaign: {campaign_id}'},
-                                        content_type='application/json')
+            new_bot.save()
 
-                campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
-
-                if not campaign_db:
-                    return Response(data={'status': False, 'error': f'unknown campaign: {campaign_id}'},
-                                    content_type='application/json')
-
-                campaign = campaign_db[0]
-                if campaign.user_id != user_id:
-                    return Response(data={'status': False, 'error': f'campaign {campaign_id} pinned to another user'},
-                                    content_type='application/json')
-
-        else:
-            return Response(data={'status': False, 'error': 'campaigns field is required'},
+            return Response(data={'status': True, 'bot_id': new_bot.id},
                             content_type='application/json')
-
-        user_bots = Bot.objects.filter(user_id=user_id)
-
-        for bot in user_bots:
-            if bot.name == name:
-                return Response(data={'status': False, 'error': 'this user already has bot with this name'},
-                                content_type='application/json')
-
-        new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action,
-                                     checking_interval=interval, user_id=user_id, list_type=list_type)
-
-        for campaign_id in campaigns_ids:
-            campaign = Campaign.objects.get(id__exact=campaign_id)
-            new_bot.campaigns_list.add(campaign)
-
-        new_bot.save()
-
-        return Response(data={'status': True, 'bot_id': new_bot.id},
-                        content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': error_message},
+                            content_type='application/json')
 
 
 class BotStarter(APIView):
