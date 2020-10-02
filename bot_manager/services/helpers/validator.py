@@ -6,7 +6,7 @@ AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl"
 
 class Validator:
     @staticmethod
-    def validate_new_bot(data):
+    def validate_new_bot(data, bot_exists=False):
         updated = False
 
         if 'name' in data:
@@ -55,13 +55,8 @@ class Validator:
             return False, 'interval field is required'
 
         if bot_type == 1:
-            if 'list_type' in data:
-                list_type = data.get('list_type')
-
-                if list_type != 'black' and list_type != 'white':
-                    return False, 'invalid list type'
-            else:
-                return False, 'list_type is required for bots of type 1'
+            if action != 'add_to_bl' and action != 'add_to_wl':
+                return False, 'invalid action for bot type 1'
 
         if 'user_id' in data:
             user_id = data.get('user_id')
@@ -102,17 +97,18 @@ class Validator:
                     return False, f'campaign {campaign_id} pinned to another user'
 
         else:
-            return 'campaigns_ids field is required'
+            return False, 'campaigns_ids field is required'
 
         if 'ignored_sources' in data:
             ignored_sources = data.get('ignored_sources')
 
             # check sources here
 
-        user_bots = Bot.objects.filter(user_id=user_id)
+        if not bot_exists:
+            user_bots = Bot.objects.filter(user_id=user_id)
 
-        for bot in user_bots:
-            if bot.name == name:
-                return False, 'this user already has bot with this name'
+            for bot in user_bots:
+                if bot.name == name:
+                    return False, 'this user already has bot with this name'
 
         return True, 'ok'

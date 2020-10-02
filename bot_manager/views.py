@@ -41,7 +41,7 @@ class BotCreator(APIView):
             bot_type = request.data.get('type')
             condition = request.data.get('condition')
             action = request.data.get('action')
-            interval = request.data.get('checking_interval')
+            interval = request.data.get('interval')
             user_id = request.data.get('user_id')
             campaigns_ids = request.data.get('campaigns_ids')
 
@@ -142,15 +142,11 @@ class BotUpdater(APIView):
     def put(self, request):
         permission_classes = [IsAuthenticated]
 
-        if 'user_id' in request.data:
-            return Response(data={'status': False, 'error': "user changing is not allowed"},
-                            content_type='application/json')
-
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
 
             try:
-                bot = get_object_or_404("Bot", pk=bot_id)
+                bot = get_object_or_404(Bot, pk=bot_id)
             except Http404:
                 return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
                                 content_type='application/json')
@@ -159,7 +155,7 @@ class BotUpdater(APIView):
                             content_type='application/json')
 
         validator = Validator
-        validation_status, error_message = validator.validate_new_bot(request.data)
+        validation_status, error_message = validator.validate_new_bot(request.data, bot_exists=True)
 
         if validation_status is True:
             bot.name = request.data.get('name')
@@ -172,14 +168,14 @@ class BotUpdater(APIView):
 
             campaigns_ids = request.data.get('campaigns_ids')
 
-            for campaign in bot.campaigns_list:
+            for campaign in bot.campaigns_list.all():
                 if campaign.id not in campaigns_ids:
                     bot.campaigns_list.remove(campaign)
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)
 
-                if campaign not in bot.campaigns_list:
+                if campaign not in bot.campaigns_list.all():
                     bot.campaigns_list.add(campaign)
 
             bot.save()

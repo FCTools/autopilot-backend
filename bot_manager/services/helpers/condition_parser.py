@@ -124,4 +124,4 @@ class ConditionParser:
         return True
 
 
-# print(ConditionParser.check_sites("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 1379))
+# print(ConditionParser.check_sites("", 1379))

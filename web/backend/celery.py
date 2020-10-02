@@ -14,7 +14,7 @@ app.config_from_object('django.conf:settings')
 app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'monday-statistics-email': {
-       'task': 'bot_manager.tasks.print_hello',
+       'task': 'bot_manager.tasks.check_bots',
        'schedule': crontab(minute='*/1'),
    }
 }
