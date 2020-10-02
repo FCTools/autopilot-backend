@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from services.tracker.tracker_manager import TrackerManager
+from bot_manager.services.tracker.tracker_manager import TrackerManager
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']

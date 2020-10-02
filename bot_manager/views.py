@@ -30,7 +30,7 @@ class BotCreator(APIView):
         permission_classes = [IsAuthenticated]
 
         # custom logic start
-        print(ConditionParser.check_sites("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 1379))
+        # print(ConditionParser.check_sites("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 1379))
         # custom logic end
 
         validator = Validator
