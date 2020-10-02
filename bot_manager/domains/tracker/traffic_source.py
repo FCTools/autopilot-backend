@@ -22,6 +22,13 @@ class TrafficSource(models.Model):
 
     campaigns = models.IntegerField(verbose_name="Campaigns", null=True, blank=True, )
 
+    filtering_param_name = models.CharField(verbose_name="Param name for filtering campaign's statistics by sources.",
+                                            max_length=256, null=True, blank=False, default=None, )
+
+    filtering_param_number = models.PositiveSmallIntegerField(
+        verbose_name="Number of param for filtering campaign's statistics by sources.", null=True, blank=False,
+        default=None, )
+
     def __str__(self):
         return f"{self.id} {self.name} {self.user.login}" if self.user else f"{self.id} {self.name}"
 

@@ -25,7 +25,7 @@ class AdminOffer(admin.ModelAdmin):
 
 @admin.register(TrafficSource)
 class AdminTrafficSource(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'user', 'name', 'filtering_param_name']
 
 
 @admin.register(Campaign)

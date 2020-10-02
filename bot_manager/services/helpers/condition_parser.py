@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from services.tracker.tracker_manager import TrackerManager
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
@@ -63,29 +64,54 @@ class ConditionParser:
         return first_part, conn, second_part
 
     @staticmethod
-    def _check_elementary_condition(condition):
-        parts = condition.split()
-        var = parts[0]
+    def _check_site_elementary_condition(site_info, condition):
+        parts = condition[1:-1].split()
+
+        var = parts[0].lower()
         relation = parts[1]
         value = float(parts[2])
 
-    @staticmethod
-    def check(condition, campaign_id, landing=None):
-        if not ConditionParser.is_valid(condition):
-            return False
+        if relation == '=':
+            return float(site_info[var]) == value
+        elif relation == '<':
+            return float(site_info[var]) < value
+        elif relation == '<=':
+            return float(site_info[var]) <= value
+        elif relation == '>':
+            return float(site_info[var]) > value
+        else:
+            return float(site_info[var]) >= value
 
-        # term recursion branch
+    @staticmethod
+    def check_site_condition(site_info, condition):
         if 'OR' not in condition and 'AND' not in condition:
-            pass
+            return ConditionParser._check_site_elementary_condition(site_info, condition)
 
         condition = condition[1:-1]
 
         first_cond, conn, second_cond = ConditionParser._split_into_parts(condition)
 
         if conn == 'AND':
-            return ConditionParser.check(first_cond, campaign_id) and ConditionParser.check(second_cond, campaign_id)
+            return ConditionParser.check_site_condition(site_info, first_cond) and \
+                   ConditionParser.check_site_condition(site_info, second_cond)
         else:
-            return ConditionParser.check(first_cond, campaign_id) or ConditionParser.check(second_cond, campaign_id)
+            return ConditionParser.check_site_condition(site_info, first_cond) or \
+                   ConditionParser.check_site_condition(site_info, second_cond)
+
+    @staticmethod
+    def check_sites(condition, campaign_id):
+        if not ConditionParser.is_valid(condition):
+            return
+
+        sites_to_add = []
+
+        sites = TrackerManager().get_sites_info(campaign_id)
+
+        for site in sites:
+            if ConditionParser.check_site_condition(site, condition):
+                sites_to_add.append(site['name'])
+
+        return sites_to_add
 
     @staticmethod
     def is_valid(condition):
@@ -98,4 +124,4 @@ class ConditionParser:
         return True
 
 
-print(ConditionParser.check("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 0))
+# print(ConditionParser.check_sites("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 1379))
