@@ -13,7 +13,7 @@ app.config_from_object('django.conf:settings')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 app.conf.beat_schedule = {
-    'monday-statistics-email': {
+    'bot_checking': {
        'task': 'bot_manager.tasks.check_bots',
        'schedule': crontab(minute='*/1'),
    }

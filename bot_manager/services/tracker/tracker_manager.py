@@ -37,3 +37,24 @@ class TrackerManager:
                                                    }).json()
 
         return campaign_sites_info
+
+    def get_campaign_info(self, campaign_id):
+        requests_url = settings.TRACKER_URL
+        response = requests_manager.get(
+            requests.Session(),
+            requests_url,
+            params={
+                "page": "Stats",
+                "api_key": settings.BINOM_API_KEY,
+                "camp_id": campaign_id,
+                "group1": 3,
+                "group2": 1,
+                "group3": 1
+            },
+        ).json()
+
+        pprint(response)
+        return response
+
+
+TrackerManager().get_campaign_info(1903)

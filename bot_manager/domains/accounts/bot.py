@@ -33,5 +33,6 @@ class Bot(models.Model):
 
     checking_interval = models.PositiveIntegerField(verbose_name="Condition checking interval", )
 
-    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=True, default=None, )
+    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
+    last_checked = models.DateTimeField(verbose_name="Last checked", null=True, default=None, blank=False, )

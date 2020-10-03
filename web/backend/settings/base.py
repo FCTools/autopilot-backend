@@ -10,7 +10,11 @@ BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 
 DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+
 SECRET_KEY = os.getenv("SECRET_KEY")
+REDIS_REMOTE_HOST = os.getenv("REDIS_HOST")
+REDIS_REMOTE_PORT = os.getenv("REDIS_PORT")
+REDIS_REMOTE_PASSWORD = os.getenv("REDIS_PASSWORD")
 
 ALLOWED_HOSTS = []
 

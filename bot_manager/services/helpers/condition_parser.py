@@ -114,6 +114,94 @@ class ConditionParser:
         return sites_to_add
 
     @staticmethod
+    def _check_campaign_elementary_condition(statistics, condition):
+        parts = condition[1:-1].split()
+
+        var = parts[0].lower()
+        relation = parts[1]
+        value = float(parts[2])
+
+        clicks = 0
+        profit = 0.0
+        revenue = 0.0
+        cost = 0.0
+        leads = 0
+
+        for offer_stat in statistics:
+            clicks += int(offer_stat['clicks'])
+            profit += float(offer_stat['profit'])
+            revenue += float(offer_stat['revenue'])
+            cost += float(offer_stat['cost'])
+            leads += int(offer_stat['leads'])
+
+        if var == 'clicks':
+            var = clicks
+        elif var == 'profit':
+            var = profit
+        elif var == 'revenue':
+            var = revenue
+        elif var == 'cost':
+            var = cost
+        elif var == 'leads':
+            var = leads
+        elif var == 'cr':
+            if clicks != 0:
+                var = leads / clicks
+            else:
+                var = 0
+        elif var == 'epc':
+            if clicks != 0:
+                var = revenue / clicks
+            else:
+                var = 0
+        elif var == 'cpc':
+            if clicks != 0:
+                var = cost / clicks
+            else:
+                var = 0
+        elif var == 'roi':
+            if cost != 0:
+                var = profit / cost
+            else:
+                var = 0
+
+        if relation == '=':
+            return float(var) == value
+        elif relation == '<':
+            return float(var) < value
+        elif relation == '<=':
+            return float(var) <= value
+        elif relation == '>':
+            return float(var) > value
+        else:
+            return float(var) >= value
+
+    @staticmethod
+    def check_campaign_condition(statistics, condition):
+        if 'OR' not in condition and 'AND' not in condition:
+            return ConditionParser._check_campaign_elementary_condition(statistics, condition)
+
+        condition = condition[1:-1]
+
+        first_cond, conn, second_cond = ConditionParser._split_into_parts(condition)
+
+        if conn == 'AND':
+            return ConditionParser.check_campaign_condition(statistics, first_cond) and \
+                   ConditionParser.check_campaign_condition(statistics, second_cond)
+        else:
+            return ConditionParser.check_campaign_condition(statistics, first_cond) or \
+                   ConditionParser.check_campaign_condition(statistics, second_cond)
+
+    @staticmethod
+    def check_campaign(condition, campaign_id):
+        if not ConditionParser.is_valid(condition):
+            return
+
+        campaign_statistics = TrackerManager.get_campaign_info(campaign_id)
+
+        return ConditionParser.check_campaign_condition(campaign_statistics, condition)
+
+    @staticmethod
     def is_valid(condition):
         if not ConditionParser.bracket_sequence_is_valid(condition):
             return False
