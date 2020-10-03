@@ -5,8 +5,8 @@ Author: German Yakimov
 
 from django.contrib import admin
 from django.urls import path
-from bot_manager.views import BotCreator, BotStarter, BotStopper, BotDeleter, BotUpdater
 
+from bot_manager.views import BotCreator, BotStarter, BotStopper, BotDeleter, BotUpdater
 
 urlpatterns = [
     path('admin/', admin.site.urls),

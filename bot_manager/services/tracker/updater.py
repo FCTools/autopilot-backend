@@ -4,14 +4,13 @@ Author: German Yakimov
 """
 import json
 from copy import deepcopy
-from decimal import Decimal
 from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
 
-from bot_manager.services.helpers import requests_manager
 from bot_manager.models import User, Offer, TrafficSource, Campaign
+from bot_manager.services.helpers import requests_manager
 
 
 class Updater:
@@ -97,10 +96,10 @@ class Updater:
         campaigns_list = []
 
         params = {
-                "page": "Campaigns",
-                "status": "all",
-                "api_key": settings.BINOM_API_KEY,
-            }
+            "page": "Campaigns",
+            "status": "all",
+            "api_key": settings.BINOM_API_KEY,
+        }
 
         all_campaigns_tracker = requests_manager.get(
             requests.Session(), f"{settings.TRACKER_URL}?timezone=+3:00&{urlencode(params)}"

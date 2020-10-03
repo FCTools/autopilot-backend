@@ -5,18 +5,14 @@ Author: German Yakimov
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import authentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from bot_manager.domains.accounts.bot import Bot
-from bot_manager.serializers import BotSerializer
-from bot_manager.services.tracker.updater import Updater
-from bot_manager.models import User, Campaign
+from bot_manager.models import Campaign
 from bot_manager.services.helpers.validator import Validator
-from bot_manager.services.helpers.condition_parser import ConditionParser
 
 AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
 
@@ -69,11 +65,11 @@ class BotStarter(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
 
-    def post(self, request):
+    def patch(self, request):
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
         else:
-            return Response(data={'status': False, 'error': 'bot id is required'},
+            return Response(data={'status': False, 'error': 'bot_id field is required'},
                             content_type='application/json')
 
         try:
@@ -85,19 +81,18 @@ class BotStarter(APIView):
         bot.status = "enabled"
         bot.save()
 
-        return Response(data={'status': True},
-                        content_type='application/json')
+        return Response(data={'status': True}, content_type='application/json')
 
 
 class BotStopper(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
 
-    def post(self, request):
+    def patch(self, request):
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
         else:
-            return Response(data={'status': False, 'error': 'bot id is required'},
+            return Response(data={'status': False, 'error': 'bot_id field is required'},
                             content_type='application/json')
 
         try:
@@ -121,7 +116,7 @@ class BotDeleter(APIView):
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
         else:
-            return Response(data={'success': False, 'error': 'bot id is required'},
+            return Response(data={'success': False, 'error': 'bot_id field is required'},
                             content_type='application/json')
 
         try:
@@ -132,7 +127,7 @@ class BotDeleter(APIView):
 
         bot.delete()
 
-        return Response(data={'success': True}, content_type='application/json')
+        return Response(data={'status': True}, content_type='application/json')
 
 
 class BotUpdater(APIView):

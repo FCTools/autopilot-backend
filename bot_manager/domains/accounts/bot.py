@@ -29,7 +29,7 @@ class Bot(models.Model):
                               choices=(("stop_campaign", "Stop campaign"),
                                        ("start_campaign", "Start campaign"),
                                        ("add_to_bl", "Add landing to BL"),
-                                       ("add_to_wl", "Add landing to WL"), ))
+                                       ("add_to_wl", "Add landing to WL"),))
 
     checking_interval = models.PositiveIntegerField(verbose_name="Condition checking interval", )
 

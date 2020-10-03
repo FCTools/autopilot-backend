@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
 
 import redis
-
 from django.conf import settings
 
-from web.backend.celery import app
-from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.models import Bot
+from bot_manager.services.helpers.condition_parser import ConditionParser
+from web.backend.celery import app
 
 
 @app.task

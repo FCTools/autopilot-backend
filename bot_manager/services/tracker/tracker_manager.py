@@ -5,10 +5,10 @@ Author: German Yakimov
 from pprint import pprint
 
 import requests
-
-from bot_manager.services.helpers import requests_manager
 from django.conf import settings
+
 from bot_manager.models import Campaign
+from bot_manager.services.helpers import requests_manager
 
 
 class TrackerManager:
@@ -55,6 +55,3 @@ class TrackerManager:
 
         pprint(response)
         return response
-
-
-TrackerManager().get_campaign_info(1903)

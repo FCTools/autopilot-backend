@@ -1,7 +1,9 @@
 import os
 import sys
-from celery import Celery
+
 from celery.schedules import crontab
+
+from celery import Celery
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), 'web')))
 
@@ -14,7 +16,7 @@ app.config_from_object('django.conf:settings')
 app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'bot_checking': {
-       'task': 'bot_manager.tasks.check_bots',
-       'schedule': crontab(minute='*/1'),
-   }
+        'task': 'bot_manager.tasks.check_bots',
+        'schedule': crontab(minute='*/1'),
+    }
 }

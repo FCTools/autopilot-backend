@@ -3,7 +3,6 @@ Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
 
-
 import functools
 
 import requests
@@ -60,5 +59,3 @@ def post(session, *args, **kwargs):
     """
 
     return session.post(*args, **kwargs)
-
-

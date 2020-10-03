@@ -4,6 +4,7 @@ Author: German Yakimov
 """
 
 from rest_framework import serializers
+
 from bot_manager.models import Bot
 
 
