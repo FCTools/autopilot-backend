@@ -28,3 +28,5 @@ DATABASES = {
         "PORT": DATABASE_PORT,
     }
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
