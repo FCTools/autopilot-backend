@@ -57,6 +57,9 @@ class Validator:
         if bot_type == 1:
             if action != 'add_to_bl' and action != 'add_to_wl':
                 return False, 'invalid action for bot type 1'
+        elif bot_type == 2:
+            if action != 'start_camp' and action != 'stop_camp':
+                return False, 'invalid action for bot type 2'
 
         if 'user_id' in data:
             user_id = data.get('user_id')
