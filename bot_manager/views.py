@@ -152,18 +152,30 @@ class BotUpdater(APIView):
                             content_type='application/json')
 
         validator = Validator
-        validation_status, error_message = validator.validate_new_bot(request.data, bot_exists=True)
+        validation_status, error_message = validator.validate_new_bot(request.data, bot_exists=True,
+                                                                      user_id=bot.user_id)
 
         if validation_status is True:
-            bot.name = request.data.get('name')
-            bot.type = request.data.get('type')
-            bot.condition = request.data.get('condition')
-            bot.action = request.data.get('action')
-            bot.interval = request.data.get('checking_interval')
+            bot_name = request.data.get('name')
+            bot_type = int(request.data.get('type'))
+            bot_condition = request.data.get('condition')
+            bot_action = int(request.data.get('action'))
+            bot_schedule = parse_schedule(request.data.get('schedule'))
+            bot_period = int(request.data.get('period'))
+
+            if bot_type == 1 and bot_action != bot.action:
+                return Response(data={'status': False, 'error': "changing list type is not allowed"},
+                                content_type='application/json')
+
+            bot.name = bot_name
+            bot.type = bot_type
+            bot.condition = bot_condition
+            bot.schedule = bot_schedule
+            bot.period = bot_period
 
             bot.save()
 
-            campaigns_ids = request.data.get('campaigns_ids')
+            campaigns_ids = [int(camp_id) for camp_id in request.data.get('campaigns_ids')]
 
             for campaign in bot.campaigns_list.all():
                 if campaign.id not in campaigns_ids:

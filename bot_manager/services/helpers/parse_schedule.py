@@ -2,7 +2,7 @@ import json
 
 
 def parse_schedule(schedule):
-    result = {'mn': [], 'tu': [], 'wd': [], 'th': [], 'fr': [], 'sa': [], 'su': []}
+    result = {'mn': [], 'tu': [], 'wd': [], 'th': [], 'fr': [], 'sa': [], 'sn': []}
 
     for entry in schedule:
         parts = entry.split('-')

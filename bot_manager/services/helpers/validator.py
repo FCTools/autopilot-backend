@@ -6,7 +6,7 @@ AVAILABLE_ACTIONS = (1, 2, 3, 4)
 
 class Validator:
     @staticmethod
-    def validate_new_bot(data, bot_exists=False):
+    def validate_new_bot(data, bot_exists=False, user_id=None):
         updated = False
 
         if 'name' in data:
@@ -53,24 +53,25 @@ class Validator:
             if action != 3 and action != 4:  # 3 - stop camp, 4 - start camp
                 return False, 'invalid action for bot type 2'
 
-        if 'user_id' in data:
-            user_id = data.get('user_id')
-            user = list(User.objects.filter(id__exact=user_id))
+        if not bot_exists:
+            if 'user_id' in data:
+                user_id = data.get('user_id')
+                user = list(User.objects.filter(id__exact=user_id))
 
-            if not user:
-                Updater.update()
-                updated = True
+                if not user:
+                    Updater.update()
+                    updated = True
 
-            user = list(User.objects.filter(id__exact=user_id))
+                user = list(User.objects.filter(id__exact=user_id))
 
-            if not user:
-                return False, 'unknown user'
+                if not user:
+                    return False, 'unknown user'
 
-        else:
-            return False, 'user_id field is required'
+            else:
+                return False, 'user_id field is required'
 
         if 'campaigns_ids' in data:
-            campaigns_ids = data.get('campaigns_ids')
+            campaigns_ids = [int(camp_id) for camp_id in data.get('campaigns_ids')]
 
             for campaign_id in campaigns_ids:
                 campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
