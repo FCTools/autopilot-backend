@@ -101,7 +101,28 @@ class Validator:
 
         if 'schedule' in data:
             schedule = data.get('schedule')
-            # check schedule here
+
+            for entry in schedule:
+                if '-' in entry:
+                    parts = entry.split('-')
+                    if parts[0] not in ['mn', 'tu', 'wd', 'th', 'fr', 'sa', 'sn']:
+                        return False, f'incorrect day if the week: {entry}'
+
+                    if ':' in parts[1]:
+                        time_parts = parts[1].split(':')
+                    else:
+                        return False, f'incorrect time: {entry}'
+
+                    try:
+                        num_1 = int(time_parts[0])
+                        num_2 = int(time_parts[1])
+                    except ValueError:
+                        return False, f'incorrect time: {entry}'
+
+                    if not ((0 <= num_1 <= 23) and (0 <= num_2 <= 59)):
+                        return False, f'incorrect time: {entry}'
+                else:
+                    return False, 'incorrect schedule'
 
         else:
             return False, 'schedule field is required'
