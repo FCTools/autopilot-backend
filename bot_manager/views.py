@@ -147,6 +147,10 @@ class BotUpdater(APIView):
             return Response(data={'status': False, 'error': "bot_id field is required"},
                             content_type='application/json')
 
+        if bot.status == "enabled":
+            return Response(data={'status': False, 'error': "can't change enabled bot"},
+                            content_type='application/json')
+
         validator = Validator
         validation_status, error_message = validator.validate_new_bot(request.data, bot_exists=True,
                                                                       user_id=bot.user_id)
