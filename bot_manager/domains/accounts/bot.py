@@ -34,5 +34,3 @@ class Bot(models.Model):
     schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False, default="-", )
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
-
-    last_checked = models.DateTimeField(verbose_name="Last checked", null=True, default=None, blank=False, )
