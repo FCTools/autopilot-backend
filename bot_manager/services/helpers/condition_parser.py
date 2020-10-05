@@ -210,5 +210,3 @@ class ConditionParser:
             return False
 
         return True
-
-# print(ConditionParser.check_sites("", 1379))

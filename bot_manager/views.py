@@ -2,6 +2,7 @@
 Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
+import json
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -15,8 +16,6 @@ from bot_manager.models import Campaign
 from bot_manager.services.helpers.parse_schedule import parse_schedule
 from bot_manager.services.helpers.validator import Validator
 
-AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
-
 
 class BotCreator(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -25,10 +24,6 @@ class BotCreator(APIView):
     # handling bots/createBot is here
     def post(self, request, format=None):
         permission_classes = [IsAuthenticated]
-
-        # custom logic start
-        # print(ConditionParser.check_sites("(((revenue < 50) AND (profit < 0)) OR (cost > 100))", 1379))
-        # custom logic end
 
         validator = Validator
         validation_status, error_message = validator.validate_new_bot(request.data)
@@ -45,10 +40,11 @@ class BotCreator(APIView):
 
             if bot_type == 1 and 'ignored_sources' in request.data:
                 ignored_sources = request.data.get('ignored_sources')
+            else:
+                ignored_sources = []
 
-            # how to remember ignored sources?
             new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user_id=user_id,
-                                         period=period, schedule=schedule, )
+                                         period=period, schedule=schedule, ignored_sources=json.dumps(ignored_sources))
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)

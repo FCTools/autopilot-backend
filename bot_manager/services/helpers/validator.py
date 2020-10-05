@@ -1,4 +1,5 @@
 from bot_manager.models import Campaign, User, Bot
+from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.services.tracker.updater import Updater
 
 AVAILABLE_ACTIONS = (1, 2, 3, 4)
@@ -34,7 +35,9 @@ class Validator:
         if 'condition' in data:
             condition = data.get('condition')
 
-            # validate condition here
+            if not ConditionParser.is_valid(condition):
+                return False, 'invalid condition'
+
         else:
             return False, 'condition field is required'
 
@@ -73,6 +76,9 @@ class Validator:
         if 'campaigns_ids' in data:
             campaigns_ids = [int(camp_id) for camp_id in data.get('campaigns_ids')]
 
+            if not campaigns_ids:
+                return False, "campaigns list can't be empty"
+
             for campaign_id in campaigns_ids:
                 campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
 
@@ -107,7 +113,7 @@ class Validator:
                 if '-' in entry:
                     parts = entry.split('-')
                     if parts[0] not in ['mn', 'tu', 'wd', 'th', 'fr', 'sa', 'sn']:
-                        return False, f'incorrect day if the week: {entry}'
+                        return False, f'incorrect weekday: {entry}'
 
                     if ':' in parts[1]:
                         time_parts = parts[1].split(':')
