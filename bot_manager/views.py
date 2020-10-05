@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 from bot_manager.domains.accounts.bot import Bot
 from bot_manager.models import Campaign
+from bot_manager.services.helpers.parse_schedule import parse_schedule
 from bot_manager.services.helpers.validator import Validator
 
 AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
@@ -34,17 +35,20 @@ class BotCreator(APIView):
 
         if validation_status is True:
             name = request.data.get('name')
-            bot_type = request.data.get('type')
+            bot_type = int(request.data.get('type'))
             condition = request.data.get('condition')
-            action = request.data.get('action')
-            user_id = request.data.get('user_id')
-            campaigns_ids = request.data.get('campaigns_ids')
+            action = int(request.data.get('action'))
+            user_id = int(request.data.get('user_id'))
+            campaigns_ids = [int(camp_id) for camp_id in request.data.get('campaigns_ids')]
+            period = int(request.data.get('period'))
+            schedule = parse_schedule(request.data.get('schedule'))
 
             if bot_type == 1 and 'ignored_sources' in request.data:
                 ignored_sources = request.data.get('ignored_sources')
 
             # how to remember ignored sources?
-            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user_id=user_id)
+            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user_id=user_id,
+                                         period=period, schedule=schedule, )
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)
