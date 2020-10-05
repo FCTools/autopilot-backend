@@ -37,7 +37,6 @@ class BotCreator(APIView):
             bot_type = request.data.get('type')
             condition = request.data.get('condition')
             action = request.data.get('action')
-            interval = request.data.get('interval')
             user_id = request.data.get('user_id')
             campaigns_ids = request.data.get('campaigns_ids')
 
@@ -45,8 +44,7 @@ class BotCreator(APIView):
                 ignored_sources = request.data.get('ignored_sources')
 
             # how to remember ignored sources?
-            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action,
-                                         checking_interval=interval, user_id=user_id)
+            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user_id=user_id)
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)

@@ -127,6 +127,19 @@ class Validator:
         else:
             return False, 'schedule field is required'
 
+        if 'period' in data:
+            period = data.get('period')
+
+            try:
+                period = int(period)
+            except ValueError:
+                return False, "can't convert period to int (not a number)"
+
+            if period < 0:
+                return False, "period can't be less than zero"
+        else:
+            return False, 'period field is required'
+
         if not bot_exists:
             user_bots = Bot.objects.filter(user_id=user_id)
 
