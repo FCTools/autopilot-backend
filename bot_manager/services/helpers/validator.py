@@ -1,7 +1,7 @@
 from bot_manager.models import Campaign, User, Bot
 from bot_manager.services.tracker.updater import Updater
 
-AVAILABLE_ACTIONS = ("stop_campaign", "start_campaign", "add_to_bl", "add_to_wl")
+AVAILABLE_ACTIONS = (1, 2, 3, 4)
 
 
 class Validator:
@@ -46,19 +46,11 @@ class Validator:
         else:
             return False, 'action field is required'
 
-        if 'interval' in data:
-            interval = data.get('interval')
-
-            if interval < 120:
-                return False, "checking interval can't be less than 120 seconds"
-        else:
-            return False, 'interval field is required'
-
         if bot_type == 1:
-            if action != 'add_to_bl' and action != 'add_to_wl':
+            if action != 1 and action != 2:  # 2 - black list, 1 - white list
                 return False, 'invalid action for bot type 1'
         elif bot_type == 2:
-            if action != 'start_camp' and action != 'stop_camp':
+            if action != 3 and action != 4:  # 3 - stop camp, 4 - start camp
                 return False, 'invalid action for bot type 2'
 
         if 'user_id' in data:
@@ -106,6 +98,13 @@ class Validator:
             ignored_sources = data.get('ignored_sources')
 
             # check sources here
+
+        if 'schedule' in data:
+            schedule = data.get('schedule')
+            # check schedule here
+
+        else:
+            return False, 'schedule field is required'
 
         if not bot_exists:
             user_bots = Bot.objects.filter(user_id=user_id)

@@ -25,13 +25,13 @@ class Bot(models.Model):
     status = models.CharField(verbose_name="Status (enabled/disabled)", max_length=8, null=False, blank=False,
                               default="disabled", choices=(("enabled", "enabled"), ("disabled", "disabled")))
 
-    action = models.CharField(max_length=128, verbose_name="Action", null=False, blank=False,
-                              choices=(("stop_campaign", "Stop campaign"),
-                                       ("start_campaign", "Start campaign"),
-                                       ("add_to_bl", "Add landing to BL"),
-                                       ("add_to_wl", "Add landing to WL"),))
+    action = models.SmallIntegerField(verbose_name="Action", null=False, blank=False,
+                                      choices=((3, "Stop campaign"),
+                                               (4, "Start campaign"),
+                                               (2, "Add landing to BL"),
+                                               (1, "Add landing to WL"),))
 
-    checking_interval = models.PositiveIntegerField(verbose_name="Condition checking interval", )
+    schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False, default="-", )
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
