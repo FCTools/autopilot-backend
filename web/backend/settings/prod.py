@@ -5,7 +5,7 @@ Author: German Yakimov
 
 from backend.settings.base import *
 
-DEBUG = False
+# DEBUG = False
 
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 DATABASE_HOST = os.getenv("DATABASE_HOST")
