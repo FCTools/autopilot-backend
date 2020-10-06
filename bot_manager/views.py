@@ -133,7 +133,7 @@ class BotUpdater(APIView):
     queryset = Bot.objects.all()
 
     def put(self, request):
-        with open('~/test.txt', 'w', encoding='utf-8') as file:
+        with open('/home/space/test.txt', 'w', encoding='utf-8') as file:
             file.write(f"Last request {request.data.get('name')}")
 
         permission_classes = [IsAuthenticated]
