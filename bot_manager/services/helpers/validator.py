@@ -100,8 +100,7 @@ class Validator:
                 if not campaign_db:
                     return False, f'unknown campaign: {campaign_id}'
 
-                campaign = campaign_db[0]
-                if campaign.user_id != user_id:
+                if campaign_db.user_id != user_id:
                     return False, f'campaign {campaign_id} pinned to another user'
 
         else:
