@@ -1,3 +1,6 @@
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+
 from bot_manager.models import Campaign, User, Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.services.tracker.updater import Updater
@@ -42,7 +45,7 @@ class Validator:
             return False, 'condition field is required'
 
         if 'action' in data:
-            action = data.get('action')
+            action = int(data.get('action'))
 
             if action not in AVAILABLE_ACTIONS:
                 return False, 'invalid action'
@@ -58,7 +61,7 @@ class Validator:
 
         if not bot_exists:
             if 'user_id' in data:
-                user_id = data.get('user_id')
+                user_id = int(data.get('user_id'))
                 user = list(User.objects.filter(id__exact=user_id))
 
                 if not user:
@@ -80,16 +83,19 @@ class Validator:
                 return False, "campaigns list can't be empty"
 
             for campaign_id in campaigns_ids:
-                campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
-
-                if not campaign_db:
+                try:
+                    campaign_db = get_object_or_404(Campaign, pk=campaign_id)
+                except Http404:
                     if not updated:
                         Updater.update()
                         updated = True
                     else:
                         return False, f'unknown campaign: {campaign_id}'
 
-                campaign_db = list(Campaign.objects.filter(id__exact=campaign_id))
+                    try:
+                        campaign_db = get_object_or_404(Campaign, pk=campaign_id)
+                    except Http404:
+                        return False, f'unknown campaign: {campaign_id}'
 
                 if not campaign_db:
                     return False, f'unknown campaign: {campaign_id}'
@@ -148,7 +154,7 @@ class Validator:
             return False, 'period field is required'
 
         if not bot_exists:
-            user_bots = Bot.objects.filter(user_id=user_id)
+            user_bots = Bot.objects.filter(user_id__exact=user_id)
 
             for bot in user_bots:
                 if bot.name == name:
