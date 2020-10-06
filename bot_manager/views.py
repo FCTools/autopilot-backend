@@ -134,6 +134,8 @@ class BotUpdater(APIView):
     queryset = Bot.objects.all()
 
     def put(self, request):
+        a = 1 / 0
+
         permission_classes = [IsAuthenticated]
 
         if 'bot_id' in request.data:
