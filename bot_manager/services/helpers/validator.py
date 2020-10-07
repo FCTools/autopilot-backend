@@ -1,18 +1,20 @@
+"""
+Copyright © 2020 FC Tools. All rights reserved.
+Author: German Yakimov
+"""
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from bot_manager.models import Campaign, User, Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
-from bot_manager.services.tracker.updater import Updater
 
-AVAILABLE_ACTIONS = (1, 2, 3, 4)
+AVAILABLE_ACTIONS = (1, 2, 3, 4, )
 
 
 class Validator:
     @staticmethod
     def validate_new_bot(data, bot_exists=False, user_id=None):
-        updated = False
-
         if 'name' in data:
             name = data.get('name')
 
@@ -62,15 +64,10 @@ class Validator:
         if not bot_exists:
             if 'user_id' in data:
                 user_id = int(data.get('user_id'))
-                user = list(User.objects.filter(id__exact=user_id))
 
-                if not user:
-                    Updater.update()
-                    updated = True
-
-                user = list(User.objects.filter(id__exact=user_id))
-
-                if not user:
+                try:
+                    user = get_object_or_404(User, pk=user_id)
+                except Http404:
                     return False, 'unknown user'
 
             else:
@@ -86,18 +83,6 @@ class Validator:
                 try:
                     campaign_db = get_object_or_404(Campaign, pk=campaign_id)
                 except Http404:
-                    if not updated:
-                        Updater.update()
-                        updated = True
-                    else:
-                        return False, f'unknown campaign: {campaign_id}'
-
-                    try:
-                        campaign_db = get_object_or_404(Campaign, pk=campaign_id)
-                    except Http404:
-                        return False, f'unknown campaign: {campaign_id}'
-
-                if not campaign_db:
                     return False, f'unknown campaign: {campaign_id}'
 
                 if campaign_db.user_id != user_id:

@@ -1,3 +1,8 @@
+"""
+Copyright © 2020 FC Tools. All rights reserved.
+Author: German Yakimov
+"""
+
 from copy import deepcopy
 
 from bot_manager.services.tracker.tracker_manager import TrackerManager

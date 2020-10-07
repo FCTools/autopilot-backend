@@ -2,8 +2,8 @@
 Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
+
 import json
-import os
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404

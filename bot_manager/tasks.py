@@ -1,15 +1,18 @@
+"""
+Copyright © 2020 FC Tools. All rights reserved.
+Author: German Yakimov
+"""
+
 import json
 from datetime import datetime, timedelta
 
 import redis
 from django.conf import settings
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 
 from bot_manager.models import Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
+from bot_manager.services.tracker.updater import Updater
 from web.backend.celery import app
-
 
 WEEKDAYS = ('mn', 'tu', 'wd', 'th', 'fr', 'sa', 'sn')
 
@@ -33,11 +36,16 @@ def collect_tasks():
             tmp = datetime(year=today_dt.year, month=today_dt.month, day=today_dt.day, hour=hour, minute=minute)
 
             if (tmp > now and tmp - now <= timedelta(minutes=3)) or \
-               (now >= tmp and now - tmp <= timedelta(minutes=3)):
+                    (now >= tmp and now - tmp <= timedelta(minutes=3)):
                 bot_ids.append(bot)
                 break
 
     return bot_ids
+
+
+@app.task
+def update():
+    Updater.update()
 
 
 @app.task
@@ -49,12 +57,6 @@ def check_bots():
     print(bots)
 
     for bot in bots:
-        # try:
-        #     bot = get_object_or_404(Bot, pk=bot_id)
-        # except Http404:
-        #     # log it here
-        #     continue
-
         if bot.type == 1:
             sites_to_act = []
 
