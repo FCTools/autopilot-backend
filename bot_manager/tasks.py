@@ -25,18 +25,19 @@ def collect_tasks():
 
     for bot in bots_list:
         today_schedule = json.loads(bot.schedule)[today]
+        print(today_schedule)
+        print(today)
 
         for entry in today_schedule:
             hour, minute = entry[0], entry[1]
-            today_dt.hour = hour
-            today_dt.minute = minute
+            tmp = datetime(year=today_dt.year, month=today_dt.month, day=today_dt.day, hour=hour, minute=minute)
 
-            if (today_dt > now and today_dt - now < timedelta(minutes=3)) or \
-               (now >= today_dt and now - today_dt < timedelta(minutes=3)):
-                bot_ids.append(bot.id)
+            if (tmp > now and tmp - now <= timedelta(minutes=3)) or \
+               (now >= tmp and now - tmp <= timedelta(minutes=3)):
+                bot_ids.append(bot)
                 break
 
-    return bots_list
+    return bot_ids
 
 
 @app.task
@@ -45,13 +46,14 @@ def check_bots():
                                password=settings.REDIS_REMOTE_PASSWORD)
 
     bots = collect_tasks()
+    print(bots)
 
-    for bot_id in bots:
-        try:
-            bot = get_object_or_404(Bot, pk=bot_id)
-        except Http404:
-            # log it here
-            continue
+    for bot in bots:
+        # try:
+        #     bot = get_object_or_404(Bot, pk=bot_id)
+        # except Http404:
+        #     # log it here
+        #     continue
 
         if bot.type == 1:
             sites_to_act = []
@@ -59,7 +61,13 @@ def check_bots():
             for campaign in bot.campaigns_list.all():
                 sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id)
 
-            # send to redis, filter duplicates and add to internal black/white list here
+            if redis_server.exists(str(bot.pk)):
+                prev_info = json.loads(redis_server.get(str(bot.pk)))
+                redis_server.delete(str(bot.pk))
+                prev_info += sites_to_act
+                redis_server.append(str(bot.pk), json.dumps(list(set(prev_info))))
+            else:
+                redis_server.append(str(bot.pk), json.dumps(list(set(sites_to_act))))
 
         elif bot.type == 2:
             campaigns_to_act = []
