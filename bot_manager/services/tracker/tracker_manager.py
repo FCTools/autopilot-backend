@@ -67,6 +67,5 @@ class TrackerManager:
             },
         ).json()
 
-        pprint(response)
         return response
 

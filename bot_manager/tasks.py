@@ -61,15 +61,17 @@ def check_bots():
             sites_to_act = []
 
             for campaign in bot.campaigns_list.all():
-                sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id)
+                sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id, bot.period)
 
             if redis_server.exists(str(bot.pk)):
                 prev_info = json.loads(redis_server.get(str(bot.pk)))
                 redis_server.delete(str(bot.pk))
                 prev_info += sites_to_act
-                redis_server.append(str(bot.pk), json.dumps(list(set(prev_info))))
+                redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(prev_info)),
+                                                             'action': bot.action}))
             else:
-                redis_server.append(str(bot.pk), json.dumps(list(set(sites_to_act))))
+                redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(sites_to_act)),
+                                                             'action': bot.action}))
 
         elif bot.type == 2:
             campaigns_to_act = []
