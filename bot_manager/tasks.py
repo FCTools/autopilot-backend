@@ -82,7 +82,7 @@ def check_bots():
                 continue
 
             for campaign in bot.campaigns_list.all():
-                if campaign.status != status and ConditionParser.check_campaign(bot.condition, campaign.id):
+                if campaign.status != status and ConditionParser.check_campaign(bot.condition, campaign.id, bot.period):
                     campaigns_to_act.append(campaign.id)
 
                     campaign.status = status

@@ -2,6 +2,7 @@
 Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
+from datetime import datetime, timedelta
 from pprint import pprint
 
 import requests
@@ -38,7 +39,12 @@ class TrackerManager:
 
         return campaign_sites_info
 
-    def get_campaign_info(self, campaign_id):
+    # period in minutes
+    def get_campaign_info(self, campaign_id, period):
+        now = datetime.utcnow()
+        end_time = datetime(year=now.year, month=now.month, day=now.day, minute=now.minute)
+        start_time = end_time - timedelta(minutes=period)
+
         requests_url = settings.TRACKER_URL
         response = requests_manager.get(
             requests.Session(),
@@ -49,9 +55,13 @@ class TrackerManager:
                 "camp_id": campaign_id,
                 "group1": 3,
                 "group2": 1,
-                "group3": 1
+                "group3": 1,
+                "date": 10,
+                "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
+                "date_s": start_time.strftime("%Y-%m-%d+%I:%M")
             },
         ).json()
 
         pprint(response)
         return response
+

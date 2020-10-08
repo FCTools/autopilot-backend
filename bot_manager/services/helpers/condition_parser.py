@@ -198,11 +198,11 @@ class ConditionParser:
                    ConditionParser.check_campaign_condition(statistics, second_cond)
 
     @staticmethod
-    def check_campaign(condition, campaign_id):
+    def check_campaign(condition, campaign_id, period):
         if not ConditionParser.is_valid(condition):
             return
 
-        campaign_statistics = TrackerManager.get_campaign_info(campaign_id)
+        campaign_statistics = TrackerManager.get_campaign_info(campaign_id, period)
 
         return ConditionParser.check_campaign_condition(campaign_statistics, condition)
 
