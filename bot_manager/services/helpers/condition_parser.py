@@ -104,13 +104,13 @@ class ConditionParser:
                    ConditionParser.check_site_condition(site_info, second_cond)
 
     @staticmethod
-    def check_sites(condition, campaign_id):
+    def check_sites(condition, campaign_id, period):
         if not ConditionParser.is_valid(condition):
             return
 
         sites_to_add = []
 
-        sites = TrackerManager().get_sites_info(campaign_id)
+        sites = TrackerManager().get_sites_info(campaign_id, period)
 
         for site in sites:
             if ConditionParser.check_site_condition(site, condition):
