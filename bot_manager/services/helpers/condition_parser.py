@@ -117,14 +117,14 @@ class ConditionParser:
         sites = TrackerManager().get_sites_info(campaign_id, period)
 
         for site in sites:
-            if site in sites_db_ids:
-                site_db = sites_db[sites_db_ids.index(site)]
+            if site['name'] in sites_db_ids:
+                site_db = sites_db[sites_db_ids.index(site['name'])]
                 if site_db.status == action:
                     continue
 
             if ConditionParser.check_site_condition(site, condition):
                 sites_to_add.append(site['name'])
-                Site.objects.create(campaign_id=campaign_id, site_id=site, name=None, status=action)
+                Site.objects.create(campaign_id=campaign_id, site_id=site['name'], name=None, status=action)
 
         return sites_to_add
 
