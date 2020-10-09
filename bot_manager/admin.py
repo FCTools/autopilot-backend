@@ -5,7 +5,7 @@ Author: German Yakimov
 
 from django.contrib import admin
 
-from bot_manager.models import Bot, User, TrafficSource, Campaign, Offer
+from bot_manager.models import Bot, User, TrafficSource, Campaign, Offer, Site
 
 
 @admin.register(Bot)
@@ -30,4 +30,9 @@ class AdminTrafficSource(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Site)
+class AdminSite(admin.ModelAdmin):
     pass
