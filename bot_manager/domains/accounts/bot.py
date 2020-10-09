@@ -36,3 +36,6 @@ class Bot(models.Model):
     period = models.PositiveIntegerField(verbose_name="Period for statistics checking", null=False, blank=False, )
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
+
+    def __str__(self):
+        return f'{self.id} {self.name} {self.status}'

@@ -20,3 +20,6 @@ class Site(models.Model):
 
     status = models.SmallIntegerField(verbose_name="Status (added to wl/bl)", null=False, blank=False, )
 
+    def __str__(self):
+        return f'{self.site_id}'
+
