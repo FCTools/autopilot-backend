@@ -9,7 +9,7 @@ from bot_manager.domains.tracker.site import Site
 from bot_manager.services.tracker.tracker_manager import TrackerManager
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
-                     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
+                     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-']
 AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads']
 
 
