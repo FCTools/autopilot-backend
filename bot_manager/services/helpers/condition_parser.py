@@ -5,6 +5,7 @@ Author: German Yakimov
 
 from copy import deepcopy
 
+from bot_manager.domains.tracker.campaign import Campaign
 from bot_manager.domains.tracker.site import Site
 from bot_manager.services.tracker.tracker_manager import TrackerManager
 
@@ -208,9 +209,13 @@ class ConditionParser:
                    ConditionParser.check_campaign_condition(statistics, second_cond)
 
     @staticmethod
-    def check_campaign(condition, campaign_id, period):
+    def check_campaign(condition, campaign_id, period, action):
         if not ConditionParser.is_valid(condition):
             return
+
+        campaign = Campaign.objects.get(id__exact=campaign_id)
+        if campaign.status == action:
+            return False
 
         campaign_statistics = TrackerManager.get_campaign_info(campaign_id, period)
 

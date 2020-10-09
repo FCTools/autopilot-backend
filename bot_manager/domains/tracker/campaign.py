@@ -29,7 +29,7 @@ class Campaign(models.Model):
         "TrafficSource", on_delete=models.CASCADE, verbose_name="Traffic source", blank=False, null=False,
     )
 
-    status = models.CharField(verbose_name="Status", max_length=256, null=True, blank=False, default=None, )
+    status = models.SmallIntegerField(verbose_name="Status", null=True, blank=False, default=-1, )
 
     user = models.ForeignKey("User", verbose_name="User", on_delete=models.CASCADE, null=True, blank=False, )
 

@@ -76,18 +76,20 @@ def check_bots():
         elif bot.type == 2:
             campaigns_to_act = []
 
-            if bot.action == 4:
-                status = 'play'
-            elif bot.action == 3:
-                status = 'paused'
-            else:
-                continue
-
             for campaign in bot.campaigns_list.all():
-                if campaign.status != status and ConditionParser.check_campaign(bot.condition, campaign.id, bot.period):
+                if campaign.status != bot.action and ConditionParser.check_campaign(bot.condition, campaign.id, bot.period,
+                                                                                bot.action):
                     campaigns_to_act.append(campaign.id)
 
-                    campaign.status = status
+                    campaign.status = bot.action
                     campaign.save()
 
-            # send to redis, filter duplicates and set started/stopped status
+            if redis_server.exists(str(bot.pk)):
+                prev_info = json.loads(redis_server.get(str(bot.pk)))
+                redis_server.delete(str(bot.pk))
+                prev_info['campaigns_list'] += campaigns_to_act
+                redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(prev_info['campaigns_list'])),
+                                                             'action': bot.action}))
+            else:
+                redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(campaigns_to_act)),
+                                                             'action': bot.action}))
