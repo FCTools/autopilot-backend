@@ -67,7 +67,7 @@ def check_bots():
                 prev_info = json.loads(redis_server.get(str(bot.pk)))
                 redis_server.delete(str(bot.pk))
                 prev_info['sources_list'] += sites_to_act
-                redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(prev_info)),
+                redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(prev_info['sources_list'])),
                                                              'action': bot.action}))
             else:
                 redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(sites_to_act)),
