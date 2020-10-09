@@ -61,7 +61,7 @@ def check_bots():
             sites_to_act = []
 
             for campaign in bot.campaigns_list.all():
-                sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id, bot.period)
+                sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id, bot.period, bot.action)
 
             if redis_server.exists(str(bot.pk)):
                 prev_info = json.loads(redis_server.get(str(bot.pk)))

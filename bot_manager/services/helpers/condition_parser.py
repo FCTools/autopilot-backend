@@ -5,6 +5,7 @@ Author: German Yakimov
 
 from copy import deepcopy
 
+from bot_manager.domains.tracker.site import Site
 from bot_manager.services.tracker.tracker_manager import TrackerManager
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
@@ -104,17 +105,26 @@ class ConditionParser:
                    ConditionParser.check_site_condition(site_info, second_cond)
 
     @staticmethod
-    def check_sites(condition, campaign_id, period):
+    def check_sites(condition, campaign_id, period, action):
         if not ConditionParser.is_valid(condition):
             return
 
         sites_to_add = []
 
+        sites_db = list(Site.objects.filter(campaign_id=campaign_id))
+        sites_db_ids = [site.site_id for site in sites_db]
+
         sites = TrackerManager().get_sites_info(campaign_id, period)
 
         for site in sites:
+            if site in sites_db_ids:
+                site_db = sites_db[sites_db_ids.index(site)]
+                if site_db.status == action:
+                    continue
+
             if ConditionParser.check_site_condition(site, condition):
                 sites_to_add.append(site['name'])
+                Site.objects.create(campaign_id=campaign_id, site_id=site, name=None, status=action)
 
         return sites_to_add
 
