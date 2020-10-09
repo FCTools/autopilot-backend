@@ -16,9 +16,6 @@ class TrackerManager:
     def __init__(self):
         pass
 
-    def get_campaign_info(self, campaign):
-        pass
-
     def analyse_sites(self, campaign_id, condition):
         pass
 

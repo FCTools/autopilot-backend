@@ -217,7 +217,7 @@ class ConditionParser:
         if campaign.status == action:
             return False
 
-        campaign_statistics = TrackerManager.get_campaign_info(campaign_id, period)
+        campaign_statistics = TrackerManager().get_campaign_info(campaign_id, period)
 
         return ConditionParser.check_campaign_condition(campaign_statistics, condition)
 
