@@ -10,17 +10,17 @@ from bot_manager.models import Bot, User, TrafficSource, Campaign, Offer, Site
 
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'type', 'user', 'condition', 'status', 'action']
 
 
 @admin.register(User)
 class AdminUser(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'login']
 
 
 @admin.register(Offer)
 class AdminOffer(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'name', 'network']
 
 
 @admin.register(TrafficSource)
@@ -30,9 +30,9 @@ class AdminTrafficSource(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'name', 'traffic_group', 'status', 'user']
 
 
 @admin.register(Site)
 class AdminSite(admin.ModelAdmin):
-    pass
+    list_display = ['site_id', 'campaign', 'name', 'status']
