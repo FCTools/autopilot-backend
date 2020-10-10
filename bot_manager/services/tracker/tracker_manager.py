@@ -38,6 +38,7 @@ class TrackerManager:
                                                        "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
                                                        "date_s": start_time.strftime("%Y-%m-%d+%I:%M")
                                                    }).json()
+        print(campaign_sites_info)
 
         return campaign_sites_info
 
