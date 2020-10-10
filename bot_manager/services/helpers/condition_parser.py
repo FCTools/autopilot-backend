@@ -164,7 +164,7 @@ class ConditionParser:
             var = leads
         elif var == 'cr':
             if clicks != 0:
-                var = leads / clicks
+                var = (leads / clicks) * 100
             else:
                 var = 0
         elif var == 'epc':
