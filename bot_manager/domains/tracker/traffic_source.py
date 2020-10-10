@@ -16,8 +16,6 @@ class TrafficSource(models.Model):
 
     name = models.CharField(max_length=128, verbose_name="Name", null=True, blank=True, )
 
-    campaigns = models.IntegerField(verbose_name="Campaigns", null=True, blank=True, )
-
     filtering_param_name = models.CharField(verbose_name="Param name for filtering campaign's statistics by sources.",
                                             max_length=256, null=True, blank=False, default=None, )
 

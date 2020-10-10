@@ -64,12 +64,6 @@ class Validator:
         if not bot_exists:
             if 'user_id' in data:
                 user_id = int(data.get('user_id'))
-
-                try:
-                    user = get_object_or_404(User, pk=user_id)
-                except Http404:
-                    return False, 'unknown user'
-
             else:
                 return False, 'user_id field is required'
 
@@ -84,9 +78,6 @@ class Validator:
                     campaign_db = get_object_or_404(Campaign, pk=campaign_id)
                 except Http404:
                     return False, f'unknown campaign: {campaign_id}'
-
-                if campaign_db.user and campaign_db.user_id != user_id:
-                    return False, f'campaign {campaign_id} pinned to another user'
 
         else:
             return False, 'campaigns_ids field is required'
@@ -138,7 +129,7 @@ class Validator:
             return False, 'period field is required'
 
         if not bot_exists:
-            user_bots = Bot.objects.filter(user_id__exact=user_id)
+            user_bots = Bot.objects.filter(user=user_id)
 
             for bot in user_bots:
                 if bot.name == name:

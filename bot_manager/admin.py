@@ -5,17 +5,12 @@ Author: German Yakimov
 
 from django.contrib import admin
 
-from bot_manager.models import Bot, TrafficSource, Campaign, Offer, Site
+from bot_manager.models import Bot, TrafficSource, Campaign, Site
 
 
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
     list_display = ['name', 'type', 'user', 'condition', 'status', 'action']
-
-
-@admin.register(Offer)
-class AdminOffer(admin.ModelAdmin):
-    list_display = ['id', 'name', 'network']
 
 
 @admin.register(TrafficSource)

@@ -35,8 +35,8 @@ def collect_tasks():
             hour, minute = entry[0], entry[1]
             tmp = datetime(year=today_dt.year, month=today_dt.month, day=today_dt.day, hour=hour, minute=minute)
 
-            if (tmp > now and tmp - now <= timedelta(minutes=3)) or \
-                    (now >= tmp and now - tmp <= timedelta(minutes=3)):
+            if (tmp > now and tmp - now <= timedelta(minutes=2)) or \
+                    (now >= tmp and now - tmp <= timedelta(minutes=2)):
                 bot_ids.append(bot)
                 break
 
