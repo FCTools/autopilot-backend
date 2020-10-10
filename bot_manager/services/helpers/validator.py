@@ -61,12 +61,12 @@ class Validator:
             if action != 3 and action != 4:  # 3 - stop camp, 4 - start camp
                 return False, 'invalid action for bot type 2'
 
-        if not bot_exists:
-            if 'user_id' in data:
-                if user_id != int(data.get('user_id')):
-                    return False, 'invalid user_id'
-            else:
-                return False, 'user_id field is required'
+        if 'user_id' not in data:
+            return False, 'user_id field is required'
+
+        if bot_exists:
+            if int(data.get("user_id")) != user_id:
+                return False, 'invalid user_id'
 
         if 'campaigns_ids' in data:
             campaigns_ids = [int(camp_id) for camp_id in data.get('campaigns_ids')]
