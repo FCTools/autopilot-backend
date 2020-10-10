@@ -37,7 +37,7 @@ class Updater:
         campaigns_db_ids = [campaign.id for campaign in Campaign.objects.all()]
 
         for campaign in all_campaigns_tracker_json:
-            if campaign["id"] not in campaigns_db_ids:
+            if int(campaign["id"]) not in campaigns_db_ids:
                 Campaign.objects.create(id=int(campaign["id"]),
                                         name=campaign["name"],
                                         traffic_source_id=int(campaign["ts_id"]),
