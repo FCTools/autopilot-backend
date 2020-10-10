@@ -70,8 +70,9 @@ def check_bots():
                 redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(prev_info['sources_list'])),
                                                              'action': bot.action}))
             else:
-                redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(sites_to_act)),
-                                                             'action': bot.action}))
+                if sites_to_act:
+                    redis_server.append(str(bot.pk), json.dumps({'sources_list': list(set(sites_to_act)),
+                                                                 'action': bot.action}))
 
         elif bot.type == 2:
             campaigns_to_act = []
@@ -91,5 +92,6 @@ def check_bots():
                 redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(prev_info['campaigns_list'])),
                                                              'action': bot.action}))
             else:
-                redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(campaigns_to_act)),
-                                                             'action': bot.action}))
+                if campaigns_to_act:
+                    redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(campaigns_to_act)),
+                                                                 'action': bot.action}))
