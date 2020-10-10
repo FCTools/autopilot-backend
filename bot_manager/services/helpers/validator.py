@@ -6,7 +6,7 @@ Author: German Yakimov
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from bot_manager.models import Campaign, User, Bot
+from bot_manager.models import Campaign, Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
 
 AVAILABLE_ACTIONS = (1, 2, 3, 4, )
@@ -85,7 +85,7 @@ class Validator:
                 except Http404:
                     return False, f'unknown campaign: {campaign_id}'
 
-                if campaign_db.user_id != user_id:
+                if campaign_db.user and campaign_db.user_id != user_id:
                     return False, f'campaign {campaign_id} pinned to another user'
 
         else:

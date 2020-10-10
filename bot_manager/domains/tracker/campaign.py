@@ -17,23 +17,11 @@ class Campaign(models.Model):
 
     name = models.CharField(max_length=256, verbose_name="Name", null=True, blank=True, )
 
-    traffic_group = models.CharField(
-        max_length=16,
-        verbose_name="Traffic group",
-        null=False,
-        blank=False,
-        choices=settings.TRAFFIC_GROUPS,
-    )
-
     traffic_source = models.ForeignKey(
         "TrafficSource", on_delete=models.CASCADE, verbose_name="Traffic source", blank=False, null=False,
     )
 
     status = models.SmallIntegerField(verbose_name="Status", null=True, blank=False, default=-1, )
-
-    user = models.ForeignKey("User", verbose_name="User", on_delete=models.CASCADE, null=True, blank=False, )
-
-    offers_list = models.ManyToManyField("Offer", related_name="campaigns_list", verbose_name="Offers", )
 
     def __str__(self):
         return f"{self.id} {self.name}"
@@ -46,7 +34,6 @@ class Campaign(models.Model):
             [
                 self.id == other.id,
                 self.name == other.name,
-                self.traffic_group == other.traffic_group,
                 self.traffic_source == other.traffic_source,
             ]
         )

@@ -114,6 +114,7 @@ class Updater:
             return
 
         all_campaigns_tracker_number = len(all_campaigns_tracker_json)
+        added_campaigns_ids = []
 
         for user in users_db:
             params = {
@@ -147,6 +148,7 @@ class Updater:
                 campaign_db = Campaign.objects.filter(id__exact=campaign['id'])
                 if not campaign_db:
                     campaigns_to_add.append(deepcopy(campaign))
+                    added_campaigns_ids.append(campaign['id'])
 
             try:
                 result = [
@@ -165,6 +167,20 @@ class Updater:
                 ]
             except KeyError:
                 return
+
+            for campaign in all_campaigns_tracker_json:
+                if campaign['id'] not in added_campaigns_ids:
+                    result.append({
+                        "instance": Campaign(
+                            id=int(campaign["id"]),
+                            name=campaign["name"],
+                            traffic_group=campaign["group_name"],
+                            traffic_source_id=int(campaign["ts_id"]),
+                            user_id=-1,
+                            status=None,
+                        ),
+                        "offers_list": [],
+                    })
 
             for campaign in result:
                 offers_ids = Updater._get_offers_ids_by_campaign(campaign["instance"].id)

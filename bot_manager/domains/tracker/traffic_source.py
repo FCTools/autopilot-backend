@@ -14,11 +14,7 @@ class TrafficSource(models.Model):
 
     id = models.IntegerField(primary_key=True, verbose_name="ID", null=False, blank=False, unique=True, )
 
-    user = models.ForeignKey("User", verbose_name="User", blank=False, null=True, on_delete=models.CASCADE, )
-
     name = models.CharField(max_length=128, verbose_name="Name", null=True, blank=True, )
-
-    tokens = models.BooleanField(verbose_name="Tokens", null=True, blank=True, )
 
     campaigns = models.IntegerField(verbose_name="Campaigns", null=True, blank=True, )
 
@@ -30,7 +26,7 @@ class TrafficSource(models.Model):
         default=None, )
 
     def __str__(self):
-        return f"{self.id} {self.name} {self.user.login}" if self.user else f"{self.id} {self.name}"
+        return f"{self.id} {self.name}"
 
     def __eq__(self, other):
         if not other:

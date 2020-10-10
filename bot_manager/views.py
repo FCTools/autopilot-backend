@@ -35,7 +35,7 @@ class BotCreator(APIView):
             condition = request.data.get('condition')
             action = int(request.data.get('action'))
             user_id = int(request.data.get('user_id'))
-            campaigns_ids = [int(camp_id) for camp_id in request.data.get('campaigns_ids')]
+            campaigns_ids = list(set([int(camp_id) for camp_id in request.data.get('campaigns_ids')]))
             period = int(request.data.get('period'))
             schedule = parse_schedule(request.data.get('schedule'))
 
