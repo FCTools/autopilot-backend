@@ -72,7 +72,7 @@ class Updater:
         traffic_sources_db_ids = [ts.id for ts in TrafficSource.objects.all()]
 
         for traffic_source in all_traffic_sources_json:
-            if traffic_source["id"] not in traffic_sources_db_ids:
+            if int(traffic_source["id"]) not in traffic_sources_db_ids:
                 TrafficSource.objects.create(id=int(traffic_source["id"]),
                                              name=traffic_source["name"])
 
