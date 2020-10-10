@@ -127,11 +127,11 @@ class BotDeleter(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     queryset = Bot.objects.all()
 
-    def delete(self, request):
+    def patch(self, request):
         if 'bot_id' in request.data:
             bot_id = request.data.get('bot_id')
         else:
-            return Response(data={'success': False, 'error': 'bot_id field is required'},
+            return Response(data={'status': False, 'error': 'bot_id field is required'},
                             content_type='application/json')
 
         try:
@@ -219,6 +219,7 @@ class BotUpdater(APIView):
 
             # how to remember ignored sources?
 
+            bot.status = "enabled"
             bot.save()
 
             return Response(data={'status': True}, content_type='application/json')
