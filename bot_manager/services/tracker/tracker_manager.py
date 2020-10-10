@@ -23,7 +23,7 @@ class TrackerManager:
         campaign = Campaign.objects.get(pk=campaign_id)
         group_1 = campaign.traffic_source.filtering_param_number
         now = datetime.utcnow()
-        end_time = datetime(year=now.year, month=now.month, day=now.day, minute=now.minute)
+        end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
         campaign_sites_info = requests_manager.get(requests.Session(), settings.TRACKER_URL,
@@ -45,7 +45,7 @@ class TrackerManager:
     # period in minutes
     def get_campaign_info(self, campaign_id, period):
         now = datetime.utcnow()
-        end_time = datetime(year=now.year, month=now.month, day=now.day, minute=now.minute)
+        end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
         requests_url = settings.TRACKER_URL
