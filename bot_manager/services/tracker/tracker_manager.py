@@ -27,6 +27,8 @@ class TrackerManager:
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
+        print(start_time, end_time)
+
         campaign_sites_info = requests_manager.get(requests.Session(), settings.TRACKER_URL,
                                                    params={
                                                        'api_key': settings.BINOM_API_KEY,
