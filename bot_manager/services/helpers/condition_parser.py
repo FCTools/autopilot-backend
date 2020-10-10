@@ -116,6 +116,8 @@ class ConditionParser:
         sites_db_ids = [site.site_id for site in sites_db]
 
         sites = TrackerManager().get_sites_info(campaign_id, period)
+        if not sites:
+            return []
 
         for site in sites:
             if site['name'] in sites_db_ids:
