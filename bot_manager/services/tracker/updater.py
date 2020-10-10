@@ -34,12 +34,15 @@ class Updater:
         except json.JSONDecodeError as decode_error:
             return
 
+        campaigns_db_ids = [campaign.id for campaign in Campaign.objects.all()]
+
         for campaign in all_campaigns_tracker_json:
-            Campaign.objects.create(id=int(campaign["id"]),
-                                    name=campaign["name"],
-                                    traffic_group=campaign["group_name"],
-                                    traffic_source_id=int(campaign["ts_id"]),
-                                    status=None)
+            if campaign["id"] not in campaigns_db_ids:
+                Campaign.objects.create(id=int(campaign["id"]),
+                                        name=campaign["name"],
+                                        traffic_group=campaign["group_name"],
+                                        traffic_source_id=int(campaign["ts_id"]),
+                                        status=None)
 
     @staticmethod
     def _update_traffic_sources():
