@@ -63,7 +63,8 @@ class Validator:
 
         if not bot_exists:
             if 'user_id' in data:
-                user_id = int(data.get('user_id'))
+                if user_id != int(data.get('user_id')):
+                    return False, 'invalid user_id'
             else:
                 return False, 'user_id field is required'
 

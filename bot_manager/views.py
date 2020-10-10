@@ -44,7 +44,7 @@ class BotCreator(APIView):
             else:
                 ignored_sources = []
 
-            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user_id=user_id,
+            new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user=user_id,
                                          period=period, schedule=schedule, ignored_sources=json.dumps(ignored_sources))
 
             for campaign_id in campaigns_ids:
@@ -77,6 +77,14 @@ class BotStarter(APIView):
             return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
                             content_type='application/json')
 
+        if 'user_id' in request.data:
+            if int(request.data.get('user_id')) != bot.user:
+                return Response(data={'status': False, 'error': "invalid user_id"},
+                                content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': "user_id is required"},
+                            content_type='application/json')
+
         bot.status = "enabled"
         bot.save()
 
@@ -98,6 +106,14 @@ class BotStopper(APIView):
             bot = get_object_or_404(Bot, pk=bot_id)
         except Http404:
             return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
+                            content_type='application/json')
+
+        if 'user_id' in request.data:
+            if int(request.data.get('user_id')) != bot.user:
+                return Response(data={'status': False, 'error': "invalid user_id"},
+                                content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': "user_id is required"},
                             content_type='application/json')
 
         bot.status = "disabled"
@@ -122,6 +138,14 @@ class BotDeleter(APIView):
             bot = get_object_or_404(Bot, pk=bot_id)
         except Http404:
             return Response(data={'status': False, 'error': "bot with given id doesn't exist"},
+                            content_type='application/json')
+
+        if 'user_id' in request.data:
+            if int(request.data.get('user_id')) != bot.user:
+                return Response(data={'status': False, 'error': "invalid user_id"},
+                                content_type='application/json')
+        else:
+            return Response(data={'status': False, 'error': "user_id is required"},
                             content_type='application/json')
 
         bot.delete()
@@ -154,7 +178,7 @@ class BotUpdater(APIView):
 
         validator = Validator
         validation_status, error_message = validator.validate_new_bot(request.data, bot_exists=True,
-                                                                      user_id=bot.user_id)
+                                                                      user_id=bot.user)
 
         if validation_status is True:
             bot_name = request.data.get('name')
