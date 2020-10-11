@@ -39,6 +39,9 @@ class BotCreator(APIView):
             period = int(request.data.get('period'))
             schedule = parse_schedule(request.data.get('schedule'))
 
+            if 'AND' not in condition and 'OR' not in condition:
+                condition = condition[1:-1]
+
             if bot_type == 1 and 'ignored_sources' in request.data:
                 ignored_sources = request.data.get('ignored_sources')
             else:
@@ -187,6 +190,9 @@ class BotUpdater(APIView):
             bot_action = int(request.data.get('action'))
             bot_schedule = parse_schedule(request.data.get('schedule'))
             bot_period = int(request.data.get('period'))
+
+            if 'AND' not in bot_condition and 'OR' not in bot_condition:
+                bot_condition = bot_condition[1:-1]
 
             if bot_type == 1 and bot_action != bot.action:
                 return Response(data={'status': False, 'error': "changing list type is not allowed"},
