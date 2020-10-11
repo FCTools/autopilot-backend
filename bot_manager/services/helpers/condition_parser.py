@@ -147,10 +147,9 @@ class ConditionParser:
         revenue = 0.0
         cost = 0.0
         leads = 0
-        approved_leads = 0
 
-        event_2 = statistics['event_2']
-        event_5 = statistics['event_5']
+        event_2 = 0
+        event_5 = 0
 
         for offer_stat in statistics:
             clicks += int(offer_stat['clicks'])
@@ -158,6 +157,8 @@ class ConditionParser:
             revenue += float(offer_stat['revenue'])
             cost += float(offer_stat['cost'])
             leads += int(offer_stat['leads'])
+            event_2 += int(offer_stat['event_2'])
+            event_5 = int(offer_stat['event_5'])
 
         if var == 'clicks':
             var = clicks
