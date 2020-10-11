@@ -72,7 +72,6 @@ class ConditionParser:
 
     @staticmethod
     def _check_site_elementary_condition(site_info, condition):
-        print(condition)
         parts = condition[1:-1].split()
 
         var = parts[0].lower()
@@ -122,13 +121,14 @@ class ConditionParser:
         if not sites:
             return []
 
+        print(condition)
+
         for site in sites:
             if site['name'] in sites_db_ids:
                 site_db = sites_db[sites_db_ids.index(site['name'])]
                 if site_db.status == action:
                     continue
 
-            print(f'{site["clicks"]} {site["cr"]}')
             if ConditionParser.check_site_condition(site, condition):
                 sites_to_add.append(site['name'])
                 Site.objects.create(campaign_id=campaign_id, site_id=site['name'], name=None, status=action)
