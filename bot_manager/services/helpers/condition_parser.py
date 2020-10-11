@@ -128,6 +128,7 @@ class ConditionParser:
                     continue
 
             if ConditionParser.check_site_condition(site, condition):
+                print(f'{site["clicks"]} {site["cr"]}')
                 sites_to_add.append(site['name'])
                 Site.objects.create(campaign_id=campaign_id, site_id=site['name'], name=None, status=action)
 
