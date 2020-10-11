@@ -121,14 +121,16 @@ class ConditionParser:
         if not sites:
             return []
 
+        print(condition)
+
         for site in sites:
             if site['name'] in sites_db_ids:
                 site_db = sites_db[sites_db_ids.index(site['name'])]
                 if site_db.status == action:
                     continue
 
+            print(f'{site["clicks"]} {site["cr"]}')
             if ConditionParser.check_site_condition(site, condition):
-                print(f'{site["clicks"]} {site["cr"]}')
                 sites_to_add.append(site['name'])
                 Site.objects.create(campaign_id=campaign_id, site_id=site['name'], name=None, status=action)
 
