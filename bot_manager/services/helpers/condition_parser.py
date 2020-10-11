@@ -72,6 +72,7 @@ class ConditionParser:
 
     @staticmethod
     def _check_site_elementary_condition(site_info, condition):
+        print(condition)
         parts = condition[1:-1].split()
 
         var = parts[0].lower()
@@ -120,8 +121,6 @@ class ConditionParser:
         sites = TrackerManager().get_sites_info(campaign_id, period)
         if not sites:
             return []
-
-        print(condition)
 
         for site in sites:
             if site['name'] in sites_db_ids:
