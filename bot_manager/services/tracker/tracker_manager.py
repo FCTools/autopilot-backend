@@ -34,23 +34,11 @@ class TrackerManager:
                                                        'group2': 1,
                                                        'group3': 1,
                                                        'date': 10,
-                                                       "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
-                                                       "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
+                                                       "date_s": start_time.strftime("%Y-%m-%d %I:%M"),
+                                                       "date_e": end_time.strftime("%Y-%m-%d %I:%M"),
                                                        "timezone": "+3:00",
                                                        'api_key': settings.BINOM_API_KEY
                                                    }).json()
-        print(urlencode({
-            'page': 'Stats',
-            'camp_id': campaign_id,
-            'group1': group_1,
-            'group2': 1,
-            'group3': 1,
-            'date': 10,
-            "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
-            "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
-            "timezone": "+3:00",
-            'api_key': settings.BINOM_API_KEY
-        }))
 
         return campaign_sites_info
 
