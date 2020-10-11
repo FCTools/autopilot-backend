@@ -22,7 +22,6 @@ class TrackerManager:
     def get_sites_info(self, campaign_id, period):
         campaign = Campaign.objects.get(pk=campaign_id)
         group_1 = campaign.traffic_source.filtering_param_number
-        print(group_1)
         now = datetime.utcnow()
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
@@ -42,7 +41,6 @@ class TrackerManager:
                                                        "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
                                                        "timezone": "+3:00"
                                                    }).json()
-        print(campaign_sites_info)
 
         return campaign_sites_info
 
