@@ -101,6 +101,7 @@ class ConditionParser:
         first_cond, conn, second_cond = ConditionParser._split_into_parts(condition)
 
         if conn == 'AND':
+            print(1)
             return ConditionParser.check_site_condition(site_info, first_cond) and \
                    ConditionParser.check_site_condition(site_info, second_cond)
         else:
@@ -118,6 +119,7 @@ class ConditionParser:
         sites_db_ids = [site.site_id for site in sites_db]
 
         sites = TrackerManager().get_sites_info(campaign_id, period)
+        print(sites[0])
         if not sites:
             return []
 
