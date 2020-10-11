@@ -101,7 +101,6 @@ class ConditionParser:
         first_cond, conn, second_cond = ConditionParser._split_into_parts(condition)
 
         if conn == 'AND':
-            print(1)
             return ConditionParser.check_site_condition(site_info, first_cond) and \
                    ConditionParser.check_site_condition(site_info, second_cond)
         else:
