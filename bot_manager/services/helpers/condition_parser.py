@@ -11,7 +11,7 @@ from bot_manager.services.tracker.tracker_manager import TrackerManager
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', 'OR', 'AND',
                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-']
-AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads']
+AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads', 'cpa', 'approve_%']
 
 
 class ConditionParser:
@@ -147,6 +147,10 @@ class ConditionParser:
         revenue = 0.0
         cost = 0.0
         leads = 0
+        approved_leads = 0
+
+        event_2 = statistics['event_2']
+        event_5 = statistics['event_5']
 
         for offer_stat in statistics:
             clicks += int(offer_stat['clicks'])
@@ -183,6 +187,16 @@ class ConditionParser:
         elif var == 'roi':
             if cost != 0:
                 var = profit / cost
+            else:
+                var = 0
+        elif var == 'cpa':
+            if leads != 0:
+                var = cost / leads
+            else:
+                var = 0
+        elif var == 'approve_%':
+            if leads + event_5 != 0:
+                var = (event_2 / leads + event_5) * 100
             else:
                 var = 0
 
