@@ -78,8 +78,6 @@ class ConditionParser:
         relation = parts[1]
         value = float(parts[2])
 
-        # print(f'{float(site_info[var])} {relation} {value}')
-
         if relation == '=':
             return float(site_info[var]) == value
         elif relation == '<':
