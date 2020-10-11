@@ -3,7 +3,7 @@ Copyright © 2020 FC Tools. All rights reserved.
 Author: German Yakimov
 """
 from datetime import datetime, timedelta
-from pprint import pprint
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
@@ -26,21 +26,31 @@ class TrackerManager:
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
-        print(start_time, end_time)
-
         campaign_sites_info = requests_manager.get(requests.Session(), settings.TRACKER_URL,
                                                    params={
-                                                       'api_key': settings.BINOM_API_KEY,
                                                        'page': 'Stats',
                                                        'camp_id': campaign_id,
                                                        'group1': group_1,
                                                        'group2': 1,
                                                        'group3': 1,
                                                        'date': 10,
-                                                       "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
                                                        "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
-                                                       "timezone": "+3:00"
+                                                       "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
+                                                       "timezone": "+3:00",
+                                                       'api_key': settings.BINOM_API_KEY
                                                    }).json()
+        print(urlencode({
+            'page': 'Stats',
+            'camp_id': campaign_id,
+            'group1': group_1,
+            'group2': 1,
+            'group3': 1,
+            'date': 10,
+            "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
+            "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
+            "timezone": "+3:00",
+            'api_key': settings.BINOM_API_KEY
+        }))
 
         return campaign_sites_info
 
@@ -68,4 +78,3 @@ class TrackerManager:
         ).json()
 
         return response
-
