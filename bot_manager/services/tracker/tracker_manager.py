@@ -40,7 +40,7 @@ class TrackerManager:
                                                        'date': 10,
                                                        "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
                                                        "date_s": start_time.strftime("%Y-%m-%d+%I:%M"),
-                                                       "timezone": "+0:00"
+                                                       "timezone": "+3:00"
                                                    }).json()
         print(campaign_sites_info)
 
