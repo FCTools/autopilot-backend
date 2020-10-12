@@ -53,11 +53,11 @@ def check_bots():
     traffic_sources_list = list(TrafficSource.objects.all())
 
     for traffic_source in traffic_sources_list:
-        if 'house' in traffic_source.name:
-            traffic_source.filtering_param_number_sources = 27
-            traffic_source.filtering_param_name_sources = 't1'
-            traffic_source.filtering_param_name_campaigns = 't2'
-            traffic_source.filtering_param_number_campaigns = 282
+        if 'Dao' in traffic_source.name:
+            traffic_source.filtering_param_number_sources = 283
+            traffic_source.filtering_param_name_sources = 'sub3'
+            traffic_source.filtering_param_name_campaigns = 'sub1'
+            traffic_source.filtering_param_number_campaigns = 27
 
             traffic_source.save()
 
