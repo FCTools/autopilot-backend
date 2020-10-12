@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import redis
 from django.conf import settings
 
-from bot_manager.models import Bot
+from bot_manager.models import Bot, TrafficSource
 from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.services.tracker.updater import Updater
 from web.backend.celery import app
@@ -50,6 +50,17 @@ def update():
 
 @app.task
 def check_bots():
+    traffic_sources_list = list(TrafficSource.objects.all())
+
+    for traffic_source in traffic_sources_list:
+        if 'EvaDav' in traffic_sources_list:
+            traffic_source.filtering_param_number_sources = 27
+            traffic_source.filtering_param_name_sources = 'SOURCE_ID'
+            traffic_source.filtering_param_name_campaigns = 'CAMPAIGN_ID'
+            traffic_source.filtering_param_number_campaigns = 282
+
+            traffic_source.save()
+
     redis_server = redis.Redis(host=settings.REDIS_REMOTE_HOST, port=settings.REDIS_REMOTE_PORT,
                                password=settings.REDIS_REMOTE_PASSWORD)
 
