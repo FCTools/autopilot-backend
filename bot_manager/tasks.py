@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import redis
 from django.conf import settings
 
-from bot_manager.models import Bot, TrafficSource
+from bot_manager.models import Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.services.tracker.updater import Updater
 from web.backend.celery import app
@@ -28,8 +28,6 @@ def collect_tasks():
 
     for bot in bots_list:
         today_schedule = json.loads(bot.schedule)[today]
-        # print(today_schedule)
-        # print(today)
 
         for entry in today_schedule:
             hour, minute = entry[0], entry[1]
@@ -50,17 +48,6 @@ def update():
 
 @app.task
 def check_bots():
-    traffic_sources_list = list(TrafficSource.objects.all())
-
-    for traffic_source in traffic_sources_list:
-        if 'Dats' in traffic_source.name:
-            traffic_source.filtering_param_number_sources = 282
-            traffic_source.filtering_param_name_sources = 'sid'
-            traffic_source.filtering_param_name_campaigns = 'cid'
-            traffic_source.filtering_param_number_campaigns = 283
-
-            traffic_source.save()
-
     redis_server = redis.Redis(host=settings.REDIS_REMOTE_HOST, port=settings.REDIS_REMOTE_PORT,
                                password=settings.REDIS_REMOTE_PASSWORD)
 
@@ -89,12 +76,7 @@ def check_bots():
             campaigns_to_act = []
 
             for campaign in bot.campaigns_list.all():
-                if campaign.status != bot.action and ConditionParser.check_campaign(bot.condition, campaign.id, bot.period,
-                                                                                bot.action):
-                    campaigns_to_act.append(campaign.id)
-
-                    campaign.status = bot.action
-                    campaign.save()
+                campaigns_to_act += ConditionParser.check_campaign(bot.condition, campaign.id, bot.period, bot.action)
 
             if redis_server.exists(str(bot.pk)):
                 prev_info = json.loads(redis_server.get(str(bot.pk)))

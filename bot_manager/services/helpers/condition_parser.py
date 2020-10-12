@@ -140,23 +140,13 @@ class ConditionParser:
         relation = parts[1]
         value = float(parts[2])
 
-        clicks = 0
-        profit = 0.0
-        revenue = 0.0
-        cost = 0.0
-        leads = 0
-
-        event_2 = 0.0
-        event_5 = 0.0
-
-        for offer_stat in statistics:
-            clicks += int(offer_stat['clicks'])
-            profit += float(offer_stat['profit'])
-            revenue += float(offer_stat['revenue'])
-            cost += float(offer_stat['cost'])
-            leads += int(offer_stat['leads'])
-            event_2 += float(offer_stat['event_2'])
-            event_5 = float(offer_stat['event_5'])
+        clicks = float(statistics['clicks'])
+        profit = float(statistics['profit'])
+        revenue = float(statistics['revenue'])
+        cost = float(statistics['cost'])
+        leads = float(statistics['leads'])
+        event_2 = float(statistics['event_2'])
+        event_5 = float(statistics['event_5'])
 
         if var == 'clicks':
             var = clicks
@@ -237,7 +227,13 @@ class ConditionParser:
 
         campaign_statistics = TrackerManager().get_campaign_info(campaign_id, period)
 
-        return ConditionParser.check_campaign_condition(campaign_statistics, condition)
+        campaigns_to_add = []
+
+        for campaign_stat in campaign_statistics:
+            if ConditionParser.check_campaign_condition(campaign_statistics, condition):
+                campaigns_to_add.append(campaign_stat['name'])
+
+        return campaigns_to_add
 
     @staticmethod
     def is_valid(condition):

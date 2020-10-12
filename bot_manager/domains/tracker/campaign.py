@@ -21,8 +21,6 @@ class Campaign(models.Model):
         "TrafficSource", on_delete=models.CASCADE, verbose_name="Traffic source", blank=False, null=False,
     )
 
-    status = models.SmallIntegerField(verbose_name="Status", null=True, blank=False, default=-1, )
-
     def __str__(self):
         return f"{self.id} {self.name}"
 

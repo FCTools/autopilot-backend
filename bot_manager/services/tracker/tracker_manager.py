@@ -48,6 +48,8 @@ class TrackerManager:
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
+        group1 = Campaign.objects.get(id__exact=campaign_id).traffic_source.filtering_param_number_campaigns
+
         requests_url = settings.TRACKER_URL
         response = requests_manager.get(
             requests.Session(),
@@ -56,7 +58,7 @@ class TrackerManager:
                 "page": "Stats",
                 "api_key": settings.BINOM_API_KEY,
                 "camp_id": campaign_id,
-                "group1": 3,
+                "group1": group1,
                 "group2": 1,
                 "group3": 1,
                 "date": 10,

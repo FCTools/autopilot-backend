@@ -20,7 +20,7 @@ class AdminTrafficSource(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
-    list_display = ['id', 'name', 'status']
+    list_display = ['id', 'name']
 
 
 @admin.register(Site)
