@@ -116,6 +116,7 @@ class ConditionParser:
         sites_db_ids = [site.site_id for site in sites_db]
 
         sites = TrackerManager().get_sites_info(campaign_id, period)
+        print(sites)
         if not sites or sites == 'no_clicks':
             print(f'sites: {sites}')
             return []
