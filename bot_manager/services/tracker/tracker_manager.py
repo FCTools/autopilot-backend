@@ -21,12 +21,10 @@ class TrackerManager:
 
     def get_sites_info(self, campaign_id, period):
         campaign = Campaign.objects.get(pk=campaign_id)
-        group_1 = campaign.traffic_source.filtering_param_name_sources
+        group_1 = campaign.traffic_source.filtering_param_number_sources
         now = datetime.utcnow()
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
-
-        print(start_time, end_time)
 
         campaign_sites_info = requests_manager.get(requests.Session(), settings.TRACKER_URL,
                                                    params={
@@ -41,19 +39,6 @@ class TrackerManager:
                                                        "timezone": "+3:00",
                                                        'api_key': settings.BINOM_API_KEY
                                                    }).json()
-
-        print(urlencode({
-            'page': 'Stats',
-            'camp_id': campaign_id,
-            'group1': group_1,
-            'group2': 1,
-            'group3': 1,
-            'date': 10,
-            "date_s": start_time.strftime("%Y-%m-%d %I:%M"),
-            "date_e": end_time.strftime("%Y-%m-%d %I:%M"),
-            "timezone": "+3:00",
-            'api_key': settings.BINOM_API_KEY
-        }))
 
         return campaign_sites_info
 
