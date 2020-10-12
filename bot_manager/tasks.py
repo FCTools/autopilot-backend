@@ -28,8 +28,8 @@ def collect_tasks():
 
     for bot in bots_list:
         today_schedule = json.loads(bot.schedule)[today]
-        print(today_schedule)
-        print(today)
+        # print(today_schedule)
+        # print(today)
 
         for entry in today_schedule:
             hour, minute = entry[0], entry[1]
