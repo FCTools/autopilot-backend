@@ -53,11 +53,11 @@ def check_bots():
     traffic_sources_list = list(TrafficSource.objects.all())
 
     for traffic_source in traffic_sources_list:
-        if 'Kadam' in traffic_source.name:
-            traffic_source.filtering_param_number_sources = 27
-            traffic_source.filtering_param_name_sources = 'SID'
-            traffic_source.filtering_param_name_campaigns = 'CID'
-            traffic_source.filtering_param_number_campaigns = 283
+        if 'Zero' in traffic_source.name:
+            traffic_source.filtering_param_number_sources = 285
+            traffic_source.filtering_param_name_sources = 'source'
+            traffic_source.filtering_param_name_campaigns = 'campaign_id'
+            traffic_source.filtering_param_number_campaigns = 282
 
             traffic_source.save()
 
