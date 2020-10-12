@@ -16,11 +16,20 @@ class TrafficSource(models.Model):
 
     name = models.CharField(max_length=128, verbose_name="Name", null=True, blank=True, )
 
-    filtering_param_name = models.CharField(verbose_name="Param name for filtering campaign's statistics by sources.",
-                                            max_length=256, null=True, blank=False, default=None, )
+    filtering_param_name_sources = models.CharField(
+        verbose_name="Param name for filtering campaign's statistics by sources.",
+        max_length=256, null=True, blank=False, default=None, )
 
-    filtering_param_number = models.PositiveSmallIntegerField(
+    filtering_param_number_sources = models.PositiveSmallIntegerField(
         verbose_name="Number of param for filtering campaign's statistics by sources.", null=True, blank=False,
+        default=None, )
+
+    filtering_param_name_campaigns = models.CharField(
+        verbose_name="Param name for filtering campaign's statistics by campaigns.",
+        max_length=256, null=True, blank=False, default=None, )
+
+    filtering_param_number_campaigns = models.PositiveSmallIntegerField(
+        verbose_name="Number of param for filtering campaign's statistics by campaigns.", null=True, blank=False,
         default=None, )
 
     def __str__(self):

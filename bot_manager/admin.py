@@ -10,12 +10,12 @@ from bot_manager.models import Bot, TrafficSource, Campaign, Site
 
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
-    list_display = ['name', 'type', 'user', 'condition', 'status', 'action']
+    list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action']
 
 
 @admin.register(TrafficSource)
 class AdminTrafficSource(admin.ModelAdmin):
-    list_display = ['id', 'name', 'filtering_param_name']
+    list_display = ['id', 'name', 'filtering_param_name_sources', 'filtering_param_name_campaigns']
 
 
 @admin.register(Campaign)
