@@ -53,7 +53,7 @@ def check_bots():
     traffic_sources_list = list(TrafficSource.objects.all())
 
     for traffic_source in traffic_sources_list:
-        if 'EvaDav' in traffic_sources_list:
+        if 'EvaDav' in traffic_source.name:
             traffic_source.filtering_param_number_sources = 27
             traffic_source.filtering_param_name_sources = 'SOURCE_ID'
             traffic_source.filtering_param_name_campaigns = 'CAMPAIGN_ID'
