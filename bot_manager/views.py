@@ -238,6 +238,8 @@ class BotUpdater(APIView):
                     source_info.append({'tracker_id': int(campaign['tracker_id']), 'source_id': campaign['source_id'],
                                         'status': 'started'})
 
+            bot.source_info = json.dumps(source_info)
+
             bot.status = "enabled"
             bot.save()
 
