@@ -69,7 +69,7 @@ class Validator:
                 return False, 'invalid user_id'
 
         if 'campaigns_ids' in data:
-            campaigns_ids = [int(camp_id) for camp_id in data.get('campaigns_ids')]
+            campaigns_ids = [int(camp_id['tracker_id']) for camp_id in data.get('campaigns_ids')]
 
             if not campaigns_ids:
                 return False, "campaigns list can't be empty"

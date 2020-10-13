@@ -47,8 +47,15 @@ class BotCreator(APIView):
             else:
                 ignored_sources = []
 
+            source_info = []
+
+            for campaign in request.data.get('campaigns_ids'):
+                source_info.append({'tracker_id': int(campaign['tracker_id']), 'source_id': campaign['source_id'],
+                                    'status': 'started'})
+
             new_bot = Bot.objects.create(name=name, type=bot_type, condition=condition, action=action, user=user_id,
-                                         period=period, schedule=schedule, ignored_sources=json.dumps(ignored_sources))
+                                         period=period, schedule=schedule, ignored_sources=json.dumps(ignored_sources),
+                                         source_info=json.dumps(source_info))
 
             for campaign_id in campaigns_ids:
                 campaign = Campaign.objects.get(id__exact=campaign_id)
@@ -206,7 +213,7 @@ class BotUpdater(APIView):
 
             bot.save()
 
-            campaigns_ids = [int(camp_id) for camp_id in request.data.get('campaigns_ids')]
+            campaigns_ids = [int(camp_id['tracker_id']) for camp_id in request.data.get('campaigns_ids')]
 
             for campaign in bot.campaigns_list.all():
                 if campaign.id not in campaigns_ids:
@@ -222,8 +229,14 @@ class BotUpdater(APIView):
 
             if bot.type == 1 and 'ignored_sources' in request.data:
                 ignored_sources = request.data.get('ignored_sources')
+                bot.ignored_sources = ignored_sources
 
-            # how to remember ignored sources?
+            source_info = []
+
+            if bot.type == 2:
+                for campaign in request.data.get('campaigns_ids'):
+                    source_info.append({'tracker_id': int(campaign['tracker_id']), 'source_id': campaign['source_id'],
+                                        'status': 'started'})
 
             bot.status = "enabled"
             bot.save()

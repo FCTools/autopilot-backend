@@ -4,6 +4,7 @@ Author: German Yakimov
 """
 
 import json
+from copy import copy
 from datetime import datetime, timedelta
 
 import redis
@@ -57,9 +58,13 @@ def check_bots():
     for bot in bots:
         if bot.type == 1:
             sites_to_act = []
+            ignored_sources = json.loads(bot.ignored_sources)
 
             for campaign in bot.campaigns_list.all():
-                sites_to_act += ConditionParser.check_sites(bot.condition, campaign.id, bot.period, bot.action)
+                sites_to_act_tmp = ConditionParser.check_sites(bot.condition, campaign.id, bot.period, bot.action)
+                for site in sites_to_act_tmp:
+                    if site not in ignored_sources:
+                        sites_to_act.append(copy(site))
 
             if redis_server.exists(str(bot.pk)):
                 prev_info = json.loads(redis_server.get(str(bot.pk)))
@@ -74,17 +79,37 @@ def check_bots():
 
         elif bot.type == 2:
             campaigns_to_act = []
+            current_source_info = json.loads(bot.source_info)
 
             for campaign in bot.campaigns_list.all():
-                campaigns_to_act += ConditionParser.check_campaign(bot.condition, campaign.id, bot.period, bot.action)
+                campaigns_to_act_tmp = ConditionParser.check_campaign(bot.condition, campaign.id, bot.period,
+                                                                      bot.action)
+
+                for campaign_tmp in campaigns_to_act_tmp:
+                    camp_to_add = {'tracker_id': copy(campaign.id), 'source_id': copy(campaign_tmp)}
+                    camp_index = current_source_info.index(camp_to_add)
+
+                    if current_source_info[camp_index]['status'] == 'started' and bot.action == 4 or \
+                            current_source_info[camp_index]['status'] == 'stopped' and bot.action == 3:
+                        continue
+
+                    campaigns_to_act.append(camp_to_add)
+
+                    if bot.action == 3:
+                        current_source_info[camp_index]['status'] = 'stopped'
+                    else:
+                        current_source_info[camp_index]['status'] = 'started'
+
+            bot.source_info = json.dumps(current_source_info)
+            bot.save()
 
             if redis_server.exists(str(bot.pk)):
                 prev_info = json.loads(redis_server.get(str(bot.pk)))
                 redis_server.delete(str(bot.pk))
-                prev_info['campaigns_list'] += campaigns_to_act
-                redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(prev_info['campaigns_list'])),
+                prev_info['campaigns_ids'] += campaigns_to_act
+                redis_server.append(str(bot.pk), json.dumps({'campaigns_ids': prev_info['campaigns_ids'],
                                                              'action': bot.action}))
             else:
                 if campaigns_to_act:
-                    redis_server.append(str(bot.pk), json.dumps({'campaigns_list': list(set(campaigns_to_act)),
+                    redis_server.append(str(bot.pk), json.dumps({'campaigns_ids': campaigns_to_act,
                                                                  'action': bot.action}))
