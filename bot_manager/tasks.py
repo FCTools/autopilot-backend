@@ -86,7 +86,11 @@ def check_bots():
 
                 for campaign_tmp in campaigns_to_act_tmp:
                     camp_to_add = {'tracker_id': copy(campaign.id), 'source_id': copy(campaign_tmp)}
-                    camp_index = current_source_info.index(camp_to_add)
+
+                    for n, camp in enumerate(current_source_info):
+                        if camp['source_id'] == camp_to_add['source_id']:
+                            camp_index = n
+                            break
 
                     if current_source_info[camp_index]['status'] == 'started' and bot.action == 4 or \
                             current_source_info[camp_index]['status'] == 'stopped' and bot.action == 3:
