@@ -217,16 +217,11 @@ class ConditionParser:
                    ConditionParser.check_campaign_condition(statistics, second_cond)
 
     @staticmethod
-    def check_campaign(condition, campaign_id, period, action):
+    def check_campaign(condition, campaign_id, period):
         if not ConditionParser.is_valid(condition):
             return
 
-        campaign = Campaign.objects.get(id__exact=campaign_id)
-        if campaign.status == action:
-            return False
-
         campaign_statistics = TrackerManager().get_campaign_info(campaign_id, period)
-
         campaigns_to_add = []
 
         for campaign_stat in campaign_statistics:

@@ -82,8 +82,7 @@ def check_bots():
             current_source_info = json.loads(bot.source_info)
 
             for campaign in bot.campaigns_list.all():
-                campaigns_to_act_tmp = ConditionParser.check_campaign(bot.condition, campaign.id, bot.period,
-                                                                      bot.action)
+                campaigns_to_act_tmp = ConditionParser.check_campaign(bot.condition, campaign.id, bot.period)
 
                 for campaign_tmp in campaigns_to_act_tmp:
                     camp_to_add = {'tracker_id': copy(campaign.id), 'source_id': copy(campaign_tmp)}
