@@ -140,8 +140,6 @@ class ConditionParser:
         relation = parts[1]
         value = float(parts[2])
 
-        print(statistics)
-
         clicks = float(statistics['clicks'])
         profit = float(statistics['profit'])
         revenue = float(statistics['revenue'])
@@ -227,7 +225,7 @@ class ConditionParser:
         campaigns_to_add = []
 
         for campaign_stat in campaign_statistics:
-            if ConditionParser.check_campaign_condition(campaign_statistics, condition):
+            if ConditionParser.check_campaign_condition(campaign_stat, condition):
                 campaigns_to_add.append(campaign_stat['name'])
 
         return campaigns_to_add
