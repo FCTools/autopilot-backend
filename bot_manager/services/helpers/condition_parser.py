@@ -140,6 +140,8 @@ class ConditionParser:
         relation = parts[1]
         value = float(parts[2])
 
+        print(statistics)
+
         clicks = float(statistics['clicks'])
         profit = float(statistics['profit'])
         revenue = float(statistics['revenue'])
