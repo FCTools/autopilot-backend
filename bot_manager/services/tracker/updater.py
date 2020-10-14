@@ -40,8 +40,7 @@ class Updater:
             if int(campaign["id"]) not in campaigns_db_ids:
                 Campaign.objects.create(id=int(campaign["id"]),
                                         name=campaign["name"],
-                                        traffic_source_id=int(campaign["ts_id"]),
-                                        status=None)
+                                        traffic_source_id=int(campaign["ts_id"]))
 
     @staticmethod
     def _update_traffic_sources():
