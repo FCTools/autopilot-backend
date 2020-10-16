@@ -41,7 +41,8 @@ class TrackerManager:
                                                        "timezone": "+0:00",
                                                        'api_key': settings.BINOM_API_KEY
                                                    })
-        print(campaign_sites_info.text)
+        if campaign_id == 2388:
+            print(campaign_sites_info.text)
         campaign_sites_info = campaign_sites_info.json()
 
         return campaign_sites_info
