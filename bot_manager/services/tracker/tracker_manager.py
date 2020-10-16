@@ -41,22 +41,6 @@ class TrackerManager:
                                                        "timezone": "+0:00",
                                                        'api_key': settings.BINOM_API_KEY
                                                    })
-        if campaign_id == 2388:
-            print(campaign_sites_info.text)
-            print(start_time.strftime("%Y-%m-%d %H:%M"))
-            print(end_time.strftime("%Y-%m-%d %H:%M"))
-            print(urlencode({
-                'page': 'Stats',
-                'camp_id': campaign_id,
-                'group1': group_1,
-                'group2': 1,
-                'group3': 1,
-                'date': 10,
-                "date_s": start_time.strftime("%Y-%m-%d %I:%M"),
-                "date_e": end_time.strftime("%Y-%m-%d %I:%M"),
-                "timezone": "+0:00",
-                'api_key': settings.BINOM_API_KEY
-            }))
         campaign_sites_info = campaign_sites_info.json()
 
         return campaign_sites_info
