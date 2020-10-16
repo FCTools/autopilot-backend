@@ -43,6 +43,8 @@ class TrackerManager:
                                                    })
         if campaign_id == 2388:
             print(campaign_sites_info.text)
+            print(start_time.strftime("%Y-%m-%d %I:%M"))
+            print(end_time.strftime("%Y-%m-%d %I:%M"))
             print(urlencode({
                 'page': 'Stats',
                 'camp_id': campaign_id,
