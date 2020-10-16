@@ -26,8 +26,6 @@ class TrackerManager:
         end_time = datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=now.minute)
         start_time = end_time - timedelta(minutes=period)
 
-        print(start_time, end_time)
-
         campaign_sites_info = requests_manager.get(requests.Session(), settings.TRACKER_URL,
                                                    params={
                                                        'page': 'Stats',
@@ -38,7 +36,7 @@ class TrackerManager:
                                                        'date': 10,
                                                        "date_s": start_time.strftime("%Y-%m-%d %I:%M"),
                                                        "date_e": end_time.strftime("%Y-%m-%d %I:%M"),
-                                                       "timezone": "+3:00",
+                                                       "timezone": "+0:00",
                                                        'api_key': settings.BINOM_API_KEY
                                                    }).json()
 
