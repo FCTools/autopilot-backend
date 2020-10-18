@@ -65,8 +65,8 @@ class TrackerManager:
                 "group2": 1,
                 "group3": 1,
                 "date": 10,
-                "date_e": end_time.strftime("%Y-%m-%d+%I:%M"),
-                "date_s": start_time.strftime("%Y-%m-%d+%I:%M")
+                "date_e": end_time.strftime("%Y-%m-%d %H:%M"),
+                "date_s": start_time.strftime("%Y-%m-%d %H:%M")
             },
         ).json()
 
