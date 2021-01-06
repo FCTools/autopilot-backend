@@ -1,25 +1,22 @@
 """
-Copyright © 2020 FC Tools. All rights reserved.
+Copyright © 2020-2021 FC Tools.
+All rights reserved.
 Author: German Yakimov
 """
 
-from django.conf import settings
 from django.db import models
 
 
 class Campaign(models.Model):
-    """
-    This model represents campaign from tracker (http://fcttrk.com/?page=Campaigns).
-    In addition, there is offers_list - many to many field to Offer model.
-    """
 
+    # id from traffic source
     id = models.IntegerField(primary_key=True, verbose_name="ID", unique=True, blank=False, null=False, )
 
     name = models.CharField(max_length=256, verbose_name="Name", null=True, blank=True, )
 
-    traffic_source = models.ForeignKey(
-        "TrafficSource", on_delete=models.CASCADE, verbose_name="Traffic source", blank=False, null=False,
-    )
+    traffic_source = models.CharField(verbose_name="Traffic source", blank=False, null=False,
+                                      choices=(("Propeller Ads", "Propeller Ads"),),
+                                      max_length=256, )
 
     def __str__(self):
         return f"{self.id} {self.name}"

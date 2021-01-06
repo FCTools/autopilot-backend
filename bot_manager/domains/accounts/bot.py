@@ -1,5 +1,6 @@
 """
-Copyright © 2020 FC Tools. All rights reserved.
+Copyright © 2020-2021 FC Tools.
+All rights reserved.
 Author: German Yakimov
 """
 
@@ -18,6 +19,9 @@ class Bot(models.Model):
 
     user = models.IntegerField(verbose_name="User", null=False, blank=False, )
 
+    traffic_source = models.CharField(verbose_name="Traffic source", max_length=256, null=False, blank=False,
+                                      choices=(("Propeller Ads", "Propeller Ads"),))
+
     campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list", )
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False, )
@@ -26,10 +30,8 @@ class Bot(models.Model):
                               default="enabled", choices=(("enabled", "enabled"), ("disabled", "disabled")))
 
     action = models.SmallIntegerField(verbose_name="Action", null=False, blank=False,
-                                      choices=((3, "Stop campaign"),
-                                               (4, "Start campaign"),
-                                               (2, "Add landing to BL"),
-                                               (1, "Add landing to WL"),))
+                                      choices=((2, "Stop campaign"),
+                                               (1, "Start campaign"),))
 
     schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False, default="-", )
 
