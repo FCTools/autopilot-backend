@@ -1,5 +1,6 @@
 """
-Copyright © 2020 FC Tools. All rights reserved.
+Copyright © 2020-2021 FC Tools.
+All rights reserved.
 Author: German Yakimov
 """
 
@@ -9,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 from django.conf import settings
 
-from bot_manager.models import TrafficSource, Campaign
+from bot_manager.models import Campaign
 from bot_manager.services.helpers import requests_manager
 
 
