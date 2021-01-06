@@ -11,9 +11,6 @@ DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-REDIS_REMOTE_HOST = os.getenv("REDIS_HOST")
-REDIS_REMOTE_PORT = int(os.getenv("REDIS_PORT"))
-REDIS_REMOTE_PASSWORD = os.getenv("REDIS_PASSWORD")
 
 ALLOWED_HOSTS = []
 
@@ -106,12 +103,6 @@ USE_TZ = True
 
 BINOM_API_KEY = os.getenv("BINOM_API_KEY")
 TRACKER_URL = "https://fcttrk.com/"
-
-REDIS_HOST = 'localhost'
-REDIS_PORT = '6374'
-BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
