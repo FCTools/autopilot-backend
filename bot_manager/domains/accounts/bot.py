@@ -35,6 +35,8 @@ class Bot(models.Model):
                                       choices=((2, "Stop campaign"),
                                                (1, "Start campaign"),))
 
+    ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False,)
+
     schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False, default="-", )
 
     period = models.PositiveIntegerField(verbose_name="Period for statistics checking", null=False, blank=False, )
