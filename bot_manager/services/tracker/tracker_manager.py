@@ -7,7 +7,6 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 from datetime import datetime, timedelta
-from urllib.parse import urlencode
 
 import requests
 from django.conf import settings

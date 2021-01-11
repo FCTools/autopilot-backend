@@ -43,7 +43,5 @@ class Bot(models.Model):
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
-    source_info = models.TextField(verbose_name="Source info", max_length=65536, null=True, blank=False, default=None, )
-
     def __str__(self):
         return f'{self.id} {self.name} {self.status}'
