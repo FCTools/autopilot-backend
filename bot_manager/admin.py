@@ -8,7 +8,7 @@
 
 from django.contrib import admin
 
-from bot_manager.models import Bot, Campaign, Site
+from bot_manager.models import Bot, Campaign
 
 
 @admin.register(Bot)
@@ -20,7 +20,3 @@ class AdminBot(admin.ModelAdmin):
 class AdminCampaign(admin.ModelAdmin):
     list_display = ['id', 'name']
 
-
-@admin.register(Site)
-class AdminSite(admin.ModelAdmin):
-    list_display = ['site_id', 'campaign', 'name', 'status']
