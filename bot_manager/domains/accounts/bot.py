@@ -59,6 +59,10 @@ class Bot(models.Model):
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
+    def delete(self, *args, **kwargs):
+        Scheduler().clear_jobs(self.crontab_comment)
+        super(Bot, self).delete(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         scheduler = Scheduler()
         prev_status = None
