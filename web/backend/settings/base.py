@@ -105,9 +105,7 @@ USE_L10N = True
 USE_TZ = True
 
 CRONTAB_USER = os.getenv('CRONTAB_USER')
-REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = os.getenv('REDIS_PORT')
-REDIS_ADDING_COMMAND = ''
+REDIS_SET_COMMAND = os.getenv('REDIS_SET_COMMAND')
 
 BINOM_API_KEY = os.getenv("BINOM_API_KEY")
 TRACKER_URL = "https://fcttrk.com/"

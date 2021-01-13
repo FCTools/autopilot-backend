@@ -35,26 +35,29 @@ class Scheduler:
 
         return end >= start
 
-    def set_on_crontab(self, schedule, comment, bot_id):
+    @staticmethod
+    def set_on_crontab(schedule, comment, bot_id):
         cron = CronTab(user=settings.CRONTAB_USER)
-        command = settings.REDIS_ADDING_COMMAND + f'"{str(bot_id)}"' + 'value'
+        command = settings.REDIS_SET_COMMAND + f' "{str(bot_id)}" ' + '"value"'
 
         weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
         cron_day_number = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6}
 
         for day in weekdays:
-            job = cron.new(command, comment)
-            job.day.on(cron_day_number[day])
-
             if day in schedule:
                 for t in schedule[day]:
+                    job = cron.new(command, comment)
                     data = t.split(':')
 
                     job.setall(f'{data[1]} {data[0]} * * {cron_day_number[day]}')
+                    job.enable()
+                    cron.write()
 
-            job.enable()
-            cron.write()
-
+    @staticmethod
+    def clear_jobs(comment):
+        cron = CronTab(user=settings.CRONTAB_USER)
+        cron.remove_all(comment=comment)
+        cron.write()
 
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()

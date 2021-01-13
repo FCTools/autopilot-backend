@@ -40,6 +40,10 @@ class BotForm(forms.ModelForm):
 
         schedule = self.cleaned_data["schedule"]
 
+        # check schedule with previous one, if schedule has changed - check that new schedule is valid
+        # then delete old schedule (if old schedule wasn't default) here
+        # then set crontab_comment for bot to default value to activate new schedule
+
         _ = scheduler.parse_schedule(schedule)  # just for valid checking
 
 
