@@ -7,6 +7,7 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 from django.db import models
+from django.conf import settings
 
 
 class Bot(models.Model):
@@ -20,7 +21,8 @@ class Bot(models.Model):
     type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False,
                                             choices=((1, "Play/stop campaign"),),)
 
-    user = models.IntegerField(verbose_name="User", null=False, blank=False, )
+    user = models.ForeignKey(verbose_name="User", null=True, blank=False, to=settings.AUTH_USER_MODEL,
+                             on_delete=models.SET_NULL, )
 
     traffic_source = models.CharField(verbose_name="Traffic source", max_length=256, null=False, blank=False,
                                       choices=(("Propeller Ads", "Propeller Ads"),))

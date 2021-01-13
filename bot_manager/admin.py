@@ -32,10 +32,12 @@ class BotForm(forms.ModelForm):
             "schedule",
             "period",
         ]
+        current_user = None
 
     def clean(self):
         scheduler = Scheduler()
         super(BotForm, self).clean()
+
         schedule = self.cleaned_data["schedule"]
 
         # scheduler.parse_schedule(schedule)
@@ -46,6 +48,17 @@ class AdminBot(admin.ModelAdmin):
     list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
     filter_horizontal = ['campaigns_list']
     form = BotForm
+
+    def get_queryset(self, request):
+        qs = super(AdminBot, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+    def get_form(self, request, *args, **kwargs):
+        form = super(AdminBot, self).get_form(request, *args, **kwargs)
+        form.current_user = request.user
+        return form
 
 
 @admin.register(Campaign)
