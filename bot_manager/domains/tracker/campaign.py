@@ -21,7 +21,7 @@ class Campaign(models.Model):
                                       max_length=256, )
 
     def __str__(self):
-        return f"{self.id} {self.name}"
+        return f"{self.traffic_source} {self.id} {self.name}"
 
     def __eq__(self, other):
         if not other:

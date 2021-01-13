@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
-    'bot_manager'
+    'bot_manager',
 ]
 
 MIDDLEWARE = [
@@ -42,6 +42,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'backend.urls'
+
+# AUTH_USER_MODEL = 'bot_manager.CustomUser'
 
 TEMPLATES = [
     {

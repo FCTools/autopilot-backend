@@ -20,6 +20,7 @@ class BotForm(forms.ModelForm):
     class Meta:
         model = Bot
         fields = [
+            "name",
             "type",
             "user",
             "traffic_source",
@@ -30,7 +31,6 @@ class BotForm(forms.ModelForm):
             "ts_api_key",
             "schedule",
             "period",
-            "ignored_sources",
         ]
 
     def clean(self):
@@ -38,12 +38,13 @@ class BotForm(forms.ModelForm):
         super(BotForm, self).clean()
         schedule = self.cleaned_data["schedule"]
 
-        scheduler.parse_schedule(schedule)
+        # scheduler.parse_schedule(schedule)
 
 
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
     list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
+    filter_horizontal = ['campaigns_list']
     form = BotForm
 
 
