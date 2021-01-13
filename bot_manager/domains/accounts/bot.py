@@ -67,9 +67,12 @@ class Bot(models.Model):
             scheduler = Scheduler()
 
             parsed_schedule = scheduler.parse_schedule(self.schedule)
-            scheduler.set_on_crontab(parsed_schedule, self.crontab_comment)
+            super(Bot, self).save(*args, **kwargs)
 
-        super(Bot, self).save(*args, **kwargs)
+            scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
+
+        else:
+            super(Bot, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.id} {self.name} {self.status}'

@@ -11,6 +11,9 @@ import time
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
+
+from crontab import CronTab
 
 
 class Scheduler:
@@ -32,8 +35,26 @@ class Scheduler:
 
         return end >= start
 
-    def set_on_crontab(self, schedule, comment):
-        pass
+    def set_on_crontab(self, schedule, comment, bot_id):
+        cron = CronTab(user=settings.CRONTAB_USER)
+        command = settings.REDIS_ADDING_COMMAND + f'"{str(bot_id)}"' + 'value'
+
+        weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        cron_day_number = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6}
+
+        for day in weekdays:
+            job = cron.new(command, comment)
+            job.day.on(cron_day_number[day])
+
+            if day in schedule:
+                for t in schedule[day]:
+                    data = t.split(':')
+
+                    job.setall(f'{data[1]} {data[0]} * * {cron_day_number[day]}')
+
+            job.enable()
+            cron.write()
+
 
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()
