@@ -6,9 +6,9 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
-import json
 import re
 import time
+from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
 
@@ -32,12 +32,18 @@ class Scheduler:
 
         return end >= start
 
+    def set_on_crontab(self, schedule, comment):
+        pass
+
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()
                     for entry in schedule.replace(' ', '').split('\n')}
         weekdays_cleaned = {}
 
         for weekday in weekdays:
+            if not weekdays[weekday]:
+                continue
+
             weekdays_cleaned[weekday] = []
             entries = weekdays[weekday].split(',')
 
@@ -59,7 +65,8 @@ class Scheduler:
                     interval = int(data[2])
 
                     if interval > 24 * 60:
-                        raise ValidationError("Checking interval can't be greater than 1440 minutes (24 hours)")
+                        raise ValidationError(f"Checking interval can't be greater than 1440 minutes (24 hours): "
+                                              f"{interval}")
 
                     if not self._is_time(start):
                         raise ValidationError(f"Doesn't look like time: {start}")
@@ -67,7 +74,16 @@ class Scheduler:
                         raise ValidationError(f"Doesn't look like time: {end}")
 
                     if not self._is_greater(start, end):
-                        raise ValidationError(f"Start can't be greater than end: {entry}")
+                        raise ValidationError(f"Start point can't be greater than end point: {entry}")
 
                     if start == end:
                         weekdays_cleaned[weekday].append(start)
+                    else:
+                        start = datetime.strptime(start, '%H:%M')
+                        end = datetime.strptime(end, '%H:%M')
+
+                        while start <= end:
+                            weekdays_cleaned[weekday].append(start.strftime('%H:%M'))
+                            start += timedelta(minutes=interval)
+
+        return weekdays_cleaned

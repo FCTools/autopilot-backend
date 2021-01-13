@@ -8,6 +8,9 @@
 
 from django.db import models
 from django.conf import settings
+from django.utils.crypto import get_random_string
+
+from bot_manager.services.helpers.scheduler import Scheduler
 
 
 class Bot(models.Model):
@@ -44,12 +47,29 @@ class Bot(models.Model):
 
     schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False,
                                 default="mon: \ntue: \nwed: \nthu: \nfri: \nsat: \nsun: \n",
-                                help_text="Example: mon: 10:00-12:30[5], 13:30, 15:00-18:00[10]", )
+                                help_text="Example: mon: 10:00-12:30[5], 13:30, 15:00-18:00[10]. "
+                                          "Note that checking interval can't be greater than 1440 minutes "
+                                          "(24 hours).", )
 
     period = models.PositiveIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
-                                         help_text="Please specify the value in seconds")
+                                         help_text="Please specify the value in seconds", )
+
+    crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
+                                       default="empty",)
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
+
+    def save(self, *args, **kwargs):
+        if self.crontab_comment == "empty":
+            salt = get_random_string(16, 'qwertyuiopasdfghjklzxcvbnm0123456789')
+            self.crontab_comment = hash(salt)
+
+            scheduler = Scheduler()
+
+            parsed_schedule = scheduler.parse_schedule(self.schedule)
+            scheduler.set_on_crontab(parsed_schedule, self.crontab_comment)
+
+        super(Bot, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.id} {self.name} {self.status}'
