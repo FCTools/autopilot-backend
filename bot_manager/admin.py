@@ -40,7 +40,7 @@ class BotForm(forms.ModelForm):
 
         schedule = self.cleaned_data["schedule"]
 
-        # scheduler.parse_schedule(schedule)
+        scheduler.parse_schedule(schedule)
 
 
 @admin.register(Bot)
