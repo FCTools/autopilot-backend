@@ -24,6 +24,7 @@ Stack:
 * [Django](https://www.djangoproject.com/) and [DRF](https://www.django-rest-framework.org/) frameworks for REST-API and admin site
 * [requests](https://requests.readthedocs.io/en/master/) for http-requests
 * [PostgreSQL](https://www.postgresql.org/) for bots and other data storing
+* [python-crontab](https://pypi.org/project/python-crontab/) and crontab for bots conditions checking depending on schedule
 
 <br>
 <br>
