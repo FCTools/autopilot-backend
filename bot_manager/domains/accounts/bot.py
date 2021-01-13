@@ -60,15 +60,13 @@ class Bot(models.Model):
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
     def save(self, *args, **kwargs):
-        # check schedule with previous one, if schedule has changed - check that new schedule is valid
-        # then delete old schedule (if old schedule wasn't default) here
-        # then set crontab_comment for bot to default value to activate new schedule
-
         scheduler = Scheduler()
+        prev_status = None
 
         if self.id:
             this_bot_db = Bot.objects.get(pk=self.id)
             prev_schedule = this_bot_db.schedule
+            prev_status = this_bot_db.status
 
             if self.schedule != prev_schedule:
                 scheduler.clear_jobs(this_bot_db.crontab_comment)
@@ -83,8 +81,19 @@ class Bot(models.Model):
 
             scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
 
+            if self.status == "disabled":
+                scheduler.disable_jobs(self.crontab_comment)
+
+            return
+
         else:
             super(Bot, self).save(*args, **kwargs)
+
+        if prev_status and prev_status != self.status:
+            if self.status == "disabled":
+                scheduler.disable_jobs(self.crontab_comment)
+            else:
+                scheduler.enable_jobs(self.crontab_comment)
 
     def __str__(self):
         return f'{self.id} {self.name} {self.status}'

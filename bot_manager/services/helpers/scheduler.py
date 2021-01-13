@@ -59,6 +59,22 @@ class Scheduler:
         cron.remove_all(comment=comment)
         cron.write()
 
+    @staticmethod
+    def disable_jobs(comment):
+        cron = CronTab(user=settings.CRONTAB_USER)
+        for job in cron:
+            if job.comment == comment:
+                job.enable(False)
+                cron.write()
+
+    @staticmethod
+    def enable_jobs(comment):
+        cron = CronTab(user=settings.CRONTAB_USER)
+        for job in cron:
+            if job.comment == comment:
+                job.enable()
+                cron.write()
+
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()
                     for entry in schedule.replace(' ', '').split('\n')}
