@@ -60,6 +60,7 @@ class BotForm(forms.ModelForm):
 
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
+    actions = None
     list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
     filter_horizontal = ['campaigns_list']
     form = BotForm

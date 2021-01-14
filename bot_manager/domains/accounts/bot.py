@@ -64,7 +64,13 @@ class Bot(models.Model):
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
-    # BUG: bot jobs doesn't clear
+    def delete_queryset(self, request, queryset):
+        scheduler = Scheduler()
+
+        for obj in queryset:
+            scheduler.clear_jobs(obj.crontab_comment)
+            obj.delete()
+
     def delete(self, *args, **kwargs):
         Scheduler().clear_jobs(self.crontab_comment)
         super(Bot, self).delete(*args, **kwargs)
