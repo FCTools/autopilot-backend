@@ -6,11 +6,16 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
+import logging
+
 from django.db import models
 from django.conf import settings
 from django.utils.crypto import get_random_string
 
 from bot_manager.services.helpers.scheduler import Scheduler
+
+
+_logger = logging.getLogger(__name__)
 
 
 class Bot(models.Model):
@@ -65,10 +70,14 @@ class Bot(models.Model):
         super(Bot, self).delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        _logger.info("Start bot saving")
+
         scheduler = Scheduler()
         prev_status = None
 
         if self.id:
+            _logger.info("Already existing bot. Checking schedule...")
+
             this_bot_db = Bot.objects.get(pk=self.id)
             prev_schedule = this_bot_db.schedule
             prev_status = this_bot_db.status
@@ -77,14 +86,19 @@ class Bot(models.Model):
                 scheduler.clear_jobs(this_bot_db.crontab_comment)
                 self.crontab_comment = "empty"
 
+                _logger.info("Schedule changing detected. Clear old schedule and set crontab comment to default.")
+
         if self.crontab_comment == "empty":
+            _logger.info("Generate new crontab-comment...")
             salt = get_random_string(16, 'qwertyuiopasdfghjklzxcvbnm0123456789')
             self.crontab_comment = str(hash(salt))
 
             parsed_schedule = scheduler.parse_schedule(self.schedule)
             super(Bot, self).save(*args, **kwargs)
+            _logger.info("Call super-save.")
 
             scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
+            _logger.info("Set new schedule to crontab.")
 
             if self.status == "disabled":
                 scheduler.disable_jobs(self.crontab_comment)

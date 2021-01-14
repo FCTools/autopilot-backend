@@ -32,4 +32,39 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": 'debug_log.log',
+            "formatter": "verbose"}},
+    "root": {
+        "handlers": ["file"],
+        "level": "DEBUG", },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": False, },
+        "django.db_backends": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.db": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": False, },
+    },
+}
+
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")

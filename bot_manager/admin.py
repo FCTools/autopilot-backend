@@ -6,11 +6,16 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
+import logging
+
 from django.contrib import admin
 from django import forms
 
 from bot_manager.models import Bot, Campaign
 from bot_manager.services.helpers.scheduler import Scheduler
+
+
+_logger = logging.getLogger(__name__)
 
 
 class BotForm(forms.ModelForm):
@@ -35,8 +40,12 @@ class BotForm(forms.ModelForm):
         current_user = None
 
     def clean(self):
+        _logger.info("Get form")
+
         scheduler = Scheduler()
         super(BotForm, self).clean()
+
+        _logger.info("Call super-clean")
 
         schedule = self.cleaned_data["schedule"]
 
@@ -45,6 +54,8 @@ class BotForm(forms.ModelForm):
         # then set crontab_comment for bot to default value to activate new schedule
 
         _ = scheduler.parse_schedule(schedule)  # just for valid checking
+
+        _logger.info("Check schedule")
 
 
 @admin.register(Bot)
