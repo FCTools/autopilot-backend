@@ -54,7 +54,7 @@ class Bot(models.Model):
                                 default="mon: \ntue: \nwed: \nthu: \nfri: \nsat: \nsun: \n",
                                 help_text="Example: mon: 10:00-12:30[5], 13:30, 15:00-18:00[10]. "
                                           "Note that checking interval can't be greater than 1440 minutes "
-                                          "(24 hours).", )
+                                          "(24 hours). Please note that all time is UTC time.", )
 
     period = models.PositiveIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
                                          help_text="Please specify the value in seconds", )
@@ -64,19 +64,13 @@ class Bot(models.Model):
 
     ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
 
-    def delete_queryset(self, request, queryset):
-        scheduler = Scheduler()
-
-        for obj in queryset:
-            scheduler.clear_jobs(obj.crontab_comment)
-            obj.delete()
-
     def delete(self, *args, **kwargs):
         Scheduler().clear_jobs(self.crontab_comment)
         super(Bot, self).delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         _logger.info("Start bot saving")
+        self.condition = self.condition.replace('AND', '&').replace('OR', '|')
 
         scheduler = Scheduler()
         prev_status = None
@@ -119,6 +113,8 @@ class Bot(models.Model):
                 scheduler.disable_jobs(self.crontab_comment)
             else:
                 scheduler.enable_jobs(self.crontab_comment)
+
+        _logger.info(f"Bot was successfully saved: {self.name}")
 
     def __str__(self):
         return f'{self.id} {self.name} {self.status}'

@@ -10,9 +10,11 @@ import logging
 
 from django.contrib import admin
 from django import forms
+from django.core.exceptions import ValidationError
 
 from bot_manager.models import Bot, Campaign
 from bot_manager.services.helpers.scheduler import Scheduler
+from bot_manager.services.helpers.condition_parser import ConditionParser
 
 
 _logger = logging.getLogger(__name__)
@@ -41,21 +43,18 @@ class BotForm(forms.ModelForm):
 
     def clean(self):
         _logger.info("Get form")
-
-        scheduler = Scheduler()
         super(BotForm, self).clean()
 
         _logger.info("Call super-clean")
 
+        if not ConditionParser.bracket_sequence_is_valid(self.condition):
+            raise ValidationError("Incorrect condition.")
+        _logger.info(f"Check condition for bot: {self.name}")
+
         schedule = self.cleaned_data["schedule"]
+        _ = Scheduler().parse_schedule(schedule)  # just for valid checking
 
-        # check schedule with previous one, if schedule has changed - check that new schedule is valid
-        # then delete old schedule (if old schedule wasn't default) here
-        # then set crontab_comment for bot to default value to activate new schedule
-
-        _ = scheduler.parse_schedule(schedule)  # just for valid checking
-
-        _logger.info("Check schedule")
+        _logger.info(f"Check schedule for bot: {self.name}")
 
 
 @admin.register(Bot)
