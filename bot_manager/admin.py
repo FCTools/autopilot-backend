@@ -47,14 +47,14 @@ class BotForm(forms.ModelForm):
 
         _logger.info("Call super-clean")
 
-        if not ConditionParser.bracket_sequence_is_valid(self.condition):
+        if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")
-        _logger.info(f"Check condition for bot: {self.name}")
+        _logger.info(f"Check condition for bot: {self.cleaned_data['name']}")
 
         schedule = self.cleaned_data["schedule"]
         _ = Scheduler().parse_schedule(schedule)  # just for valid checking
 
-        _logger.info(f"Check schedule for bot: {self.name}")
+        _logger.info(f"Check schedule for bot: {self.cleaned_data['name']}")
 
 
 @admin.register(Bot)
