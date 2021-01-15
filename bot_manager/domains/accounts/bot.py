@@ -56,8 +56,20 @@ class Bot(models.Model):
                                           "Note that checking interval can't be greater than 1440 minutes "
                                           "(24 hours). Please note that all time is UTC time.", )
 
-    period = models.PositiveIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
-                                         help_text="Please specify the value in seconds", )
+    period = models.SmallIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
+                                      choices=((1, "Today"),
+                                               (2, "Yesterday"),
+                                               (11, "This week"),
+                                               (13, "Last 2 Days"),
+                                               (14, "Last 3 Days"),
+                                               (3, "Last 7 Days"),
+                                               (4, "Last 14 Days"),
+                                               (5, "This month"),
+                                               (6, "Last month"),
+                                               (7, "This year"),
+                                               (9, "All time"),
+                                               )
+                                      )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
                                        default="empty",)
