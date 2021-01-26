@@ -19,9 +19,8 @@ class Campaign(models.Model):
 
     name = models.CharField(max_length=256, verbose_name="Name", null=True, blank=True, )
 
-    traffic_source = models.CharField(verbose_name="Traffic source", blank=False, null=False,
-                                      choices=(("Propeller Ads", "Propeller Ads"),),
-                                      max_length=256, )
+    traffic_source = models.ForeignKey(to="TrafficSource", verbose_name="Traffic source", blank=False, null=False,
+                                       on_delete=models.CASCADE, )
 
     def __str__(self):
         return f"{self.traffic_source} {self.source_id} {self.name}"

@@ -12,6 +12,7 @@ from django.contrib import admin
 from django import forms
 from django.core.exceptions import ValidationError
 
+from bot_manager.domains.accounts.traffic_source import TrafficSource
 from bot_manager.models import Bot, Campaign
 from bot_manager.services.helpers.scheduler import Scheduler
 from bot_manager.services.helpers.condition_parser import ConditionParser
@@ -79,4 +80,9 @@ class AdminBot(admin.ModelAdmin):
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
     list_display = ['id', 'name']
+
+
+@admin.register(TrafficSource)
+class AdminTrafficSource(admin.ModelAdmin):
+    list_display = ['name', 'filter_param_number']
 
