@@ -12,6 +12,7 @@ from django.db import models
 class TrafficSource(models.Model):
     name = models.CharField(max_length=256, verbose_name="Traffic source", null=False, blank=False, unique=True, )
 
+    # param for filtering campaign statistics by zones
     filter_param_number = models.SmallIntegerField(verbose_name="Param number in tracker", null=False, blank=False, )
 
     def __str__(self):

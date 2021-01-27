@@ -7,6 +7,7 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 import logging
+from string import ascii_letters, digits
 
 from django.db import models
 from django.conf import settings
@@ -18,16 +19,42 @@ from bot_manager.services.helpers.scheduler import Scheduler
 _logger = logging.getLogger(__name__)
 
 
+# internal autopilot codes for actions
+PLAY_CAMPAIGN = 1
+STOP_CAMPAIGN = 2
+EXCLUDE_ZONE = 3
+INCLUDE_ZONE = 4
+
+# tracker codes for filtering statistics by time
+TODAY = 1
+YESTERDAY = 2
+THIS_WEEK = 11
+LAST_2_DAYS = 13
+LAST_3_DAYS = 14
+LAST_7_DAYS = 3
+LAST_14_DAYS = 4
+THIS_MONTH = 5
+LAST_MONTH = 6
+THIS_YEAR = 7
+ALL_TIME = 9
+
+# bot types
+PLAY_STOP_CAMPAIGN = 1  # this bots check whole campaign and play or stop it
+INCLUDE_EXCLUDE_ZONE = 2  # this bots check campaign zones and include/exclude these zones
+
+
 class Bot(models.Model):
-    name = models.CharField(verbose_name="Name", max_length=128, null=False, blank=False, )
+    name = models.CharField(verbose_name="Name", max_length=128, null=False, blank=False,
+                            help_text="Any string up to 128 characters", )
 
     """
     There are 2 types of bots: 
-    second type (2) - these bots check landings for each campaign and add these landings to black/white list
+    second type (2) - these bots check zones for each campaign and add these landings to black/white list
     first type (1) - these bots check campaigns and stop/start it depending on condition
     """
     type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False,
-                                            choices=((1, "Play/stop campaign"),),)
+                                            choices=((PLAY_STOP_CAMPAIGN, "Play/stop campaign"),
+                                                     (INCLUDE_EXCLUDE_ZONE, "Add to black/white list"),),)
 
     user = models.ForeignKey(verbose_name="User", null=True, blank=False, to=settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, )
@@ -36,7 +63,7 @@ class Bot(models.Model):
                                       choices=(("Propeller Ads", "Propeller Ads"),))
 
     campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list",
-                                            help_text="If campaign doesn't exist, you can create it using \"+\"")
+                                            help_text="If campaign doesn't exist, you can create it here using \"+\"")
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False,
                                  help_text="Example: ((CR < 1) & (clicks >= 50))", )
@@ -45,8 +72,10 @@ class Bot(models.Model):
                               default="enabled", choices=(("enabled", "enabled"), ("disabled", "disabled")), )
 
     action = models.SmallIntegerField(verbose_name="Target action", null=False, blank=False,
-                                      choices=((2, "Stop campaign"),
-                                               (1, "Start campaign"),))
+                                      choices=((STOP_CAMPAIGN, "Stop campaign"),
+                                               (PLAY_CAMPAIGN, "Play campaign"),
+                                               (EXCLUDE_ZONE, "Add zone to black list"),
+                                               (INCLUDE_ZONE, "Add zone to white list"),))
 
     ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False,)
 
@@ -57,24 +86,25 @@ class Bot(models.Model):
                                           "(24 hours). Please note that all time is UTC time.", )
 
     period = models.SmallIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
-                                      choices=((1, "Today"),
-                                               (2, "Yesterday"),
-                                               (11, "This week"),
-                                               (13, "Last 2 Days"),
-                                               (14, "Last 3 Days"),
-                                               (3, "Last 7 Days"),
-                                               (4, "Last 14 Days"),
-                                               (5, "This month"),
-                                               (6, "Last month"),
-                                               (7, "This year"),
-                                               (9, "All time"),
+                                      choices=((TODAY, "Today"),
+                                               (YESTERDAY, "Yesterday"),
+                                               (THIS_WEEK, "This week"),
+                                               (LAST_2_DAYS, "Last 2 Days"),
+                                               (LAST_3_DAYS, "Last 3 Days"),
+                                               (LAST_7_DAYS, "Last 7 Days"),
+                                               (LAST_14_DAYS, "Last 14 Days"),
+                                               (THIS_MONTH, "This month"),
+                                               (LAST_MONTH, "Last month"),
+                                               (THIS_YEAR, "This year"),
+                                               (ALL_TIME, "All time"),
                                                )
                                       )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
                                        default="empty",)
 
-    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None, )
+    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None,
+                                       help_text="Please specify each ignored source on a new line", )
 
     def delete(self, *args, **kwargs):
         Scheduler().clear_jobs(self.crontab_comment)
@@ -102,7 +132,7 @@ class Bot(models.Model):
 
         if self.crontab_comment == "empty":
             _logger.info("Generate new crontab-comment...")
-            salt = get_random_string(16, 'qwertyuiopasdfghjklzxcvbnm0123456789')
+            salt = get_random_string(16, ascii_letters + digits)
             self.crontab_comment = str(hash(salt))
 
             parsed_schedule = scheduler.parse_schedule(self.schedule)
