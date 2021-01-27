@@ -85,15 +85,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-TRAFFIC_GROUPS = (
-    ("ADMIN", "ADMIN"),
-    ("FPA/HSA/PWA", "FPA/HSA/PWA"),
-    ("INAPP traff", "INAPP traff"),
-    ("NATIVE traff", "NATIVE traff"),
-    ("POP traff", "POP traff"),
-    ("PUSH traff", "PUSH traff"),
-)
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -108,7 +99,7 @@ CRONTAB_USER = os.getenv('CRONTAB_USER')
 REDIS_SET_COMMAND = os.getenv('REDIS_SET_COMMAND')
 
 BINOM_API_KEY = os.getenv("BINOM_API_KEY")
-TRACKER_URL = "https://fcttrk.com/"
+TRACKER_URL = os.getenv("TRACKER_URL")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
