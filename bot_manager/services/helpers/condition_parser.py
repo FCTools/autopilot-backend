@@ -11,7 +11,7 @@ from copy import deepcopy
 
 AVAILABLE_SYMBOLS = ['(', ')', '>', '<', '=', '<=', '>=', '|', '&',
                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-']
-AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads', 'cpa', 'approve_%']
+AVAILABLE_VARIABLES = ['revenue', 'cost', 'profit', 'clicks', 'CPC', 'ROI', 'CR', 'EPC', 'leads', 'CPA']
 
 
 class ConditionParser:
