@@ -39,6 +39,7 @@ class BotForm(forms.ModelForm):
             "ts_api_key",
             "schedule",
             "period",
+            "ignored_zones",
         ]
         current_user = None
 
@@ -48,6 +49,10 @@ class BotForm(forms.ModelForm):
 
         if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user'].id:
             raise ValidationError("You can't create bot for another user.")
+
+        for campaign in self.cleaned_data['campaigns_list']:
+            if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
+                raise ValidationError("You can only choose campaigns from specified traffic source.")
 
         _logger.info("Call super-clean")
 
@@ -82,7 +87,7 @@ class AdminBot(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
-    list_display = ['id', 'name']
+    list_display = ['tracker_id', 'source_id', 'name']
 
 
 @admin.register(TrafficSource)

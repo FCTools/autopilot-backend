@@ -9,15 +9,13 @@
 import logging
 from string import ascii_letters, digits
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 from django.utils.crypto import get_random_string
 
 from bot_manager.services.helpers.scheduler import Scheduler
 
-
 _logger = logging.getLogger(__name__)
-
 
 # internal autopilot codes for actions
 PLAY_CAMPAIGN = 1
@@ -54,16 +52,17 @@ class Bot(models.Model):
     """
     type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False,
                                             choices=((PLAY_STOP_CAMPAIGN, "Play/stop campaign"),
-                                                     (INCLUDE_EXCLUDE_ZONE, "Add to black/white list"),),)
+                                                     (INCLUDE_EXCLUDE_ZONE, "Add to black/white list"),), )
 
     user = models.ForeignKey(verbose_name="User", null=True, blank=False, to=settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL, )
+                             on_delete=models.SET_NULL, help_text="Only superuser can change this field")
 
-    traffic_source = models.CharField(verbose_name="Traffic source", max_length=256, null=False, blank=False,
-                                      choices=(("Propeller Ads", "Propeller Ads"),))
+    traffic_source = models.ForeignKey(verbose_name="Traffic source", to='TrafficSource', null=False, blank=False,
+                                       on_delete=models.DO_NOTHING, )
 
-    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns list",
-                                            help_text="If campaign doesn't exist, you can create it here using \"+\"")
+    campaigns_list = models.ManyToManyField(to="Campaign", verbose_name="Campaigns",
+                                            help_text="If campaign doesn't exist, "
+                                                      "you can create it here using \"+\".")
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False,
                                  help_text="Example: ((CR < 1) & (clicks >= 50))", )
@@ -77,13 +76,13 @@ class Bot(models.Model):
                                                (EXCLUDE_ZONE, "Add zone to black list"),
                                                (INCLUDE_ZONE, "Add zone to white list"),))
 
-    ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False,)
+    ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False, )
 
     schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False,
                                 default="mon: \ntue: \nwed: \nthu: \nfri: \nsat: \nsun: \n",
                                 help_text="Example: mon: 10:00-12:30[5], 13:30, 15:00-18:00[10]. "
                                           "Note that checking interval can't be greater than 1440 minutes "
-                                          "(24 hours). Please note that all time is UTC time.", )
+                                          "(24 hours). All time is UTC time.", )
 
     period = models.SmallIntegerField(verbose_name="Period for statistics checking", null=False, blank=False,
                                       choices=((TODAY, "Today"),
@@ -101,10 +100,10 @@ class Bot(models.Model):
                                       )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
-                                       default="empty",)
+                                       default="empty", )
 
-    ignored_sources = models.TextField(verbose_name="Ignored sources", null=True, blank=False, default=None,
-                                       help_text="Please specify each ignored source on a new line", )
+    ignored_zones = models.TextField(verbose_name="Ignored zones", null=True, blank=True, default=None,
+                                     help_text="Please specify each zone on a new line", )
 
     def delete(self, *args, **kwargs):
         Scheduler().clear_jobs(self.crontab_comment)
