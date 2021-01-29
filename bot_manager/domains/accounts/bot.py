@@ -73,8 +73,8 @@ class Bot(models.Model):
     action = models.SmallIntegerField(verbose_name="Target action", null=False, blank=False,
                                       choices=((STOP_CAMPAIGN, "Stop campaign"),
                                                (PLAY_CAMPAIGN, "Play campaign"),
-                                               (EXCLUDE_ZONE, "Add zone to black list"),
-                                               (INCLUDE_ZONE, "Add zone to white list"),))
+                                               (EXCLUDE_ZONE, "Exclude zone"),
+                                               (INCLUDE_ZONE, "Include zone"),))
 
     ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False, )
 

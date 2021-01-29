@@ -12,12 +12,14 @@ from django.db import models
 class Campaign(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID", serialize=False, auto_created=True, )
 
-    tracker_id = models.IntegerField(verbose_name="Tracker ID", blank=False, null=False, )
+    tracker_id = models.PositiveSmallIntegerField(verbose_name="Tracker ID", blank=False, null=False,
+                                                  help_text="Campaign ID from tracker", )
 
-    # id from traffic source
-    source_id = models.CharField(max_length=64, verbose_name="Source ID", blank=False, null=False, )
+    source_id = models.CharField(max_length=128, verbose_name="Source ID", blank=False, null=False,
+                                 help_text="Campaign ID from traffic source (up to 128 symbols)", )
 
-    name = models.CharField(max_length=256, verbose_name="Name", null=True, blank=True, )
+    name = models.CharField(max_length=256, verbose_name="Name", null=True, blank=True,
+                            help_text="Any string up to 256 symbols")
 
     traffic_source = models.ForeignKey(to="TrafficSource", verbose_name="Traffic source", blank=False, null=False,
                                        on_delete=models.CASCADE, )
