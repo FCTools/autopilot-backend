@@ -46,15 +46,16 @@ class BotForm(forms.ModelForm):
     def clean(self):
         _logger.info("Get form")
         super(BotForm, self).clean()
+        _logger.info("Call super-clean")
 
         if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user'].id:
             raise ValidationError("You can't create bot for another user.")
 
+        self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
+
         for campaign in self.cleaned_data['campaigns_list']:
             if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
                 raise ValidationError("You can only choose campaigns from specified traffic source.")
-
-        _logger.info("Call super-clean")
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")
@@ -87,7 +88,7 @@ class AdminBot(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class AdminCampaign(admin.ModelAdmin):
-    list_display = ['tracker_id', 'source_id', 'name']
+    list_display = ['id', 'tracker_id', 'source_id', 'name']
 
 
 @admin.register(TrafficSource)
