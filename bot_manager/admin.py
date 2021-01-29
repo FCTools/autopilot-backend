@@ -46,6 +46,9 @@ class BotForm(forms.ModelForm):
         _logger.info("Get form")
         super(BotForm, self).clean()
 
+        if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user'].id:
+            raise ValidationError("You can't create bot for another user.")
+
         _logger.info("Call super-clean")
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
@@ -53,7 +56,7 @@ class BotForm(forms.ModelForm):
         _logger.info(f"Check condition for bot: {self.cleaned_data['name']}")
 
         schedule = self.cleaned_data["schedule"]
-        _ = Scheduler().parse_schedule(schedule)  # just for valid checking
+        Scheduler().parse_schedule(schedule)  # just for valid checking
 
         _logger.info(f"Check schedule for bot: {self.cleaned_data['name']}")
 
