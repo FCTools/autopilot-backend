@@ -50,16 +50,13 @@ class Scheduler:
         for day in weekdays:
             if day in schedule:
                 for t in schedule[day]:
-                    if t[-1] == 0:
-                        job = cron.new(command, comment)
-                        job.setall(f'{t[1]} {t[0]} * * {cron_day_number[day]}')
-                        job.enable()
-                        cron.write()
-                        continue
-
                     job = cron.new(command, comment)
 
-                    job.setall(f'{t[1]}-{t[2]}/{t[3]} {t[0]} * * {cron_day_number[day]}')
+                    if t[-1] == 0:
+                        job.setall(f'{t[1]} {t[0]} * * {cron_day_number[day]}')
+                    else:
+                        job.setall(f'{t[1]}-{t[2]}/{t[3]} {t[0]} * * {cron_day_number[day]}')
+
                     job.enable()
                     cron.write()
 
@@ -118,6 +115,8 @@ class Scheduler:
                     if interval > 24 * 60:
                         raise ValidationError(f"Checking interval can't be greater than 1440 minutes (24 hours): "
                                               f"{interval}")
+                    if interval < 5:
+                        raise ValidationError(f"Checking interval can't be less than 5 minutes: {interval}")
 
                     if not self._is_time(start):
                         raise ValidationError(f"Doesn't look like time: {start}")
