@@ -17,7 +17,6 @@ from rest_framework.views import APIView
 
 from bot_manager.domains.accounts.bot import Bot
 from bot_manager.models import Campaign
-from bot_manager.services.helpers.parse_schedule import parse_schedule
 from bot_manager.services.helpers.validator import Validator
 
 
@@ -39,7 +38,7 @@ class BotCreator(APIView):
             action = int(request.data.get('action'))
             user_id = int(request.data.get('user_id'))
             period = int(request.data.get('period'))
-            schedule = parse_schedule(request.data.get('schedule'))
+            schedule = request.data.get('schedule')
 
             if 'AND' not in condition and 'OR' not in condition:
                 condition = condition[1:-1]

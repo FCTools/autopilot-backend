@@ -36,7 +36,7 @@ class ConditionParser:
         return counter == 0
 
     @staticmethod
-    def _all_symbols_is_correct(condition):
+    def _all_symbols_are_correct(condition):
         condition_copy = deepcopy(condition).replace('AND', '&').replace('OR', '|')
 
         for symbol in AVAILABLE_SYMBOLS:
@@ -72,10 +72,5 @@ class ConditionParser:
 
     @staticmethod
     def is_valid(condition):
-        if not ConditionParser.bracket_sequence_is_valid(condition):
-            return False
-
-        if not ConditionParser._all_symbols_is_correct(condition):
-            return False
-
-        return True
+        return ConditionParser.bracket_sequence_is_valid(condition) and \
+               ConditionParser._all_symbols_are_correct(condition)

@@ -36,6 +36,10 @@ class Scheduler:
         return end >= start
 
     @staticmethod
+    def _to_time(t):
+        return time.strptime(t, '%H:%M')
+
+    @staticmethod
     def set_on_crontab(schedule, comment, bot_id):
         cron = CronTab(user=settings.CRONTAB_USER)
         command = settings.REDIS_SET_COMMAND + f' "{str(bot_id)}" ' + '"value"'
@@ -46,10 +50,16 @@ class Scheduler:
         for day in weekdays:
             if day in schedule:
                 for t in schedule[day]:
-                    job = cron.new(command, comment)
-                    data = t.split(':')
+                    if t[-1] == 0:
+                        job = cron.new(command, comment)
+                        job.setall(f'{t[1]} {t[0]} * * {cron_day_number[day]}')
+                        job.enable()
+                        cron.write()
+                        continue
 
-                    job.setall(f'{data[1]} {data[0]} * * {cron_day_number[day]}')
+                    job = cron.new(command, comment)
+
+                    job.setall(f'{t[1]}-{t[2]}/{t[3]} {t[0]} * * {cron_day_number[day]}')
                     job.enable()
                     cron.write()
 
@@ -90,7 +100,8 @@ class Scheduler:
             for entry in entries:
                 if '-' not in entry:
                     if self._is_time(entry):
-                        weekdays_cleaned[weekday].append(entry)
+                        entry_ = datetime.strptime(entry, '%H:%M')
+                        weekdays_cleaned[weekday].append([entry_.hour, entry_.minute, entry_.minute, 0])
                     else:
                         raise ValidationError(f"Doesn't look like time: {entry}")
                 else:
@@ -121,9 +132,19 @@ class Scheduler:
                     else:
                         start = datetime.strptime(start, '%H:%M')
                         end = datetime.strptime(end, '%H:%M')
+                        start_s = start
 
                         while start <= end:
-                            weekdays_cleaned[weekday].append(start.strftime('%H:%M'))
+                            if start.hour != start_s.hour:
+                                weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
+                                                                  (start - timedelta(minutes=interval)).minute,
+                                                                  interval])
+                                start_s = start
+
                             start += timedelta(minutes=interval)
+
+                        if start.hour == end.hour:
+                            weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
+                                                              end.minute, interval])
 
         return weekdays_cleaned

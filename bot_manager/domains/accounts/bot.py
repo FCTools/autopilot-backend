@@ -96,7 +96,7 @@ class Bot(models.Model):
                                                (LAST_MONTH, "Last month"),
                                                (THIS_YEAR, "This year"),
                                                (ALL_TIME, "All time"),
-                                               )
+                                               ),
                                       )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
