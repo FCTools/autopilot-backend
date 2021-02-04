@@ -139,11 +139,21 @@ class Scheduler:
                                                                   (start - timedelta(minutes=interval)).minute,
                                                                   interval])
                                 start_s = start
+                                continue
+                            if start + timedelta(minutes=interval) > end and start.hour != end.hour:
+                                weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
+                                                                  start.minute,
+                                                                  interval])
+                                start_s = start + timedelta(minutes=interval)
+                            if start + timedelta(minutes=interval) == end and start.hour != end.hour:
+                                weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
+                                                                  start.minute,
+                                                                  interval])
+                                start_s = start + timedelta(minutes=interval)
+                                weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
+                                                                  start.minute,
+                                                                  0])
 
                             start += timedelta(minutes=interval)
-
-                        if start.hour == end.hour:
-                            weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
-                                                              end.minute, interval])
 
         return weekdays_cleaned
