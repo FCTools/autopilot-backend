@@ -25,7 +25,7 @@ class Campaign(models.Model):
                                        on_delete=models.CASCADE, )
 
     def __str__(self):
-        return f"{self.traffic_source} {self.source_id} {self.name}"
+        return f"{self.traffic_source} {self.tracker_id} {self.source_id} {self.name}"
 
     def __eq__(self, other):
         if not other:
@@ -36,8 +36,10 @@ class Campaign(models.Model):
                 self.id == other.id,
                 self.name == other.name,
                 self.traffic_source == other.traffic_source,
+                self.source_id == other.source_id,
+                self.tracker_id == other.trakcer_id
             ]
         )
 
     def __hash__(self):
-        return hash((self.id, self.name, self.traffic_source))
+        return hash((self.id, self.name, self.traffic_source, self.source_id, self.tracker_id))
