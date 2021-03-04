@@ -25,9 +25,19 @@ from bot_manager.services.helpers.validator import Validator
 @login_required(login_url='/admin/login/')
 def log_view(request):
     template = 'statistics_page.html'
+    autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH")
+    if not autopilot_engine_log_path:
+        return render(request, template)
 
     bot_id = request.GET.get('bot_id')
-    return render(request, template, context={'bot_id': bot_id})
+    pattern = f'Bot id: {bot_id}'
+
+    with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
+        log = file.read().split('\n')
+
+    result = [line for line in log if pattern in line]
+
+    return render(request, template, context={'bot_id': bot_id, 'log': '\n'.join(result)})
 
 
 class BotCreator(APIView):
