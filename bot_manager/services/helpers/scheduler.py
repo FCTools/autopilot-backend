@@ -133,27 +133,46 @@ class Scheduler:
                         end = datetime.strptime(end, '%H:%M')
                         start_s = start
 
+                        interval_hours = 0
+
+                        if interval >= 60:
+                            interval_hours = interval // 60
+                            interval_minutes = interval % 60
+                        else:
+                            interval_minutes = interval
+
                         while start <= end:
+                            if interval_hours > 0:
+                                weekdays_cleaned[weekday].append([start_s.hour, start_s.minute, start.minute, 0])
+                                start_s = start
+                                start += timedelta(hours=interval_hours, minutes=interval_minutes)
+                                continue
+
                             if start.hour != start_s.hour:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
-                                                                  (start - timedelta(minutes=interval)).minute,
+                                                                  (start - timedelta(hours=interval_hours,
+                                                                                     minutes=interval_minutes)).minute,
                                                                   interval])
                                 start_s = start
                                 continue
-                            if start + timedelta(minutes=interval) > end and start.hour != end.hour:
+
+                            if start + timedelta(hours=interval_hours,
+                                                 minutes=interval_minutes) > end and start.hour != end.hour:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
                                                                   start.minute,
                                                                   interval])
-                                start_s = start + timedelta(minutes=interval)
-                            if start + timedelta(minutes=interval) == end and start.hour != end.hour:
+                                start_s = start + timedelta(hours=interval_hours, minutes=interval_minutes)
+
+                            if start + timedelta(hours=interval_hours,
+                                                 minutes=interval_minutes) == end and start.hour != end.hour:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
                                                                   start.minute,
                                                                   interval])
-                                start_s = start + timedelta(minutes=interval)
+                                start_s = start + timedelta(hours=interval_hours, minutes=interval_minutes)
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
                                                                   start.minute,
                                                                   0])
 
-                            start += timedelta(minutes=interval)
+                            start += timedelta(hours=interval_hours, minutes=interval_minutes)
 
         return weekdays_cleaned
