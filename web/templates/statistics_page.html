@@ -15,13 +15,20 @@
 {% block body_class %}text-center{% endblock %}
 
 {% block content %}
-    {{ bot_id }}
+    Log: ENGINE INFO-LOG
+    <br>
+    {% if bot_id %}
+        Bot id: {{ bot_id }}
+    {% else %}
+        Bot id: ALL
+    {% endif %}
+    <br>
     {% for line in log %}
         {{ line }}
         <br>
     {% endfor %}
 
     <footer class="container">
-        <p class="mt-5 mb-3 text-muted">© FC Tools 2020</p>
+        <p class="mt-5 mb-3 text-muted">© FC Tools 2020-2021</p>
     </footer>
 {% endblock %}
