@@ -30,10 +30,14 @@ def log_view(request):
         return render(request, template)
 
     bot_id = request.GET.get('bot_id')
+
     pattern = f'Bot id: {bot_id}'
 
     with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
         log = file.read().split('\n')
+
+    if not bot_id:
+        return render(request, template, context={'bot_id': bot_id, 'log': log})
 
     result = [line for line in log if pattern in line]
 
