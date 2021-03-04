@@ -9,7 +9,9 @@
 from django.contrib import admin
 from django.urls import path
 
-from bot_manager.views import BotCreator, BotStarter, BotStopper, BotDeleter, BotUpdater
+from bot_manager.views import BotCreator, BotStarter, BotStopper, BotDeleter, BotUpdater, log_view
+
+admin.site.site_header = 'FC Tools Autopilot Administration'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,4 +20,6 @@ urlpatterns = [
     path('bots/stopBot/', BotStopper.as_view(), name='stop_bot'),
     path('bots/deleteBot/', BotDeleter.as_view(), name='delete_bot'),
     path('bots/editBot/', BotUpdater.as_view(), name='edit_bot'),
+
+    path('bots/botsLog/', log_view, name='Bot log view'),
 ]

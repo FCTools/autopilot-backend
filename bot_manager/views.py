@@ -7,9 +7,11 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 import json
+import os
 
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework import authentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,6 +20,14 @@ from rest_framework.views import APIView
 from bot_manager.domains.accounts.bot import Bot
 from bot_manager.models import Campaign
 from bot_manager.services.helpers.validator import Validator
+
+
+@login_required(login_url='/admin/login/')
+def log_view(request):
+    template = 'statistics_page.html'
+
+    bot_id = request.GET.get('bot_id')
+    return render(request, template, context={'bot_id': bot_id})
 
 
 class BotCreator(APIView):
