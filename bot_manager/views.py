@@ -37,7 +37,7 @@ def log_view(request):
 
     result = [line for line in log if pattern in line]
 
-    return render(request, template, context={'bot_id': bot_id, 'log': '\n'.join(result)})
+    return render(request, template, context={'bot_id': bot_id, 'log': result})
 
 
 class BotCreator(APIView):
