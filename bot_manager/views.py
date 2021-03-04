@@ -25,7 +25,8 @@ from bot_manager.services.helpers.validator import Validator
 @login_required(login_url='/admin/login/')
 def log_view(request):
     template = 'statistics_page.html'
-    autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH")
+    autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH").split('/')
+    autopilot_engine_log_path = os.path.join(*autopilot_engine_log_path)
     if not autopilot_engine_log_path:
         return render(request, template)
 
