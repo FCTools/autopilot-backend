@@ -11,6 +11,12 @@ from django import forms
 
 class LogFilterForm(forms.Form):
 
+    log_type = forms.MultipleChoiceField(
+        choices=(('actions-log', 'actions-log'),
+                 ('environment-log', 'environment-log'),),
+        initial='actions-log'
+    )
+
     bot_id = forms.IntegerField(required=False)
 
     # campaign_id = forms.IntegerField()

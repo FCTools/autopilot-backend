@@ -25,7 +25,12 @@
     </form>
 
     <br>
-    Log: Engine info-log
+    {% if log_type %}
+        Log: {{ log_type }}
+    {% else %}
+        Log: -
+    {% endif %}
+
     <br>
     {% if bot_id %}
         Bot id: {{ bot_id }}

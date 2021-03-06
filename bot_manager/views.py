@@ -31,9 +31,20 @@ def log_view(request):
         form = LogFilterForm(request.POST)
 
         if form.is_valid():
+            if form.cleaned_data['log_type'] == 'environment-log':
+                env_log_path = os.getenv('ENV_LOG_PATH')
+                if not env_log_path:
+                    return render(request, template)
+
+                with open(env_log_path, 'r', encoding='utf-8') as file:
+                    log = file.read().split('\n')
+
+                return render(request, template, context={'log': list(reversed(log)), 'form': form,
+                                                          'log_type': 'environment log'})
+
             bot_id = form.cleaned_data["bot_id"]
 
-            autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH")
+            autopilot_engine_log_path = os.getenv("ACTIONS_LOG_PATH")
             if not autopilot_engine_log_path:
                 return render(request, template)
 
@@ -44,12 +55,12 @@ def log_view(request):
 
             if not bot_id:
                 return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log)),
-                                                          'form': form})
+                                                          'form': form, 'log_type': 'actions log'})
 
             result = [line for line in log if pattern in line]
 
             return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result)),
-                                                      'form': form})
+                                                      'form': form, 'log_type': 'actions log'})
         else:
             return render(request, template, {'form': form})
 
