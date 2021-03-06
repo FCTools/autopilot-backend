@@ -31,7 +31,7 @@ def log_view(request):
         form = LogFilterForm(request.POST)
 
         if form.is_valid():
-            if form.cleaned_data['log_type'] == 'environment-log':
+            if form.cleaned_data['log_type'][0] == 'environment-log':
                 env_log_path = os.getenv('ENV_LOG_PATH')
                 if not env_log_path:
                     return render(request, template)
