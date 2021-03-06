@@ -38,9 +38,9 @@ def log_view(request):
 
     for n, line in enumerate(log):
         if '[info]' in line:
-            log[n] = line.replace('[info]', ' <p class="text_green">[info]</p>')
+            log[n] = line.replace('[info]', '<span class="text_green">[info]</span>')
         elif '[error]' in line:
-            log[n] = line.replace('[info]', ' <p class="text_red">[error]</p>')
+            log[n] = line.replace('[error]', '<span class="text_red">[error]</span>')
 
     if not bot_id:
         return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
