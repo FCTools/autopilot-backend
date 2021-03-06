@@ -43,11 +43,13 @@ def log_view(request):
                 log = file.read().split('\n')
 
             if not bot_id:
-                return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
+                return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log)),
+                                                          'form': form})
 
             result = [line for line in log if pattern in line]
 
-            return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result))})
+            return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result)),
+                                                      'form': form})
         else:
             return render(request, template, {'form': form})
 
