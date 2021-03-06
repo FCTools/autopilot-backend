@@ -11,7 +11,7 @@ from django import forms
 
 class LogFilterForm(forms.Form):
 
-    bot_id = forms.IntegerField()
+    bot_id = forms.IntegerField(required=False)
 
     # campaign_id = forms.IntegerField()
 
