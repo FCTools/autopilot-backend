@@ -9,10 +9,6 @@
             background-color: #ffffff;
             color: #ff0000;
         }
-        .text_green {
-            background-color: #ffffff;
-            color: #23aa00;
-        }
     </style>
 {% endblock %}
 
@@ -29,9 +25,7 @@
     <br>
     <br>
     {% for line in log %}
-        {% if '[info]' in line %}
-            <span class="text_green">{{ line }}</span>
-        {% elif '[error]' in line %}
+        {% if '[error]' in line %}
             <span class="text_red">{{ line }}</span>
         {% else %}
             {{ line }}
