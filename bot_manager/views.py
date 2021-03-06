@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from bot_manager.domains.accounts.bot import Bot
+from bot_manager.forms import LogFilterForm
 from bot_manager.models import Campaign
 from bot_manager.services.helpers.validator import Validator
 
@@ -25,31 +26,34 @@ from bot_manager.services.helpers.validator import Validator
 @login_required(login_url='/admin/login/')
 def log_view(request):
     template = 'statistics_page.html'
-    autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH")
-    if not autopilot_engine_log_path:
-        return render(request, template)
 
-    bot_id = request.GET.get('bot_id')
+    if request.method == "POST":
+        form = LogFilterForm(request.POST)
 
-    pattern = f'Bot id: {bot_id}'
+        if form.is_valid():
+            bot_id = form.cleaned_data["bot_id"]
 
-    with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
-        log = file.read().split('\n')
+            autopilot_engine_log_path = os.getenv("ENGINE_LOG_PATH")
+            if not autopilot_engine_log_path:
+                return render(request, template)
 
-    # for n, line in enumerate(log):
-    #     if '[info]' in line:
-    #         log[n] = line.replace('[info]', '<span class="text_green">[info]</span>')
-    #     elif '[error]' in line:
-    #         log[n] = line.replace('[error]', '<span class="text_red">[error]</span>')
-    #     else:
-    #         log[n] = [0, log[n]]
+            pattern = f'Bot id: {bot_id}'
 
-    if not bot_id:
-        return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
+            with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
+                log = file.read().split('\n')
 
-    result = [line for line in log if pattern in line]
+            if not bot_id:
+                return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
 
-    return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result))})
+            result = [line for line in log if pattern in line]
+
+            return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result))})
+        else:
+            return render(request, template, {'form': form})
+
+    else:
+        form = LogFilterForm()
+        return render(request, template, {"form": form})
 
 
 class BotCreator(APIView):
