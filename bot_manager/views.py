@@ -37,11 +37,11 @@ def log_view(request):
         log = file.read().split('\n')
 
     if not bot_id:
-        return render(request, template, context={'bot_id': bot_id, 'log': log})
+        return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
 
     result = [line for line in log if pattern in line]
 
-    return render(request, template, context={'bot_id': bot_id, 'log': result})
+    return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(result))})
 
 
 class BotCreator(APIView):
