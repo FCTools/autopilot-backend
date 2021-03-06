@@ -29,7 +29,13 @@
     <br>
     <br>
     {% for line in log %}
-        <p>{{ line }}</p>
+        {% if '[info]' in line %}
+            <span class="text_red">{{ line }}</span>
+        {% elif '[error]' in line %}
+            <span class="text_green">{{ line }}</span>
+        {% else %}
+            {{ line }}
+        {% endif %}
         <br>
     {% endfor %}
 

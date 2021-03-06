@@ -36,11 +36,13 @@ def log_view(request):
     with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
         log = file.read().split('\n')
 
-    for n, line in enumerate(log):
-        if '[info]' in line:
-            log[n] = line.replace('[info]', '<span class="text_green">[info]</span>')
-        elif '[error]' in line:
-            log[n] = line.replace('[error]', '<span class="text_red">[error]</span>')
+    # for n, line in enumerate(log):
+    #     if '[info]' in line:
+    #         log[n] = line.replace('[info]', '<span class="text_green">[info]</span>')
+    #     elif '[error]' in line:
+    #         log[n] = line.replace('[error]', '<span class="text_red">[error]</span>')
+    #     else:
+    #         log[n] = [0, log[n]]
 
     if not bot_id:
         return render(request, template, context={'bot_id': bot_id, 'log': list(reversed(log))})
