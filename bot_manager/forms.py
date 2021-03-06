@@ -14,7 +14,8 @@ class LogFilterForm(forms.Form):
     log_type = forms.MultipleChoiceField(
         choices=(('actions-log', 'actions-log'),
                  ('environment-log', 'environment-log'),),
-        initial='actions-log'
+        initial='actions-log',
+        widget=forms.SelectMultiple
     )
 
     bot_id = forms.IntegerField(required=False)

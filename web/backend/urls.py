@@ -21,5 +21,5 @@ urlpatterns = [
     path('bots/deleteBot/', BotDeleter.as_view(), name='delete_bot'),
     path('bots/editBot/', BotUpdater.as_view(), name='edit_bot'),
 
-    path('bots/botsLog/', log_view, name='bot_log_view'),
+    path('bots/monitor/', log_view, name='monitor_view'),
 ]
