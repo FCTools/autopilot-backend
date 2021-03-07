@@ -40,6 +40,7 @@ class BotForm(forms.ModelForm):
             "schedule",
             "period",
             "ignored_zones",
+            "list_to_add",
         ]
         current_user = None
 
