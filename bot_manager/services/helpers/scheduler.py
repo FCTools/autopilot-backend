@@ -40,9 +40,9 @@ class Scheduler:
         return time.strptime(t, '%H:%M')
 
     @staticmethod
-    def set_on_crontab(schedule, comment, bot_id):
-        cron = CronTab(user=settings.CRONTAB_USER)
-        command = settings.REDIS_SET_COMMAND + f' "{str(bot_id)}" ' + '"value"'
+    def set_on_crontab(schedule, bot_id):
+        cron = CronTab(user=f'Bot_{bot_id}')
+        command = settings.REDIS_SET_COMMAND + f' "{bot_id}" ' + '"value"'
 
         weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
         cron_day_number = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6}
@@ -50,7 +50,7 @@ class Scheduler:
         for day in weekdays:
             if day in schedule:
                 for t in schedule[day]:
-                    job = cron.new(command, comment)
+                    job = cron.new(command)
 
                     if t[-1] == 0:
                         job.setall(f'{t[1]} {t[0]} * * {cron_day_number[day]}')
@@ -61,26 +61,26 @@ class Scheduler:
                     cron.write()
 
     @staticmethod
-    def clear_jobs(comment):
-        cron = CronTab(user=settings.CRONTAB_USER)
-        cron.remove_all(comment=comment)
+    def clear_jobs(bot_id):
+        cron = CronTab(user=f'Bot_{bot_id}')
+        cron.remove_all()
         cron.write()
 
     @staticmethod
-    def disable_jobs(comment):
-        cron = CronTab(user=settings.CRONTAB_USER)
+    def disable_jobs(bot_id):
+        cron = CronTab(user=f'Bot_{bot_id}')
+
         for job in cron:
-            if job.comment == comment:
-                job.enable(False)
-                cron.write()
+            job.enable(False)
+            cron.write()
 
     @staticmethod
-    def enable_jobs(comment):
-        cron = CronTab(user=settings.CRONTAB_USER)
+    def enable_jobs(bot_id):
+        cron = CronTab(user=f'Bot_{bot_id}')
+
         for job in cron:
-            if job.comment == comment:
-                job.enable()
-                cron.write()
+            job.enable()
+            cron.write()
 
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()

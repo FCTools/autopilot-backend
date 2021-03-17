@@ -109,7 +109,7 @@ class Bot(models.Model):
                                      help_text="Please specify each zone on a new line", )
 
     def delete(self, *args, **kwargs):
-        Scheduler().clear_jobs(self.crontab_comment)
+        Scheduler().clear_jobs(self.id)
         super(Bot, self).delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
@@ -127,7 +127,7 @@ class Bot(models.Model):
             prev_status = this_bot_db.status
 
             if self.schedule != prev_schedule:
-                scheduler.clear_jobs(this_bot_db.crontab_comment)
+                scheduler.clear_jobs(self.id)
                 self.crontab_comment = "empty"
 
                 _logger.info("Schedule changing detected. Clear old schedule and set crontab comment to default.")
@@ -141,11 +141,11 @@ class Bot(models.Model):
             super(Bot, self).save(*args, **kwargs)
             _logger.info("Call super-save.")
 
-            scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
+            scheduler.set_on_crontab(parsed_schedule, self.id)
             _logger.info("Set new schedule to crontab.")
 
             if self.status == "disabled":
-                scheduler.disable_jobs(self.crontab_comment)
+                scheduler.disable_jobs(self.id)
 
             return
 
@@ -154,9 +154,9 @@ class Bot(models.Model):
 
         if prev_status and prev_status != self.status:
             if self.status == "disabled":
-                scheduler.disable_jobs(self.crontab_comment)
+                scheduler.disable_jobs(self.id)
             else:
-                scheduler.enable_jobs(self.crontab_comment)
+                scheduler.enable_jobs(self.id)
 
         _logger.info(f"Bot was successfully saved: {self.name}")
 
