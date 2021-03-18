@@ -108,6 +108,9 @@ class Bot(models.Model):
     ignored_zones = models.TextField(verbose_name="Ignored zones", null=True, blank=True, default=None,
                                      help_text="Please specify each zone on a new line", )
 
+    client_id = models.CharField(max_length=128, verbose_name="Client key (for mgid)", null=True, blank=True,
+                                 default="-", )
+
     def delete(self, *args, **kwargs):
         Scheduler().clear_jobs(self.crontab_comment)
         super(Bot, self).delete(*args, **kwargs)
