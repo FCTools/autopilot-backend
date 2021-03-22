@@ -105,3 +105,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
 
 STATIC_URL = "/static/"
+
+# internal autopilot codes for actions
+PLAY_CAMPAIGN = 1
+STOP_CAMPAIGN = 2
+EXCLUDE_ZONE = 3
+INCLUDE_ZONE = 4
+
+# tracker codes for filtering statistics by time
+TODAY = 1
+YESTERDAY = 2
+THIS_WEEK = 11
+LAST_2_DAYS = 13
+LAST_3_DAYS = 14
+LAST_7_DAYS = 3
+LAST_14_DAYS = 4
+THIS_MONTH = 5
+LAST_MONTH = 6
+THIS_YEAR = 7
+ALL_TIME = 9
+
+# bot types
+PLAY_STOP_CAMPAIGN = 1  # this bots check whole campaign and play or stop it
+INCLUDE_EXCLUDE_ZONE = 2  # this bots check campaign zones and include/exclude these zones
