@@ -10,7 +10,12 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from pydantic import ValidationError
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from bot_manager.domains.accounts.bot import Bot
+from bot_manager.domains.api_models import bot
 from bot_manager.forms import LogFilterForm
 
 
@@ -58,3 +63,31 @@ def log_view(request):
     else:
         form = LogFilterForm()
         return render(request, template, {"form": form})
+
+
+class BotCreationView(APIView):
+    queryset = Bot.objects.all()
+
+    def post(self, request):
+        try:
+            new_bot = bot.Bot.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json')
+
+        new_bot_db = Bot.objects.create(name=new_bot.name,
+                                        type=new_bot.type,
+                                        user=new_bot.user_id,
+                                        traffic_source=new_bot.traffic_source,
+                                        condition=new_bot.condition,
+                                        status='disabled',
+                                        action=new_bot.action,
+                                        ts_api_key=new_bot.ts_api_key,
+                                        schedule=new_bot.schedule,
+                                        period=new_bot.period,
+                                        ignored_zones=new_bot.ignored_sources, )
+
+        # for campaign in new_bot.campaigns_ids:
+        #     new_bot_db.campaigns.add(campaign.)
+
+        return Response(data={'success': True}, content_type='application/json')
