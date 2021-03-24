@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from bot_manager.domains.accounts.bot import Bot
+from bot_manager.domains.accounts.traffic_source import TrafficSource
 from bot_manager.domains.api_models import bot
 from bot_manager.forms import LogFilterForm
 
@@ -73,12 +74,14 @@ class BotCreationView(APIView):
             new_bot = bot.Bot.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json')
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        ts = TrafficSource.objects.get(name=new_bot.traffic_source)
 
         new_bot_db = Bot.objects.create(name=new_bot.name,
                                         type=new_bot.type,
-                                        user=new_bot.user_id,
-                                        traffic_source=new_bot.traffic_source,
+                                        user_id=new_bot.user_id,
+                                        traffic_source=ts,
                                         condition=new_bot.condition,
                                         status='disabled',
                                         action=new_bot.action,
@@ -87,6 +90,42 @@ class BotCreationView(APIView):
                                         period=new_bot.period,
                                         ignored_zones=new_bot.ignored_sources, )
 
+        # for campaign in new_bot.campaigns_ids:
+        #     new_bot_db.campaigns.add(campaign.)
+
+        return Response(data={'success': True}, content_type='application/json')
+
+
+class BotUpdatingView(APIView):
+    queryset = Bot.objects.all()
+
+    def put(self, request):
+        try:
+            if 'bot_id' not in request.data:
+                return Response(data={'success': False,
+                                      'error_message': 'bot_id is required'},
+                                content_type='application/json', status=400)
+
+            bot_to_update = bot.Bot.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
+
+        Bot.objects.get(pk=bot_to_update.bot_id).update(name=bot_to_update.name,
+                                                        type=bot_to_update.type,
+                                                        user_id=bot_to_update.user_id,
+                                                        traffic_source=ts,
+                                                        condition=bot_to_update.condition,
+                                                        status='disabled',
+                                                        action=bot_to_update.action,
+                                                        ts_api_key=bot_to_update.ts_api_key,
+                                                        schedule=bot_to_update.schedule,
+                                                        period=bot_to_update.period,
+                                                        ignored_zones=bot_to_update.ignored_sources, )
+
+        # TODO: add campaigns updating
         # for campaign in new_bot.campaigns_ids:
         #     new_bot_db.campaigns.add(campaign.)
 

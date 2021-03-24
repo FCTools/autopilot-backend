@@ -6,7 +6,7 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from pydantic import BaseModel, validator
@@ -22,7 +22,7 @@ class Bot(BaseModel):
     type: int
     user_id: int
     condition: str
-    schedule: List[str]
+    schedule: str
     traffic_source: str
     ts_api_key: str
     tracker: str
@@ -30,7 +30,8 @@ class Bot(BaseModel):
     campaigns_ids: List[Campaign]
     period: int
     action: int
-    ignored_sources: List[str]
+    ignored_sources: Optional[List[str]]
+    bot_id: Optional[int]
 
     @validator('type', allow_reuse=True)
     def type_is_valid(cls, type_):
@@ -55,7 +56,7 @@ class Bot(BaseModel):
     @validator('traffic_source', allow_reuse=True)
     def ts_is_valid(cls, ts):
         # TODO: add supported traffic sources
-        assert ts in []
+        # assert ts in []
         return ts
 
     @validator('period', allow_reuse=True)
