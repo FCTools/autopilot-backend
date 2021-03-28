@@ -130,3 +130,54 @@ class BotUpdatingView(APIView):
         #     new_bot_db.campaigns.add(campaign.)
 
         return Response(data={'success': True}, content_type='application/json')
+
+
+class BotStartingView(APIView):
+    def patch(self, request):
+        try:
+            bot_to_start_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        bot_id = bot_to_start_model.bot_id
+        bot_db = Bot.objects.get(pk=bot_id)
+
+        if bot_db.status != 'enabled':
+            bot_db.status = 'enabled'
+            bot_db.save()
+
+        return Response(data={'success': True}, content_type='application/json')
+
+
+class BotStoppingView(APIView):
+    def patch(self, request):
+        try:
+            bot_to_stop_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        bot_id = bot_to_stop_model.bot_id
+        bot_db = Bot.objects.get(pk=bot_id)
+
+        if bot_db.status != 'disabled':
+            bot_db.status = 'disabled'
+            bot_db.save()
+
+        return Response(data={'success': True}, content_type='application/json')
+
+
+class BotDeletingView(APIView):
+    def patch(self, request):
+        pass
+
+
+class BotListView(APIView):
+    def get(self, request):
+        pass
+
+
+class BotInfoView(APIView):
+    def get(self, request):
+        pass

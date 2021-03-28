@@ -102,12 +102,12 @@ class Bot(BaseModel):
 #
 # class DeleteRequestBody(BaseModel):
 #     pass
-#
-#
-# class StartRequestBody(BaseModel):
-#     pass
-#
-#
+
+
+class ChangeStatusRequestBody(BaseModel):
+    bot_id: int
+    user_id: int
+
 # class StopRequestBody(BaseModel):
 #     pass
 #
