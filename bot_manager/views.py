@@ -170,7 +170,17 @@ class BotStoppingView(APIView):
 
 class BotDeletingView(APIView):
     def patch(self, request):
-        pass
+        try:
+            bot_to_delete_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        bot_id = bot_to_delete_model.bot_id
+        bot_db = Bot.objects.get(pk=bot_id)
+        bot_db.delete()
+
+        return Response(data={'success': True}, content_type='application/json')
 
 
 class BotListView(APIView):
