@@ -88,10 +88,8 @@ class BotCreationView(APIView):
                                         ts_api_key=new_bot.ts_api_key,
                                         schedule=new_bot.schedule,
                                         period=new_bot.period,
-                                        ignored_zones=new_bot.ignored_sources, )
-
-        # for campaign in new_bot.campaigns_ids:
-        #     new_bot_db.campaigns.add(campaign.)
+                                        ignored_zones=new_bot.ignored_sources,
+                                        campaigns_list=new_bot.campaigns_ids, )
 
         return Response(data={'success': True}, content_type='application/json')
 
@@ -123,11 +121,8 @@ class BotUpdatingView(APIView):
                                                         ts_api_key=bot_to_update.ts_api_key,
                                                         schedule=bot_to_update.schedule,
                                                         period=bot_to_update.period,
-                                                        ignored_zones=bot_to_update.ignored_sources, )
-
-        # TODO: add campaigns updating
-        # for campaign in new_bot.campaigns_ids:
-        #     new_bot_db.campaigns.add(campaign.)
+                                                        ignored_zones=bot_to_update.ignored_sources,
+                                                        campaigns_list=bot_to_update.campaigns_ids, )
 
         return Response(data={'success': True}, content_type='application/json')
 

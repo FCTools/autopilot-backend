@@ -26,10 +26,10 @@ urlpatterns = [
     path('bots/monitor/', log_view, name='monitor'),
 
     path('bots/createBot/', BotCreationView.as_view(), name='createBot'),
-    path('/bots/updateBot/', BotUpdatingView.as_view(), name='updateBot'),
-    path('/bots/stopBot/', BotStoppingView.as_view(), name='stopBot'),
-    path('/bots/startBot/', BotStartingView.as_view(), name='startBot'),
-    path('/bots/deleteBot/', BotDeletingView.as_view(), name='deleteBot'),
-    path('/bots/getList/', BotListView.as_view(), name='getList'),
-    path('/bots/getBot/', BotInfoView.as_view(), name='getBot'),
+    path('bots/updateBot/', BotUpdatingView.as_view(), name='updateBot'),
+    path('bots/stopBot/', BotStoppingView.as_view(), name='stopBot'),
+    path('bots/startBot/', BotStartingView.as_view(), name='startBot'),
+    path('bots/deleteBot/', BotDeletingView.as_view(), name='deleteBot'),
+    path('bots/getList/', BotListView.as_view(), name='getList'),
+    path('bots/getBot/', BotInfoView.as_view(), name='getBot'),
 ]
