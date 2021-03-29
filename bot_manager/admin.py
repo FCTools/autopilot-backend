@@ -8,15 +8,14 @@
 
 import logging
 
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from django.core.exceptions import ValidationError
 
 from bot_manager.domains.accounts.traffic_source import TrafficSource
 from bot_manager.models import Bot, Campaign
-from bot_manager.services.helpers.scheduler import Scheduler
 from bot_manager.services.helpers.condition_parser import ConditionParser
-
+from bot_manager.services.helpers.scheduler import Scheduler
 
 _logger = logging.getLogger(__name__)
 
@@ -73,7 +72,6 @@ class BotForm(forms.ModelForm):
 class AdminBot(admin.ModelAdmin):
     actions = None
     list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
-    filter_horizontal = ['campaigns_list']
     form = BotForm
 
     def get_queryset(self, request):
