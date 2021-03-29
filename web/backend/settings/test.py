@@ -17,6 +17,7 @@ DATABASE_PORT = os.getenv("DATABASE_PORT")
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "185.92.148.88",
+    "vm1962576.41ssd.had.wf"
     "localhost",
 ]
 
