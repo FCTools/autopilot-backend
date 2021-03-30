@@ -78,18 +78,18 @@ class BotCreationView(APIView):
 
         ts = TrafficSource.objects.get(name=new_bot.traffic_source)
 
-        new_bot_db = Bot.objects.create(name=new_bot.name,
-                                        type=new_bot.type,
-                                        user_id=new_bot.user_id,
-                                        traffic_source=ts,
-                                        condition=new_bot.condition,
-                                        status='disabled',
-                                        action=new_bot.action,
-                                        ts_api_key=new_bot.ts_api_key,
-                                        schedule=new_bot.schedule,
-                                        period=new_bot.period,
-                                        ignored_zones=new_bot.ignored_sources,
-                                        campaigns_list=new_bot.campaigns_ids, )
+        Bot.objects.create(name=new_bot.name,
+                           type=new_bot.type,
+                           user_id=new_bot.user_id,
+                           traffic_source=ts,
+                           condition=new_bot.condition,
+                           status='disabled',
+                           action=new_bot.action,
+                           ts_api_key=new_bot.ts_api_key,
+                           schedule=new_bot.schedule,
+                           period=new_bot.period,
+                           ignored_zones=new_bot.ignored_sources,
+                           campaigns_list=new_bot.campaigns_ids, )
 
         return Response(data={'success': True}, content_type='application/json')
 
@@ -178,11 +178,26 @@ class BotDeletingView(APIView):
         return Response(data={'success': True}, content_type='application/json')
 
 
-class BotListView(APIView):
-    def get(self, request):
-        pass
-
-
 class BotInfoView(APIView):
+    def get(self, request):
+        try:
+            bot_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
+        except ValidationError as error:
+            return Response(data={'success': False,
+                                  'error_message': str(error)}, content_type='application/json', status=400)
+
+        # TODO: add bot and user validating
+        # TODO: need to generalize tracker mechanisms
+        bot_db = Bot.objects.get(pk=bot_model.id)
+        bot_json = {'name': bot_db.name, 'bot_id': bot_model.id, 'type': bot_db.type, 'status': bot_db.status,
+                    'condition': bot_db.condition, 'schedule': bot_db.schedule, 'traffic_source': bot_db.traffic_source,
+                    'ts_api_key': bot_db.ts_api_key, 'tracker': bot_db.tracker,
+                    'tracker_api_key': bot_db.tracker_api_key,
+                    'campaigns_ids': bot_db.campaigns_list, 'user_id': bot_db.user_id, 'period': bot_db.period,
+                    'action': bot_db.action,
+                    'ignored_sources': bot_db.ignored_sources}
+
+
+class BotListView(APIView):
     def get(self, request):
         pass
