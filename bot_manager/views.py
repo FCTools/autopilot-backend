@@ -197,6 +197,9 @@ class BotInfoView(APIView):
                     'action': bot_db.action,
                     'ignored_sources': bot_db.ignored_sources}
 
+        return Response(data={'success': True, 'info': bot_json}, content_type='application/json',
+                        status=200)
+
 
 class BotListView(APIView):
     def get(self, request):
