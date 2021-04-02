@@ -113,7 +113,7 @@ class BotUpdatingView(APIView):
 
         Bot.objects.get(pk=bot_to_update.bot_id).update(name=bot_to_update.name,
                                                         type=bot_to_update.type,
-                                                        user_id=bot_to_update.user_id,
+                                                        user=bot_to_update.user_id,
                                                         traffic_source=ts,
                                                         condition=bot_to_update.condition,
                                                         status='disabled',
