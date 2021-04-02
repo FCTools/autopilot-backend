@@ -132,6 +132,8 @@ class BotUpdatingView(APIView):
 
 
 class BotStartingView(APIView):
+    queryset = Bot.objects.all()
+
     def patch(self, request):
         try:
             bot_to_start_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
@@ -150,6 +152,8 @@ class BotStartingView(APIView):
 
 
 class BotStoppingView(APIView):
+    queryset = Bot.objects.all()
+
     def patch(self, request):
         try:
             bot_to_stop_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
@@ -168,6 +172,8 @@ class BotStoppingView(APIView):
 
 
 class BotDeletingView(APIView):
+    queryset = Bot.objects.all()
+
     def patch(self, request):
         try:
             bot_to_delete_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
@@ -183,6 +189,8 @@ class BotDeletingView(APIView):
 
 
 class BotInfoView(APIView):
+    queryset = Bot.objects.all()
+
     def get(self, request):
         try:
             bot_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
@@ -206,5 +214,7 @@ class BotInfoView(APIView):
 
 
 class BotListView(APIView):
+    queryset = Bot.objects.all()
+
     def get(self, request):
         pass
