@@ -122,7 +122,8 @@ class BotUpdatingView(APIView):
                                                         schedule=bot_to_update.schedule,
                                                         period=bot_to_update.period,
                                                         ignored_zones=bot_to_update.ignored_sources,
-                                                        campaigns_list=bot_to_update.campaigns_ids, )
+                                                        campaigns_list=[json.loads(camp.json()) for camp in
+                                                                        bot_to_update.campaigns_ids], )
 
         return Response(data={'success': True}, content_type='application/json')
 
