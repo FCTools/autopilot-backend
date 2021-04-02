@@ -89,7 +89,7 @@ class BotCreationView(APIView):
                            schedule=new_bot.schedule,
                            period=new_bot.period,
                            ignored_zones=new_bot.ignored_sources,
-                           campaigns_list=new_bot.campaigns_ids, )
+                           campaigns_list=new_bot.campaigns_ids.json(), )
 
         return Response(data={'success': True}, content_type='application/json')
 
