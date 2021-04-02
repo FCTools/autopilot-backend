@@ -111,19 +111,22 @@ class BotUpdatingView(APIView):
 
         ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
 
-        Bot.objects.get(pk=bot_to_update.bot_id).update(name=bot_to_update.name,
-                                                        type=bot_to_update.type,
-                                                        user=bot_to_update.user_id,
-                                                        traffic_source=ts,
-                                                        condition=bot_to_update.condition,
-                                                        status='disabled',
-                                                        action=bot_to_update.action,
-                                                        ts_api_key=bot_to_update.ts_api_key,
-                                                        schedule=bot_to_update.schedule,
-                                                        period=bot_to_update.period,
-                                                        ignored_zones=bot_to_update.ignored_sources,
-                                                        campaigns_list=[json.loads(camp.json()) for camp in
-                                                                        bot_to_update.campaigns_ids], )
+        bot_to_update_db = Bot.objects.get(pk=bot_to_update.bot_id)
+
+        bot_to_update_db.name = bot_to_update.name
+        bot_to_update_db.type = bot_to_update.type
+        bot_to_update_db.user = bot_to_update.user_id
+        bot_to_update_db.traffic_source = ts
+        bot_to_update_db.condition = bot_to_update.condition
+        bot_to_update_db.status = 'disabled'
+        bot_to_update_db.action = bot_to_update.action
+        bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
+        bot_to_update_db.schedule = bot_to_update.schedule
+        bot_to_update_db.period = bot_to_update.period
+        bot_to_update_db.ignored_zones = bot_to_update.ignored_sources
+        bot_to_update_db.campaigns_list = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
+
+        bot_to_update_db.save()
 
         return Response(data={'success': True}, content_type='application/json')
 
