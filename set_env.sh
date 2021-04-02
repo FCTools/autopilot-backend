@@ -1,7 +1,0 @@
-export DJANGO_SETTINGS_MODULE='backend.settings.dev'
-export BINOM_API_KEY='310000011bf0b5a1a59094e816b08094e3902ba4'
-export SECRET_KEY='oxure#g+o%d9818z1uct(!5c!ksqhlfz7j%8n1y27mb3zy59te'
-export DATABASE_USER='fctools_admin'
-export DATABASE_PASSWORD='vuLT6j4L'
-export DATABASE_HOST='localhost'
-export TRACKER_URL='https://fcttrk.com/'
