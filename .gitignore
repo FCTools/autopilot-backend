@@ -6,6 +6,7 @@ __pycache__/
 # C extensions
 *.so
 .idea/
+set-env.sh
 
 # Distribution / packaging
 .Python
