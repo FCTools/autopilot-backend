@@ -80,7 +80,7 @@ class BotCreationView(APIView):
 
         Bot.objects.create(name=new_bot.name,
                            type=new_bot.type,
-                           user_id=new_bot.user_id,
+                           user=new_bot.user_id,
                            traffic_source=ts,
                            condition=new_bot.condition,
                            status='disabled',
