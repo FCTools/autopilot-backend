@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
-
+import json
 import os
 
 from django.contrib.auth.decorators import login_required
@@ -89,7 +89,7 @@ class BotCreationView(APIView):
                            schedule=new_bot.schedule,
                            period=new_bot.period,
                            ignored_zones=new_bot.ignored_sources,
-                           campaigns_list=new_bot.campaigns_ids.json(), )
+                           campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
         return Response(data={'success': True}, content_type='application/json')
 
