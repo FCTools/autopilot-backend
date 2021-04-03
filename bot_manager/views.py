@@ -5,12 +5,14 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
+
 import json
 import os
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from pydantic import ValidationError
+from rest_framework import authentication, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -68,13 +70,15 @@ def log_view(request):
 
 class BotCreationView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def post(self, request):
         try:
             new_bot = bot.Bot.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         ts = TrafficSource.objects.get(name=new_bot.traffic_source)
 
@@ -91,11 +95,12 @@ class BotCreationView(APIView):
                            ignored_zones=new_bot.ignored_sources,
                            campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
-        return Response(data={'success': True}, content_type='application/json')
+        return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
 
 
 class BotUpdatingView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def put(self, request):
         try:
@@ -107,7 +112,8 @@ class BotUpdatingView(APIView):
             bot_to_update = bot.Bot.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
 
@@ -128,18 +134,20 @@ class BotUpdatingView(APIView):
 
         bot_to_update_db.save()
 
-        return Response(data={'success': True}, content_type='application/json')
+        return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
 
 
 class BotStartingView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def patch(self, request):
         try:
             bot_to_start_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         bot_id = bot_to_start_model.bot_id
         bot_db = Bot.objects.get(pk=bot_id)
@@ -153,13 +161,15 @@ class BotStartingView(APIView):
 
 class BotStoppingView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def patch(self, request):
         try:
             bot_to_stop_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         bot_id = bot_to_stop_model.bot_id
         bot_db = Bot.objects.get(pk=bot_id)
@@ -168,35 +178,39 @@ class BotStoppingView(APIView):
             bot_db.status = 'disabled'
             bot_db.save()
 
-        return Response(data={'success': True}, content_type='application/json')
+        return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
 
 
 class BotDeletingView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def patch(self, request):
         try:
             bot_to_delete_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         bot_id = bot_to_delete_model.bot_id
         bot_db = Bot.objects.get(pk=bot_id)
         bot_db.delete()
 
-        return Response(data={'success': True}, content_type='application/json')
+        return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
 
 
 class BotInfoView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def get(self, request):
         try:
             bot_model = bot.ChangeStatusRequestBody.parse_obj(request.data)
         except ValidationError as error:
             return Response(data={'success': False,
-                                  'error_message': str(error)}, content_type='application/json', status=400)
+                                  'detail': str(error)}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: add bot and user validating
         # TODO: need to generalize tracker mechanisms
@@ -210,11 +224,12 @@ class BotInfoView(APIView):
                     'ignored_sources': bot_db.ignored_sources}
 
         return Response(data={'success': True, 'info': bot_json}, content_type='application/json',
-                        status=200)
+                        status=status.HTTP_200_OK)
 
 
 class BotListView(APIView):
     queryset = Bot.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
 
     def get(self, request):
         pass
