@@ -112,6 +112,10 @@ STOP_CAMPAIGN = 2
 EXCLUDE_ZONE = 3
 INCLUDE_ZONE = 4
 
+# bot statuses
+ENABLED = 'enabled'
+DISABLED = 'disabled'
+
 # tracker codes for filtering statistics by time
 TODAY = 1
 YESTERDAY = 2

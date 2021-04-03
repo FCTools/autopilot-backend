@@ -11,6 +11,7 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.conf import settings
 from pydantic import ValidationError
 from rest_framework import authentication, status
 from rest_framework.response import Response
@@ -87,7 +88,7 @@ class BotCreationView(APIView):
                            user=new_bot.user_id,
                            traffic_source=ts,
                            condition=new_bot.condition,
-                           status='disabled',
+                           status=settings.DISABLED,
                            action=new_bot.action,
                            ts_api_key=new_bot.ts_api_key,
                            schedule=new_bot.schedule,
@@ -124,7 +125,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.user = bot_to_update.user_id
         bot_to_update_db.traffic_source = ts
         bot_to_update_db.condition = bot_to_update.condition
-        bot_to_update_db.status = 'disabled'
+        bot_to_update_db.status = settings.DISABLED
         bot_to_update_db.action = bot_to_update.action
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
         bot_to_update_db.schedule = bot_to_update.schedule
@@ -174,8 +175,8 @@ class BotStoppingView(APIView):
         bot_id = bot_to_stop_model.bot_id
         bot_db = Bot.objects.get(pk=bot_id)
 
-        if bot_db.status != 'disabled':
-            bot_db.status = 'disabled'
+        if bot_db.status != settings.DISABLED:
+            bot_db.status = settings.DISABLED
             bot_db.save()
 
         return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
