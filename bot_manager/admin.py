@@ -33,6 +33,8 @@ class BotForm(forms.ModelForm):
             "traffic_source",
             "campaigns_list",
             "condition",
+            "tracker",
+            "tracker_api_key",
             "status",
             "action",
             "ts_api_key",

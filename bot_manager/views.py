@@ -216,7 +216,7 @@ class BotInfoView(APIView):
         # TODO: add bot and user validating
         # TODO: need to generalize tracker mechanisms
         bot_db = Bot.objects.get(pk=bot_model.id)
-        bot_json = {'name': bot_db.name, 'bot_id': bot_model.id, 'type': bot_db.type, 'status': bot_db.status,
+        bot_json = {'name': bot_db.name, 'bot_id': bot_db.pk, 'type': bot_db.type, 'status': bot_db.status,
                     'condition': bot_db.condition, 'schedule': bot_db.schedule, 'traffic_source': bot_db.traffic_source,
                     'ts_api_key': bot_db.ts_api_key, 'tracker': bot_db.tracker,
                     'tracker_api_key': bot_db.tracker_api_key,

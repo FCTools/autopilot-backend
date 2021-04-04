@@ -37,6 +37,10 @@ class Bot(models.Model):
     traffic_source = models.ForeignKey(verbose_name="Traffic source", to='TrafficSource', null=False, blank=False,
                                        on_delete=models.DO_NOTHING, )
 
+    tracker = models.CharField(verbose_name="Tracker", null=False, blank=False, max_length=64, )
+
+    tracker_api_key = models.CharField(verbose_name="Tracker API key", max_length=128, null=False, blank=False, )
+
     campaigns_list = models.JSONField(verbose_name="Campaigns",
                                       help_text="If campaign doesn't exist, you can create it here using \"+\".")
 
