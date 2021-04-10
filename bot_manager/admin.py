@@ -13,7 +13,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 
 from bot_manager.domains.accounts.traffic_source import TrafficSource
-from bot_manager.models import Bot, Campaign
+from bot_manager.models import Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
 from bot_manager.services.helpers.scheduler import Scheduler
 
@@ -56,9 +56,9 @@ class BotForm(forms.ModelForm):
 
         self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
 
-        for campaign in self.cleaned_data['campaigns_list']:
-            if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
-                raise ValidationError("You can only choose campaigns from specified traffic source.")
+        # for campaign in self.cleaned_data['campaigns_list']:
+        #     if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
+        #         raise ValidationError("You can only choose campaigns from specified traffic source.")
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")
@@ -86,11 +86,6 @@ class AdminBot(admin.ModelAdmin):
         form = super(AdminBot, self).get_form(request, *args, **kwargs)
         form.current_user = request.user
         return form
-
-
-@admin.register(Campaign)
-class AdminCampaign(admin.ModelAdmin):
-    list_display = ['id', 'tracker_id', 'source_id', 'name']
 
 
 @admin.register(TrafficSource)

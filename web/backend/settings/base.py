@@ -98,8 +98,8 @@ USE_TZ = True
 CRONTAB_USER = os.getenv('CRONTAB_USER')
 REDIS_SET_COMMAND = os.getenv('REDIS_SET_COMMAND')
 
-BINOM_API_KEY = os.getenv("BINOM_API_KEY")
-TRACKER_URL = os.getenv("TRACKER_URL")
+# BINOM_API_KEY = os.getenv("BINOM_API_KEY")
+# TRACKER_URL = os.getenv("TRACKER_URL")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
@@ -116,7 +116,7 @@ INCLUDE_ZONE = 4
 ENABLED = 'enabled'
 DISABLED = 'disabled'
 
-# tracker codes for filtering statistics by time
+# tracker (binom) codes for filtering statistics by time
 TODAY = 1
 YESTERDAY = 2
 THIS_WEEK = 11

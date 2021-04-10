@@ -23,9 +23,7 @@ class Bot(models.Model):
                             help_text="Any string up to 128 characters", )
 
     """
-    There are 2 types of bots: 
-    second type (2) - these bots check zones for each campaign and add these landings to black/white list
-    first type (1) - these bots check campaigns and stop/start it depending on condition
+    You can read about bot types in documentation (can be found in YouTrack).
     """
     type = models.PositiveSmallIntegerField(verbose_name="Type", null=False, blank=False,
                                             choices=((settings.PLAY_STOP_CAMPAIGN, "Play/stop campaign"),
@@ -124,7 +122,8 @@ class Bot(models.Model):
             super(Bot, self).save(*args, **kwargs)
             _logger.info("Call super-save.")
 
-            scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
+            if parsed_schedule:
+                scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
             _logger.info("Set new schedule to crontab.")
 
             if self.status == "disabled":
