@@ -34,6 +34,7 @@ class BotForm(forms.ModelForm):
             "campaigns_list",
             "condition",
             "tracker",
+            "tracker_url",
             "tracker_api_key",
             "status",
             "action",
@@ -55,10 +56,6 @@ class BotForm(forms.ModelForm):
             raise ValidationError("You can't create bot for another user.")
 
         self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
-
-        # for campaign in self.cleaned_data['campaigns_list']:
-        #     if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
-        #         raise ValidationError("You can only choose campaigns from specified traffic source.")
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")

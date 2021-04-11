@@ -14,7 +14,7 @@ from pydantic import BaseModel, validator
 
 class Campaign(BaseModel):
     source_id: str
-    tracker_id: int
+    tracker_id: str
 
 
 class Bot(BaseModel):
@@ -55,21 +55,17 @@ class Bot(BaseModel):
 
     @validator('traffic_source', allow_reuse=True)
     def ts_is_valid(cls, ts):
-        # TODO: add supported traffic sources
-        # assert ts in []
+        assert ts in settings.SUPPORTED_TRAFFIC_SOURCES
         return ts
 
     @validator('period', allow_reuse=True)
     def period_is_valid(cls, period):
-        assert period in [1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 14]
+        assert period in settings.SUPPORTED_PERIODS
         return period
 
     @validator('action', allow_reuse=True)
     def action_is_valid(cls, action):
-        assert action in [settings.PLAY_CAMPAIGN,
-                          settings.STOP_CAMPAIGN,
-                          settings.EXCLUDE_ZONE,
-                          settings.INCLUDE_ZONE]
+        assert action in settings.SUPPORTED_ACTIONS
         return action
 
     @validator('ignored_sources', allow_reuse=True)
@@ -84,7 +80,7 @@ class Bot(BaseModel):
 
     @validator('tracker', allow_reuse=True)
     def tracker_is_valid(cls, tracker):
-        # TODO: implement validation
+        assert tracker in settings.SUPPORTED_TRACKERS
         return tracker
 
     @validator('tracker_api_key', allow_reuse=True)
@@ -92,29 +88,7 @@ class Bot(BaseModel):
         # TODO: implement validation
         return tracker_api_key
 
-# class CreateRequestBody(BaseModel):
-#     pass
-#
-#
-# class UpdateRequestBody(BaseModel):
-#     pass
-#
-#
-# class DeleteRequestBody(BaseModel):
-#     pass
-
 
 class ChangeStatusRequestBody(BaseModel):
     bot_id: int
     user_id: int
-
-# class StopRequestBody(BaseModel):
-#     pass
-#
-#
-# class ListRequestBody(BaseModel):
-#     pass
-#
-#
-# class BotInfoRequestBody(BaseModel):
-#     pass

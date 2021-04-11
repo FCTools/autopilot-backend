@@ -39,6 +39,8 @@ class Bot(models.Model):
 
     tracker_api_key = models.CharField(verbose_name="Tracker API key", max_length=128, null=False, blank=False, )
 
+    tracker_url = models.CharField(verbose_name="Tracker url for requests", max_length=256, null=False, blank=False, )
+
     campaigns_list = models.JSONField(verbose_name="Campaigns",
                                       help_text="If campaign doesn't exist, you can create it here using \"+\".")
 
