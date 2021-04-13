@@ -245,4 +245,12 @@ class BotListView(APIView):
         bots_list_json = []
 
         for bot_ in bots_list:
-            pass
+            bots_list_json.append({'name': bot_.name, 'bot_id': bot_.pk, 'type': bot_.type,
+                                   'status': bot_.status, 'condition': bot_.condition, 'schedule': bot_.schedule,
+                                   'traffic_source': bot_.traffic_source, 'ts_api_key': bot_.ts_api_key,
+                                   'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
+                                   'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user, 'period': bot_.period,
+                                   'action': bot_.action, 'ignored_sources': bot_.ignored_zones})
+
+        return Response(data={'success': True, 'info': bots_list_json}, content_type='application/json',
+                        status=status.HTTP_200_OK)
