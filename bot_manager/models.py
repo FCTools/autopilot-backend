@@ -7,5 +7,4 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 from bot_manager.domains.accounts.bot import Bot
-from bot_manager.domains.tracker.campaign import Campaign
 from bot_manager.domains.accounts.traffic_source import TrafficSource

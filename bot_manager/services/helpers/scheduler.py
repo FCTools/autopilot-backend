@@ -82,6 +82,7 @@ class Scheduler:
                 job.enable()
                 cron.write()
 
+    # TODO: Fix schedule bug
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()
                     for entry in schedule.replace(' ', '').split('\n')}
