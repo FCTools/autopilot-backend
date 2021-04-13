@@ -108,7 +108,7 @@ class BotUpdatingView(APIView):
             if 'bot_id' not in request.data:
                 return Response(data={'success': False,
                                       'error_message': 'bot_id is required'},
-                                content_type='application/json', status=400)
+                                content_type='application/json', status=status.HTTP_400_BAD_REQUEST)
 
             bot_to_update = bot.Bot.parse_obj(request.data)
         except ValidationError as error:
@@ -215,7 +215,8 @@ class BotInfoView(APIView):
 
         # TODO: add bot and user validating
         # TODO: need to generalize tracker mechanisms
-        bot_db = Bot.objects.get(pk=bot_model.id)
+        bot_db = Bot.objects.get(pk=bot_model.bot_id)
+
         bot_json = {'name': bot_db.name, 'bot_id': bot_db.pk, 'type': bot_db.type, 'status': bot_db.status,
                     'condition': bot_db.condition, 'schedule': bot_db.schedule, 'traffic_source': bot_db.traffic_source,
                     'ts_api_key': bot_db.ts_api_key, 'tracker': bot_db.tracker,
@@ -233,4 +234,15 @@ class BotListView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def get(self, request):
-        pass
+        if 'user_id' not in request.data:
+            return Response(data={'success': False,
+                                  'detail': 'user_id required'}, content_type='application/json',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user_id = request.data.get('user_id')
+        bots_list = Bot.objects.all().filter(user__exact=user_id)
+
+        bots_list_json = []
+
+        for bot_ in bots_list:
+            pass
