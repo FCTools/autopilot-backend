@@ -8,15 +8,14 @@
 
 import logging
 
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from django.core.exceptions import ValidationError
 
 from bot_manager.domains.accounts.traffic_source import TrafficSource
-from bot_manager.models import Bot, Campaign
-from bot_manager.services.helpers.scheduler import Scheduler
+from bot_manager.models import Bot
 from bot_manager.services.helpers.condition_parser import ConditionParser
-
+from bot_manager.services.helpers.scheduler import Scheduler
 
 _logger = logging.getLogger(__name__)
 
@@ -34,6 +33,9 @@ class BotForm(forms.ModelForm):
             "traffic_source",
             "campaigns_list",
             "condition",
+            "tracker",
+            "tracker_url",
+            "tracker_api_key",
             "status",
             "action",
             "ts_api_key",
@@ -41,6 +43,7 @@ class BotForm(forms.ModelForm):
             "period",
             "ignored_zones",
             "list_to_add",
+            "client_id",
         ]
         current_user = None
 
@@ -53,10 +56,6 @@ class BotForm(forms.ModelForm):
             raise ValidationError("You can't create bot for another user.")
 
         self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
-
-        for campaign in self.cleaned_data['campaigns_list']:
-            if campaign.traffic_source_id != self.cleaned_data['traffic_source'].id:
-                raise ValidationError("You can only choose campaigns from specified traffic source.")
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")
@@ -72,7 +71,6 @@ class BotForm(forms.ModelForm):
 class AdminBot(admin.ModelAdmin):
     actions = None
     list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
-    filter_horizontal = ['campaigns_list']
     form = BotForm
 
     def get_queryset(self, request):
@@ -85,11 +83,6 @@ class AdminBot(admin.ModelAdmin):
         form = super(AdminBot, self).get_form(request, *args, **kwargs)
         form.current_user = request.user
         return form
-
-
-@admin.register(Campaign)
-class AdminCampaign(admin.ModelAdmin):
-    list_display = ['id', 'tracker_id', 'source_id', 'name']
 
 
 @admin.register(TrafficSource)
