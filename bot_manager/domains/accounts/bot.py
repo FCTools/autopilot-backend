@@ -30,7 +30,7 @@ class Bot(models.Model):
                                                      (settings.INCLUDE_EXCLUDE_ZONE, "Add to black/white list"),), )
 
     user = models.IntegerField(verbose_name="User", null=False, blank=False,
-                               help_text="Only superuser can change this field")
+                               help_text="Only superuser can change this field", )
 
     traffic_source = models.ForeignKey(verbose_name="Traffic source", to='TrafficSource', null=False, blank=False,
                                        on_delete=models.DO_NOTHING, )
@@ -56,9 +56,9 @@ class Bot(models.Model):
                                                (settings.EXCLUDE_ZONE, "Exclude zone"),
                                                (settings.INCLUDE_ZONE, "Include zone"),))
 
-    ts_api_key = models.CharField(verbose_name="TS api key", max_length=1024, null=False, blank=False, )
+    ts_api_key = models.CharField(verbose_name="TS api key", max_length=128, null=False, blank=False, )
 
-    schedule = models.TextField(verbose_name="Schedule", max_length=65536, null=False, blank=False,
+    schedule = models.TextField(verbose_name="Schedule", max_length=16384, null=False, blank=False,
                                 default="mon: \ntue: \nwed: \nthu: \nfri: \nsat: \nsun: \n",
                                 help_text="Example: mon: 10:00-12:30[5], 13:30, 15:00-18:00[10]. "
                                           "Note that checking interval can't be greater than 1440 minutes "
@@ -79,7 +79,7 @@ class Bot(models.Model):
                                                ),
                                       )
 
-    list_to_add = models.CharField(max_length=256, verbose_name="List (audience for evadav)", null=True, blank=True,
+    list_to_add = models.CharField(max_length=128, verbose_name="List (audience for evadav)", null=True, blank=True,
                                    default="-", )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
