@@ -93,7 +93,7 @@ class BotCreationView(APIView):
                            ts_api_key=new_bot.ts_api_key,
                            schedule=new_bot.schedule,
                            period=new_bot.period,
-                           ignored_zones=new_bot.ignored_sources,
+                           ignored_zones='\n'.join(new_bot.ignored_sources),
                            campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
         return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
@@ -130,7 +130,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
         bot_to_update_db.schedule = bot_to_update.schedule
         bot_to_update_db.period = bot_to_update.period
-        bot_to_update_db.ignored_zones = bot_to_update.ignored_sources
+        bot_to_update_db.ignored_zones = '\n'.join(bot_to_update.ignored_sources)
         bot_to_update_db.campaigns_list = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 
         bot_to_update_db.save()
@@ -153,8 +153,8 @@ class BotStartingView(APIView):
         bot_id = bot_to_start_model.bot_id
         bot_db = Bot.objects.get(pk=bot_id)
 
-        if bot_db.status != 'enabled':
-            bot_db.status = 'enabled'
+        if bot_db.status != settings.ENABLED:
+            bot_db.status = settings.ENABLED
             bot_db.save()
 
         return Response(data={'success': True}, content_type='application/json')
@@ -194,8 +194,7 @@ class BotDeletingView(APIView):
                                   'detail': str(error)}, content_type='application/json',
                             status=status.HTTP_400_BAD_REQUEST)
 
-        bot_id = bot_to_delete_model.bot_id
-        bot_db = Bot.objects.get(pk=bot_id)
+        bot_db = Bot.objects.get(pk=bot_to_delete_model.bot_id)
         bot_db.delete()
 
         return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
@@ -223,7 +222,7 @@ class BotInfoView(APIView):
                     'tracker_api_key': bot_db.tracker_api_key,
                     'campaigns_ids': bot_db.campaigns_list, 'user_id': bot_db.user_id, 'period': bot_db.period,
                     'action': bot_db.action,
-                    'ignored_sources': bot_db.ignored_sources}
+                    'ignored_sources': bot_db.ignored_sources.split('\n')}
 
         return Response(data={'success': True, 'info': bot_json}, content_type='application/json',
                         status=status.HTTP_200_OK)
@@ -250,7 +249,7 @@ class BotListView(APIView):
                                    'traffic_source': bot_.traffic_source, 'ts_api_key': bot_.ts_api_key,
                                    'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
                                    'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user, 'period': bot_.period,
-                                   'action': bot_.action, 'ignored_sources': bot_.ignored_zones})
+                                   'action': bot_.action, 'ignored_sources': bot_.ignored_zones.split('\n')})
 
         return Response(data={'success': True, 'info': bots_list_json}, content_type='application/json',
                         status=status.HTTP_200_OK)

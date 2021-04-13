@@ -48,7 +48,8 @@ class Bot(models.Model):
                                  help_text="Example: ((CR < 1) & (clicks >= 50))", )
 
     status = models.CharField(verbose_name="Status (enabled/disabled)", max_length=8, null=False, blank=False,
-                              default="enabled", choices=(("enabled", "enabled"), ("disabled", "disabled")), )
+                              default=settings.ENABLED,
+                              choices=((settings.ENABLED, settings.ENABLED), (settings.DISABLED, settings.DISABLED)), )
 
     action = models.SmallIntegerField(verbose_name="Target action", null=False, blank=False,
                                       choices=((settings.STOP_CAMPAIGN, "Stop campaign"),
@@ -128,7 +129,7 @@ class Bot(models.Model):
                 scheduler.set_on_crontab(parsed_schedule, self.crontab_comment, self.id)
             _logger.info("Set new schedule to crontab.")
 
-            if self.status == "disabled":
+            if self.status == settings.DISABLED:
                 scheduler.disable_jobs(self.crontab_comment)
 
             return
@@ -137,7 +138,7 @@ class Bot(models.Model):
             super(Bot, self).save(*args, **kwargs)
 
         if prev_status and prev_status != self.status:
-            if self.status == "disabled":
+            if self.status == settings.DISABLED:
                 scheduler.disable_jobs(self.crontab_comment)
             else:
                 scheduler.enable_jobs(self.crontab_comment)
