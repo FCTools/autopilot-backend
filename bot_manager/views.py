@@ -91,6 +91,11 @@ class BotCreationView(APIView):
         if new_bot.list_id:
             list_to_add = new_bot.list_id
 
+        ignored_sources_ = ''
+
+        if new_bot.ignored_sources:
+            ignored_sources_ = '\n'.join(new_bot.ignored_sources)
+
         Bot.objects.create(name=new_bot.name,
                            type=new_bot.type,
                            user=new_bot.user_id,
@@ -103,7 +108,7 @@ class BotCreationView(APIView):
                            period=new_bot.period,
                            client_id=client_id,
                            list_to_add=list_to_add,
-                           ignored_zones='\n'.join(new_bot.ignored_sources),
+                           ignored_zones=ignored_sources_,
                            campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
         return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
@@ -134,6 +139,11 @@ class BotUpdatingView(APIView):
         if bot_to_update.list_id:
             list_to_add = bot_to_update.list_id
 
+        ignored_sources_ = ''
+
+        if bot_to_update.ignored_sources:
+            ignored_sources_ = '\n'.join(bot_to_update.ignored_sources)
+
         ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
 
         bot_to_update_db = Bot.objects.get(pk=bot_to_update.bot_id)
@@ -150,7 +160,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.period = bot_to_update.period
         bot_to_update_db.client_id = client_id
         bot_to_update_db.list_to_add = list_to_add
-        bot_to_update_db.ignored_zones = '\n'.join(bot_to_update.ignored_sources)
+        bot_to_update_db.ignored_zones = ignored_sources_
         bot_to_update_db.campaigns_list = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 
         bot_to_update_db.save()
