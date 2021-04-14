@@ -26,7 +26,7 @@ class Bot(BaseModel):
     traffic_source: str
     ts_api_key: str
     tracker: str
-    tracker_url: str
+    tracker_requests_url: str
     tracker_api_key: str
     campaigns_ids: List[Campaign]
     period: int
