@@ -103,6 +103,9 @@ class BotCreationView(APIView):
                            condition=new_bot.condition,
                            status=settings.DISABLED,
                            action=new_bot.action,
+                           tracker=new_bot.tracker,
+                           tracker_url=new_bot.tracker_url,
+                           tracker_api_key=new_bot.tracker_api_key,
                            ts_api_key=new_bot.ts_api_key,
                            schedule=new_bot.schedule,
                            period=new_bot.period,
@@ -156,6 +159,9 @@ class BotUpdatingView(APIView):
         bot_to_update_db.status = settings.DISABLED
         bot_to_update_db.action = bot_to_update.action
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
+        bot_to_update_db.tracker = bot_to_update.tracker
+        bot_to_update_db.tracker_url = bot_to_update.tracker_url
+        bot_to_update_db.tracker_api_key = bot_to_update.tracker_api_key
         bot_to_update_db.schedule = bot_to_update.schedule
         bot_to_update_db.period = bot_to_update.period
         bot_to_update_db.client_id = client_id
