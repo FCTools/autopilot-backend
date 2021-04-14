@@ -87,5 +87,5 @@ class AdminBot(admin.ModelAdmin):
 
 @admin.register(TrafficSource)
 class AdminTrafficSource(admin.ModelAdmin):
-    list_display = ['name', 'filter_param_number']
+    list_display = ['name', 'binom_param_number']
 
