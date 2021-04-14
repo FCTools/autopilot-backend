@@ -9,9 +9,9 @@
 import json
 import os
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.conf import settings
 from pydantic import ValidationError
 from rest_framework import authentication, status
 from rest_framework.response import Response
@@ -96,25 +96,26 @@ class BotCreationView(APIView):
         if new_bot.ignored_sources:
             ignored_sources_ = '\n'.join(new_bot.ignored_sources)
 
-        Bot.objects.create(name=new_bot.name,
-                           type=new_bot.type,
-                           user=new_bot.user_id,
-                           traffic_source=ts,
-                           condition=new_bot.condition,
-                           status=settings.DISABLED,
-                           action=new_bot.action,
-                           tracker=new_bot.tracker,
-                           tracker_url=new_bot.tracker_requests_url,
-                           tracker_api_key=new_bot.tracker_api_key,
-                           ts_api_key=new_bot.ts_api_key,
-                           schedule=new_bot.schedule,
-                           period=new_bot.period,
-                           client_id=client_id,
-                           list_to_add=list_to_add,
-                           ignored_zones=ignored_sources_,
-                           campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
+        _bot = Bot.objects.create(name=new_bot.name,
+                                  type=new_bot.type,
+                                  user=new_bot.user_id,
+                                  traffic_source=ts,
+                                  condition=new_bot.condition,
+                                  status=settings.DISABLED,
+                                  action=new_bot.action,
+                                  tracker=new_bot.tracker,
+                                  tracker_url=new_bot.tracker_requests_url,
+                                  tracker_api_key=new_bot.tracker_api_key,
+                                  ts_api_key=new_bot.ts_api_key,
+                                  schedule=new_bot.schedule,
+                                  period=new_bot.period,
+                                  client_id=client_id,
+                                  list_to_add=list_to_add,
+                                  ignored_zones=ignored_sources_,
+                                  campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
-        return Response(data={'success': True}, content_type='application/json', status=status.HTTP_200_OK)
+        return Response(data={'success': True, 'bot_id': _bot.pk}, content_type='application/json',
+                        status=status.HTTP_200_OK)
 
 
 class BotUpdatingView(APIView):
