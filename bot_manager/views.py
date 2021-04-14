@@ -83,6 +83,14 @@ class BotCreationView(APIView):
 
         ts = TrafficSource.objects.get(name=new_bot.traffic_source)
 
+        client_id = "-"
+        list_to_add = "-"
+
+        if new_bot.client_id:
+            client_id = new_bot.client_id
+        if new_bot.list_id:
+            list_to_add = new_bot.list_id
+
         Bot.objects.create(name=new_bot.name,
                            type=new_bot.type,
                            user=new_bot.user_id,
@@ -93,6 +101,8 @@ class BotCreationView(APIView):
                            ts_api_key=new_bot.ts_api_key,
                            schedule=new_bot.schedule,
                            period=new_bot.period,
+                           client_id=client_id,
+                           list_to_add=list_to_add,
                            ignored_zones='\n'.join(new_bot.ignored_sources),
                            campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
 
@@ -116,6 +126,14 @@ class BotUpdatingView(APIView):
                                   'detail': str(error)}, content_type='application/json',
                             status=status.HTTP_400_BAD_REQUEST)
 
+        client_id = "-"
+        list_to_add = "-"
+
+        if bot_to_update.client_id:
+            client_id = bot_to_update.client_id
+        if bot_to_update.list_id:
+            list_to_add = bot_to_update.list_id
+
         ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
 
         bot_to_update_db = Bot.objects.get(pk=bot_to_update.bot_id)
@@ -130,6 +148,8 @@ class BotUpdatingView(APIView):
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
         bot_to_update_db.schedule = bot_to_update.schedule
         bot_to_update_db.period = bot_to_update.period
+        bot_to_update_db.client_id = client_id
+        bot_to_update_db.list_to_add = list_to_add
         bot_to_update_db.ignored_zones = '\n'.join(bot_to_update.ignored_sources)
         bot_to_update_db.campaigns_list = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 

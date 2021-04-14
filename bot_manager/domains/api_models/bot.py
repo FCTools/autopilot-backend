@@ -30,6 +30,8 @@ class Bot(BaseModel):
     campaigns_ids: List[Campaign]
     period: int
     action: int
+    client_id: Optional[str]
+    list_id: Optional[str]
     ignored_sources: Optional[List[str]]
     bot_id: Optional[int]
 
