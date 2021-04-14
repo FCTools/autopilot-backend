@@ -6,7 +6,7 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from django.conf import settings
 from pydantic import BaseModel, validator
@@ -30,9 +30,9 @@ class Bot(BaseModel):
     campaigns_ids: List[Campaign]
     period: int
     action: int
-    client_id: Optional[str]
-    list_id: Optional[str]
-    ignored_sources: Optional[List[str]]
+    client_id: Optional[Union[str, None]]
+    list_id: Optional[Union[str, None]]
+    ignored_sources: Optional[Union[List[str], None]]
     bot_id: Optional[int]
 
     @validator('type', allow_reuse=True)
