@@ -112,7 +112,7 @@ class BotCreationView(APIView):
                                   client_id=client_id,
                                   list_to_add=list_to_add,
                                   ignored_zones=ignored_sources_,
-                                  campaigns_list=[json.loads(camp.json()) for camp in new_bot.campaigns_ids], )
+                                  campaigns_ids=[camp.dict() for camp in new_bot.campaigns_ids], )
 
         return Response(data={'success': True, 'bot_id': _bot.pk}, content_type='application/json',
                         status=status.HTTP_200_OK)
@@ -168,7 +168,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.client_id = client_id
         bot_to_update_db.list_to_add = list_to_add
         bot_to_update_db.ignored_zones = ignored_sources_
-        bot_to_update_db.campaigns_list = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
+        bot_to_update_db.campaigns_ids = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 
         bot_to_update_db.save()
 
@@ -258,7 +258,7 @@ class BotInfoView(APIView):
                     'ts_api_key': bot_db.ts_api_key, 'tracker': bot_db.tracker,
                     'tracker_requests_url': bot_db.tracker_requests_url,
                     'tracker_api_key': bot_db.tracker_api_key,
-                    'campaigns_ids': bot_db.campaigns_list, 'user_id': bot_db.user_id, 'period': bot_db.period,
+                    'campaigns_ids': bot_db.campaigns_ids, 'user_id': bot_db.user_id, 'period': bot_db.period,
                     'action': bot_db.action,
                     'ignored_sources': bot_db.ignored_sources.split('\n')}
 
@@ -287,7 +287,7 @@ class BotListView(APIView):
                                    'traffic_source': bot_.traffic_source, 'ts_api_key': bot_.ts_api_key,
                                    'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
                                    'tracker_requests_url': bot_.tracker_requests_url,
-                                   'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user_id, 'period': bot_.period,
+                                   'campaigns_ids': bot_.campaigns_ids, 'user_id': bot_.user_id, 'period': bot_.period,
                                    'action': bot_.action, 'ignored_sources': bot_.ignored_zones.split('\n')})
 
         return Response(data={'success': True, 'info': bots_list_json}, content_type='application/json',

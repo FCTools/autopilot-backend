@@ -31,7 +31,7 @@ class BotForm(forms.ModelForm):
             "type",
             "user_id",
             "traffic_source",
-            "campaigns_list",
+            "campaigns_ids",
             "condition",
             "tracker",
             "tracker_requests_url",

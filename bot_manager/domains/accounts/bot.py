@@ -41,8 +41,8 @@ class Bot(models.Model):
 
     tracker_requests_url = models.CharField(verbose_name="Tracker url for requests", max_length=256, null=False, blank=False, )
 
-    campaigns_list = models.JSONField(verbose_name="Campaigns",
-                                      help_text="If campaign doesn't exist, you can create it here using \"+\".")
+    campaigns_ids = models.JSONField(verbose_name="Campaigns",
+                                     help_text="If campaign doesn't exist, you can create it here using \"+\".")
 
     condition = models.TextField(max_length=16384, verbose_name="Condition", null=False, blank=False,
                                  help_text="Example: ((CR < 1) & (clicks >= 50))", )
