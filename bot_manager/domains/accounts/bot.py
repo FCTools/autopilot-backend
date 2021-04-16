@@ -80,8 +80,8 @@ class Bot(models.Model):
                                                ),
                                       )
 
-    list_to_add = models.CharField(max_length=128, verbose_name="List (audience for evadav)", null=True, blank=True,
-                                   default="-", )
+    list_id = models.CharField(max_length=128, verbose_name="List (audience for evadav)", null=True, blank=True,
+                               default="-", )
 
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
                                        default="empty", )

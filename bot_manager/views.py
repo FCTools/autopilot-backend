@@ -84,12 +84,12 @@ class BotCreationView(APIView):
         ts = TrafficSource.objects.get(name=new_bot.traffic_source)
 
         client_id = "-"
-        list_to_add = "-"
+        list_id = "-"
 
         if new_bot.client_id:
             client_id = new_bot.client_id
         if new_bot.list_id:
-            list_to_add = new_bot.list_id
+            list_id = new_bot.list_id
 
         ignored_sources_ = ''
 
@@ -110,7 +110,7 @@ class BotCreationView(APIView):
                                   schedule=new_bot.schedule,
                                   period=new_bot.period,
                                   client_id=client_id,
-                                  list_to_add=list_to_add,
+                                  list_id=list_id,
                                   ignored_zones=ignored_sources_,
                                   campaigns_ids=[camp.dict() for camp in new_bot.campaigns_ids], )
 
@@ -136,12 +136,12 @@ class BotUpdatingView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         client_id = "-"
-        list_to_add = "-"
+        list_id = "-"
 
         if bot_to_update.client_id:
             client_id = bot_to_update.client_id
         if bot_to_update.list_id:
-            list_to_add = bot_to_update.list_id
+            list_id = bot_to_update.list_id
 
         ignored_sources_ = ''
 
@@ -166,7 +166,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.schedule = bot_to_update.schedule
         bot_to_update_db.period = bot_to_update.period
         bot_to_update_db.client_id = client_id
-        bot_to_update_db.list_to_add = list_to_add
+        bot_to_update_db.list_id = list_id
         bot_to_update_db.ignored_zones = ignored_sources_
         bot_to_update_db.campaigns_ids = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 
