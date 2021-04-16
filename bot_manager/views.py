@@ -98,7 +98,7 @@ class BotCreationView(APIView):
 
         _bot = Bot.objects.create(name=new_bot.name,
                                   type=new_bot.type,
-                                  user=new_bot.user_id,
+                                  user_id=new_bot.user_id,
                                   traffic_source=ts,
                                   condition=new_bot.condition,
                                   status=settings.DISABLED,
@@ -154,7 +154,7 @@ class BotUpdatingView(APIView):
 
         bot_to_update_db.name = bot_to_update.name
         bot_to_update_db.type = bot_to_update.type
-        bot_to_update_db.user = bot_to_update.user_id
+        bot_to_update_db.user_id = bot_to_update.user_id
         bot_to_update_db.traffic_source = ts
         bot_to_update_db.condition = bot_to_update.condition
         bot_to_update_db.status = settings.DISABLED
@@ -276,7 +276,7 @@ class BotListView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         user_id = request.data.get('user_id')
-        bots_list = Bot.objects.all().filter(user__exact=user_id)
+        bots_list = Bot.objects.all().filter(user_id__exact=user_id)
 
         bots_list_json = []
 
@@ -285,7 +285,7 @@ class BotListView(APIView):
                                    'status': bot_.status, 'condition': bot_.condition, 'schedule': bot_.schedule,
                                    'traffic_source': bot_.traffic_source, 'ts_api_key': bot_.ts_api_key,
                                    'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
-                                   'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user, 'period': bot_.period,
+                                   'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user_id, 'period': bot_.period,
                                    'action': bot_.action, 'ignored_sources': bot_.ignored_zones.split('\n')})
 
         return Response(data={'success': True, 'info': bots_list_json}, content_type='application/json',

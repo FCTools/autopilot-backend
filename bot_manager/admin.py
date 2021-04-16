@@ -29,7 +29,7 @@ class BotForm(forms.ModelForm):
         fields = [
             "name",
             "type",
-            "user",
+            "user_id",
             "traffic_source",
             "campaigns_list",
             "condition",
@@ -52,7 +52,7 @@ class BotForm(forms.ModelForm):
         super(BotForm, self).clean()
         _logger.info("Call super-clean")
 
-        if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user'].id:
+        if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user_id'].id:
             raise ValidationError("You can't create bot for another user.")
 
         self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
@@ -70,18 +70,18 @@ class BotForm(forms.ModelForm):
 @admin.register(Bot)
 class AdminBot(admin.ModelAdmin):
     actions = None
-    list_display = ['id', 'name', 'type', 'user', 'condition', 'status', 'action', 'period']
+    list_display = ['id', 'name', 'type', 'user_id', 'condition', 'status', 'action', 'period', ]
     form = BotForm
 
     def get_queryset(self, request):
         qs = super(AdminBot, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user_id.is_superuser:
             return qs
-        return qs.filter(user=request.user)
+        return qs.filter(user=request.user_id)
 
     def get_form(self, request, *args, **kwargs):
         form = super(AdminBot, self).get_form(request, *args, **kwargs)
-        form.current_user = request.user
+        form.current_user = request.user_id
         return form
 
 

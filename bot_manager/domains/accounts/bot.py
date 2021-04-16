@@ -29,8 +29,8 @@ class Bot(models.Model):
                                             choices=((settings.PLAY_STOP_CAMPAIGN, "Play/stop campaign"),
                                                      (settings.INCLUDE_EXCLUDE_ZONE, "Add to black/white list"),), )
 
-    user = models.IntegerField(verbose_name="User", null=False, blank=False,
-                               help_text="Only superuser can change this field", )
+    user_id = models.IntegerField(verbose_name="User", null=False, blank=False,
+                                  help_text="Only superuser can change this field", )
 
     traffic_source = models.ForeignKey(verbose_name="Traffic source", to='TrafficSource', null=False, blank=False,
                                        on_delete=models.DO_NOTHING, )
