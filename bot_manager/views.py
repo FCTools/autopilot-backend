@@ -104,7 +104,7 @@ class BotCreationView(APIView):
                                   status=settings.DISABLED,
                                   action=new_bot.action,
                                   tracker=new_bot.tracker,
-                                  tracker_url=new_bot.tracker_requests_url,
+                                  tracker_requests_url=new_bot.tracker_requests_url,
                                   tracker_api_key=new_bot.tracker_api_key,
                                   ts_api_key=new_bot.ts_api_key,
                                   schedule=new_bot.schedule,
@@ -161,7 +161,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.action = bot_to_update.action
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
         bot_to_update_db.tracker = bot_to_update.tracker
-        bot_to_update_db.tracker_url = bot_to_update.tracker_requests_url
+        bot_to_update_db.tracker_requests_url = bot_to_update.tracker_requests_url
         bot_to_update_db.tracker_api_key = bot_to_update.tracker_api_key
         bot_to_update_db.schedule = bot_to_update.schedule
         bot_to_update_db.period = bot_to_update.period
@@ -256,6 +256,7 @@ class BotInfoView(APIView):
         bot_json = {'name': bot_db.name, 'bot_id': bot_db.pk, 'type': bot_db.type, 'status': bot_db.status,
                     'condition': bot_db.condition, 'schedule': bot_db.schedule, 'traffic_source': bot_db.traffic_source,
                     'ts_api_key': bot_db.ts_api_key, 'tracker': bot_db.tracker,
+                    'tracker_requests_url': bot_db.tracker_requests_url,
                     'tracker_api_key': bot_db.tracker_api_key,
                     'campaigns_ids': bot_db.campaigns_list, 'user_id': bot_db.user_id, 'period': bot_db.period,
                     'action': bot_db.action,
@@ -285,6 +286,7 @@ class BotListView(APIView):
                                    'status': bot_.status, 'condition': bot_.condition, 'schedule': bot_.schedule,
                                    'traffic_source': bot_.traffic_source, 'ts_api_key': bot_.ts_api_key,
                                    'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
+                                   'tracker_requests_url': bot_.tracker_requests_url,
                                    'campaigns_ids': bot_.campaigns_list, 'user_id': bot_.user_id, 'period': bot_.period,
                                    'action': bot_.action, 'ignored_sources': bot_.ignored_zones.split('\n')})
 

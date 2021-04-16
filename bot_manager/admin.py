@@ -34,7 +34,7 @@ class BotForm(forms.ModelForm):
             "campaigns_list",
             "condition",
             "tracker",
-            "tracker_url",
+            "tracker_requests_url",
             "tracker_api_key",
             "status",
             "action",
