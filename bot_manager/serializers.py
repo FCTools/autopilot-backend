@@ -11,8 +11,38 @@ from rest_framework import serializers
 from bot_manager.models import Bot
 
 
-class BotSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bot
-        fields = ['name', 'type', 'campaigns_list', 'condition', 'action', 'checking_interval', 'list_type',
-                  'landing_exceptions', 'status', ]
+class BotSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=128, allow_null=False, allow_blank=False)
+
+    type = serializers.IntegerField(allow_null=False)
+
+    user_id = serializers.IntegerField(allow_null=False)
+
+    traffic_source = serializers.IntegerField(allow_null=False)
+
+    tracker = serializers.CharField(max_length=128, allow_null=False, allow_blank=False)
+
+    tracker_api_key = serializers.CharField(max_length=128, allow_blank=False, allow_null=False)
+
+    tracker_requests_url = serializers.CharField(max_length=256, allow_blank=False, allow_null=False)
+
+    campaigns_ids = serializers.JSONField(allow_null=False)
+
+    condition = serializers.CharField(max_length=16384, allow_null=False, allow_blank=False)
+
+    status = serializers.CharField(max_length=8, allow_blank=False, allow_null=False)
+
+    action = serializers.IntegerField(allow_null=False)
+
+    ts_api_key = serializers.CharField(max_length=128, allow_null=False, allow_blank=False)
+
+    schedule = serializers.CharField(max_length=16384, allow_blank=False, allow_null=False)
+
+    period = serializers.IntegerField(allow_null=False)
+
+    list_id = serializers.CharField(max_length=128, allow_null=False, allow_blank=False)
+
+    ignored_sources = serializers.CharField(max_length=8192, allow_blank=False, allow_null=False)
+
+    client_id = serializers.CharField(max_length=128, allow_blank=False, allow_null=False)
+
