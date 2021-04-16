@@ -41,7 +41,7 @@ class BotForm(forms.ModelForm):
             "ts_api_key",
             "schedule",
             "period",
-            "ignored_zones",
+            "ignored_sources",
             "list_id",
             "client_id",
         ]
@@ -55,7 +55,7 @@ class BotForm(forms.ModelForm):
         if not self.current_user.is_superuser and self.current_user.id != self.cleaned_data['user_id'].id:
             raise ValidationError("You can't create bot for another user.")
 
-        self.cleaned_data['ignored_zones'] = self.cleaned_data['ignored_zones'].strip()
+        self.cleaned_data['ignored_sources'] = self.cleaned_data['ignored_sources'].strip()
 
         if not ConditionParser.bracket_sequence_is_valid(self.cleaned_data["condition"]):
             raise ValidationError("Incorrect condition.")

@@ -111,7 +111,7 @@ class BotCreationView(APIView):
                                   period=new_bot.period,
                                   client_id=client_id,
                                   list_id=list_id,
-                                  ignored_zones=ignored_sources_,
+                                  ignored_sources=ignored_sources_,
                                   campaigns_ids=[camp.dict() for camp in new_bot.campaigns_ids], )
 
         return Response(data={'success': True, 'bot_id': _bot.pk}, content_type='application/json',
@@ -167,7 +167,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.period = bot_to_update.period
         bot_to_update_db.client_id = client_id
         bot_to_update_db.list_id = list_id
-        bot_to_update_db.ignored_zones = ignored_sources_
+        bot_to_update_db.ignored_sources = ignored_sources_
         bot_to_update_db.campaigns_ids = [json.loads(camp.json()) for camp in bot_to_update.campaigns_ids]
 
         bot_to_update_db.save()
@@ -288,7 +288,7 @@ class BotListView(APIView):
                                    'tracker': bot_.tracker, 'tracker_api_key': bot_.tracker_api_key,
                                    'tracker_requests_url': bot_.tracker_requests_url,
                                    'campaigns_ids': bot_.campaigns_ids, 'user_id': bot_.user_id, 'period': bot_.period,
-                                   'action': bot_.action, 'ignored_sources': bot_.ignored_zones.split('\n')})
+                                   'action': bot_.action, 'ignored_sources': bot_.ignored_sources.split('\n')})
 
         return Response(data={'success': True, 'info': bots_list_json}, content_type='application/json',
                         status=status.HTTP_200_OK)

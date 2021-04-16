@@ -86,8 +86,8 @@ class Bot(models.Model):
     crontab_comment = models.CharField(max_length=256, verbose_name="Crontab task comment", null=False, blank=False,
                                        default="empty", )
 
-    ignored_zones = models.TextField(verbose_name="Ignored zones", null=True, blank=True, default=None,
-                                     help_text="Please specify each zone on a new line", )
+    ignored_sources = models.TextField(verbose_name="Ignored zones", null=True, blank=True, default=None,
+                                       help_text="Please specify each zone on a new line", )
 
     client_id = models.CharField(max_length=128, verbose_name="Client key (for mgid)", null=True, blank=True,
                                  default="-", )
