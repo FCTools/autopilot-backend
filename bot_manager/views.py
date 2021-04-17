@@ -36,16 +36,16 @@ def get_server_load_info():
 
     stat = subprocess.Popen('mpstat -A', shell=True, stdout=subprocess.PIPE)
     stat_return = str(stat.stdout.read()).split('\\n')
+    server_info = stat_return[0]
+    del stat_return[0]
 
     empty_lines = 0
     load_table = []
-    server_info = ''
 
-    for n, line in enumerate(stat_return):
+    for line in stat_return:
         if not line:
             if empty_lines == 1:
                 break
-            server_info = stat_return[n + 1]
 
             empty_lines += 1
             continue
