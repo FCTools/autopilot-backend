@@ -39,14 +39,35 @@
     {% endif %}
     <br>
     <br>
-    {% for line in log %}
-        {% if '[error]' in line %}
-            <span class="text_red">{{ line }}</span>
-        {% else %}
-            {{ line }}
-        {% endif %}
-        <br>
-    {% endfor %}
+    {% if log_type != 'server-load-info' %}
+        {% for line in log %}
+            {% if '[error]' in line %}
+                <span class="text_red">{{ line }}</span>
+            {% else %}
+                <span>{{ line }}</span>
+            {% endif %}
+            <br>
+        {% endfor %}
+    {% else %}
+        {% for line in bot_stat %}
+            <span>{{ line }}</span>
+            <br>
+        {% endfor %}
+
+        <table id="centerLayer" border="1" cellpadding="5">
+
+        {% for line in load_table %}
+            <tr>
+                {% for node in line %}
+                    <td style="padding:15px">
+                        {{ node }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+        </table>
+    {% endif %}
 
     <footer class="container">
         <p class="mt-5 mb-3 text-muted">© FC Tools 2020-2021</p>

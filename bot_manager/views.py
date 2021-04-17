@@ -8,6 +8,8 @@
 
 import json
 import os
+import subprocess
+from copy import deepcopy
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -32,14 +34,30 @@ def get_server_load_info():
     zoomer_bots = len(Bot.objects.filter(type__exact=settings.PLAY_STOP_CAMPAIGN))
     optimizer_bots = len(Bot.objects.filter(type__exact=settings.INCLUDE_EXCLUDE_ZONE))
 
-    # get cpu load here
+    stat = subprocess.Popen('mpstat -A', shell=True, stdout=subprocess.PIPE)
+    stat_return = str(stat.stdout.read()).split('\\n')
 
-    result = [f'Total bots: {total_bots}',
-              f'Enabled bots: {enabled_bots}',
-              f'Campaign play/stop bots: {zoomer_bots}',
-              f'Include/exclude zone bots: {optimizer_bots}']
+    empty_lines = 0
+    load_table = []
 
-    return result
+    for line in stat_return:
+        if not line:
+            if empty_lines == 1:
+                break
+
+            empty_lines += 1
+            continue
+
+        data = line.replace('AM', '').replace('PM', '').split()
+        load_table.append(deepcopy(data))
+
+    bots_stat = [f'Total bots: {total_bots}',
+                 f'Enabled bots: {enabled_bots}',
+                 f'Campaign play/stop bots: {zoomer_bots}',
+                 f'Include/exclude zone bots: {optimizer_bots}',
+                 f'Server load:']
+
+    return bots_stat, load_table
 
 
 @login_required(login_url='/admin/login/')
@@ -51,10 +69,11 @@ def log_view(request):
 
         if form.is_valid():
             if form.cleaned_data['log_type'] == 'server-load':
-                server_load_info = get_server_load_info()
+                bots_stat, load_table = get_server_load_info()
 
-                return render(request, template, context={'log': server_load_info, 'form': form,
-                                                          'log_type': 'server load info'})
+                return render(request, template,
+                              context={'bots_stat': bots_stat, 'load_table': load_table, 'form': form,
+                                       'log_type': 'server-load-info'})
 
             if form.cleaned_data['log_type'] == 'environment-log':
                 env_log_path = os.getenv('ENV_LOG_PATH')

@@ -138,3 +138,5 @@ SUPPORTED_PERIODS = [TODAY, YESTERDAY, THIS_WEEK, LAST_2_DAYS, LAST_3_DAYS, LAST
 # bot types
 PLAY_STOP_CAMPAIGN = 1  # this bots check whole campaign and play or stop it
 INCLUDE_EXCLUDE_ZONE = 2  # this bots check campaign zones and include/exclude these zones
+
+CPU_COUNT = 6
