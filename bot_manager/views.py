@@ -35,7 +35,7 @@ def get_server_load_info():
     optimizer_bots = len(Bot.objects.filter(type__exact=settings.INCLUDE_EXCLUDE_ZONE))
 
     stat = subprocess.Popen('mpstat -A', shell=True, stdout=subprocess.PIPE)
-    stat_return = str(stat.stdout.read()).split('\\n')
+    stat_return = str(stat.stdout.read()).replace('\\t', ' ').split('\\n')
     server_info = stat_return[0]
     del stat_return[0]
 
