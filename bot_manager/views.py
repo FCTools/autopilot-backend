@@ -39,11 +39,13 @@ def get_server_load_info():
 
     empty_lines = 0
     load_table = []
+    server_info = ''
 
-    for line in stat_return:
+    for n, line in enumerate(stat_return):
         if not line:
             if empty_lines == 1:
                 break
+            server_info = stat_return[n + 1]
 
             empty_lines += 1
             continue
@@ -55,7 +57,8 @@ def get_server_load_info():
                  f'Enabled bots: {enabled_bots}',
                  f'Campaign play/stop bots: {zoomer_bots}',
                  f'Include/exclude zone bots: {optimizer_bots}',
-                 f'Server load:']
+                 f'Server load:',
+                 server_info]
 
     return bots_stat, load_table
 
