@@ -13,14 +13,13 @@ class LogFilterForm(forms.Form):
 
     log_type = forms.ChoiceField(
         choices=[('actions-log', 'actions-log'),
-                 ('environment-log', 'environment-log'), ],
+                 ('environment-log', 'environment-log'),
+                 ('server-load', 'server-load')],
         initial='actions-log',
         widget=forms.Select,
     )
 
     bot_id = forms.IntegerField(required=False)
-
-    # campaign_id = forms.IntegerField()
 
     def clean(self):
         return self.cleaned_data

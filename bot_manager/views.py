@@ -23,6 +23,25 @@ from bot_manager.domains.api_models import bot
 from bot_manager.forms import LogFilterForm
 
 
+def get_server_load_info():
+    # total bots, enabled bots, total users, number of bytes of each type
+    # cpu usage, database size
+
+    total_bots = len(Bot.objects.all())
+    enabled_bots = len(Bot.objects.filter(status=settings.ENABLED))
+    zoomer_bots = len(Bot.objects.filter(type__exact=settings.PLAY_STOP_CAMPAIGN))
+    optimizer_bots = len(Bot.objects.filter(type__exact=settings.INCLUDE_EXCLUDE_ZONE))
+
+    # get cpu load here
+
+    result = [f'Total bots: {total_bots}',
+              f'Enabled bots: {enabled_bots}',
+              f'Campaign play/stop bots: {zoomer_bots}',
+              f'Include/exclude zone bots: {optimizer_bots}']
+
+    return result
+
+
 @login_required(login_url='/admin/login/')
 def log_view(request):
     template = 'statistics_page.html'
@@ -31,6 +50,12 @@ def log_view(request):
         form = LogFilterForm(request.POST)
 
         if form.is_valid():
+            if form.cleaned_data['log_type'] == 'server-load':
+                server_load_info = get_server_load_info()
+
+                return render(request, template, context={'log': server_load_info, 'form': form,
+                                                          'log_type': 'server load info'})
+
             if form.cleaned_data['log_type'] == 'environment-log':
                 env_log_path = os.getenv('ENV_LOG_PATH')
                 if not env_log_path:
