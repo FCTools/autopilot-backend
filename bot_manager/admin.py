@@ -81,7 +81,7 @@ class AdminBot(admin.ModelAdmin):
 
     def get_form(self, request, *args, **kwargs):
         form = super(AdminBot, self).get_form(request, *args, **kwargs)
-        form.current_user = request.user_id
+        form.current_user = request.user
         return form
 
 
