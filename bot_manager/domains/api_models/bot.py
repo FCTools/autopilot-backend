@@ -31,7 +31,7 @@ class Bot(BaseModel):
     campaigns_ids: List[Campaign]
     period: int
     action: int
-    client_id: Optional[Union[str, None]]
+    client_key: Optional[Union[str, None]]
     list_id: Optional[Union[str, None]]
     ignored_sources: Optional[Union[List[str], None]]
     bot_id: Optional[int]

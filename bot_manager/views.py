@@ -138,8 +138,8 @@ class BotCreationView(APIView):
         client_id = "-"
         list_id = "-"
 
-        if new_bot.client_id:
-            client_id = new_bot.client_id
+        if new_bot.client_key:
+            client_id = new_bot.client_key
         if new_bot.list_id:
             list_id = new_bot.list_id
 
@@ -190,8 +190,8 @@ class BotUpdatingView(APIView):
         client_id = "-"
         list_id = "-"
 
-        if bot_to_update.client_id:
-            client_id = bot_to_update.client_id
+        if bot_to_update.client_key:
+            client_id = bot_to_update.client_key
         if bot_to_update.list_id:
             list_id = bot_to_update.list_id
 
