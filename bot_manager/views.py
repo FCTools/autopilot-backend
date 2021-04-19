@@ -7,6 +7,7 @@
 # Author: German Yakimov <german13yakimov@gmail.com>
 
 import json
+import logging
 import os
 import subprocess
 from copy import deepcopy
@@ -23,6 +24,9 @@ from bot_manager.domains.accounts.bot import Bot
 from bot_manager.domains.accounts.traffic_source import TrafficSource
 from bot_manager.domains.api_models import bot
 from bot_manager.forms import LogFilterForm
+
+
+_logger = logging.getLogger(__name__)
 
 
 def get_server_load_info():
@@ -123,6 +127,7 @@ class BotCreationView(APIView):
     def post(self, request):
         try:
             new_bot = bot.Bot.parse_obj(request.data)
+            _logger.info(str(request.data))
         except ValidationError as error:
             return Response(data={'success': False,
                                   'detail': str(error)}, content_type='application/json',
