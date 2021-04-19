@@ -127,7 +127,6 @@ class BotCreationView(APIView):
     def post(self, request):
         try:
             new_bot = bot.Bot.parse_obj(request.data)
-            _logger.info(str(request.data))
         except ValidationError as error:
             return Response(data={'success': False,
                                   'detail': str(error)}, content_type='application/json',
