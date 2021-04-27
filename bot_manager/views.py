@@ -152,7 +152,7 @@ class BotCreationView(APIView):
                                   user_id=new_bot.user_id,
                                   traffic_source=ts,
                                   condition=new_bot.condition,
-                                  status=settings.DISABLED,
+                                  status=new_bot.status,
                                   action=new_bot.action,
                                   tracker=new_bot.tracker,
                                   tracker_requests_url=new_bot.tracker_requests_url,
@@ -208,7 +208,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.user_id = bot_to_update.user_id
         bot_to_update_db.traffic_source = ts
         bot_to_update_db.condition = bot_to_update.condition
-        bot_to_update_db.status = settings.DISABLED
+        bot_to_update_db.status = bot_to_update.status
         bot_to_update_db.action = bot_to_update.action
         bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
         bot_to_update_db.tracker = bot_to_update.tracker
@@ -238,8 +238,7 @@ class BotStartingView(APIView):
                                   'detail': str(error)}, content_type='application/json',
                             status=status.HTTP_400_BAD_REQUEST)
 
-        bot_id = bot_to_start_model.bot_id
-        bot_db = Bot.objects.get(pk=bot_id)
+        bot_db = Bot.objects.get(pk=bot_to_start_model.bot_id)
 
         if bot_db.status != settings.ENABLED:
             bot_db.status = settings.ENABLED
@@ -260,8 +259,7 @@ class BotStoppingView(APIView):
                                   'detail': str(error)}, content_type='application/json',
                             status=status.HTTP_400_BAD_REQUEST)
 
-        bot_id = bot_to_stop_model.bot_id
-        bot_db = Bot.objects.get(pk=bot_id)
+        bot_db = Bot.objects.get(pk=bot_to_stop_model.bot_id)
 
         if bot_db.status != settings.DISABLED:
             bot_db.status = settings.DISABLED

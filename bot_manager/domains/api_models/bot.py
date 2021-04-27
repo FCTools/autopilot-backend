@@ -27,6 +27,7 @@ class Bot(BaseModel):
     ts_api_key: str
     tracker: str
     tracker_requests_url: str
+    status: str
     tracker_api_key: str
     campaigns_ids: List[Campaign]
     period: int
@@ -90,6 +91,11 @@ class Bot(BaseModel):
     def tracker_api_key_is_valid(cls, tracker_api_key):
         # TODO: implement validation
         return tracker_api_key
+
+    @validator('status', allow_reuse=True)
+    def status_is_valid(cls, status):
+        assert status in [settings.ENABLED, settings.DISABLED]
+        return status
 
 
 class ChangeStatusRequestBody(BaseModel):
