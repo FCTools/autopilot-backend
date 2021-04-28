@@ -111,7 +111,7 @@ def log_view(request):
             if not autopilot_engine_log_path:
                 return render(request, template)
 
-            pattern = f'Bot id: {bot_id}'
+            pattern = f'[{bot_id}]'
 
             with open(autopilot_engine_log_path, 'r', encoding='utf-8') as file:
                 log = file.read().split('\n')
