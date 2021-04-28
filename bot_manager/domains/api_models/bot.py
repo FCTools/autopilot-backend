@@ -9,6 +9,7 @@
 from typing import List, Optional, Union
 
 from django.conf import settings
+from bot_manager.domains.accounts.bot import Bot as bot_db
 from pydantic import BaseModel, validator
 
 
@@ -39,7 +40,7 @@ class Bot(BaseModel):
 
     @validator('type', allow_reuse=True)
     def type_is_valid(cls, type_):
-        assert (type_ == 1 or type_ == 2)
+        assert type_ in [settings.INCLUDE_EXCLUDE_ZONE, settings.PLAY_STOP_CAMPAIGN]
         return type_
 
     @validator('user_id', allow_reuse=True)

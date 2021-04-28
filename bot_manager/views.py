@@ -93,6 +93,18 @@ def log_view(request):
                 return render(request, template, context={'log': list(reversed(log)), 'form': form,
                                                           'log_type': 'environment log'})
 
+            if form.cleaned_data['log_type'] == 'ts-log':
+                ts_log_path = os.getenv("TS_LOG_PATH")
+
+                if not ts_log_path:
+                    return render(request, template)
+
+                with open(ts_log_path, 'r', encoding='utf-8') as file:
+                    log = file.read().split('\n')
+
+                return render(request, template, context={'log': list(reversed(log)), 'form': form,
+                                                          'log_type': 'ts log'})
+
             bot_id = form.cleaned_data["bot_id"]
 
             autopilot_engine_log_path = os.getenv("ACTIONS_LOG_PATH")

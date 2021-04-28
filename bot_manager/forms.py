@@ -14,7 +14,8 @@ class LogFilterForm(forms.Form):
     log_type = forms.ChoiceField(
         choices=[('actions-log', 'actions-log'),
                  ('environment-log', 'environment-log'),
-                 ('server-load', 'server-load')],
+                 ('server-load', 'server-load'),
+                 ('ts-log', 'ts-log'), ],
         initial='actions-log',
         widget=forms.Select,
     )
