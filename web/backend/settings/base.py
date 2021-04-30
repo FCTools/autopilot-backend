@@ -117,7 +117,7 @@ SUPPORTED_ACTIONS = [PLAY_CAMPAIGN, STOP_CAMPAIGN, EXCLUDE_ZONE, INCLUDE_ZONE]
 ENABLED = 'enabled'
 DISABLED = 'disabled'
 
-SUPPORTED_TRAFFIC_SOURCES = ['Propeller Ads', 'Evadav', 'MGID']
+SUPPORTED_TRAFFIC_SOURCES = ['Propeller Ads', 'Evadav', 'MGID', 'Kadam', 'Vimmy']
 
 # tracker (binom) codes for filtering statistics by time
 TODAY = 1
