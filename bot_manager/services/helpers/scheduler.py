@@ -10,10 +10,9 @@ import re
 import time
 from datetime import datetime, timedelta
 
-from django.core.exceptions import ValidationError
-from django.conf import settings
-
 from crontab import CronTab
+from django.conf import settings
+from django.core.exceptions import ValidationError
 
 
 class Scheduler:
@@ -82,6 +81,29 @@ class Scheduler:
                 job.enable()
                 cron.write()
 
+    def parse_entries(self, entries_list):
+        result = []
+
+        for entry in entries_list:
+            # if entry is exact time
+            if '-' not in entry:
+                if self._is_time(entry):
+                    entry_ = datetime.strptime(entry, '%H:%M')
+                    result.append([entry_.hour, entry_.minute, entry_.minute, 0])
+                    continue
+                else:
+                    raise ValidationError(f"Doesn't look like time: {entry}")
+
+            # here will be interval parsing logic
+
+        return result
+
+    def parse_schedule_upd(self, schedule):
+        rows = schedule.replace(' ', '').split('\n')
+
+        if 'mon:' in rows[0]:
+            mon_schedule = self.parse_entries(rows[0].replace('mon:', '').split(','))
+
     # TODO: Fix schedule bug
     def parse_schedule(self, schedule):
         weekdays = {entry.replace(':', '#', 1).split('#')[0]: entry.replace(':', '#', 1).split('#')[1].strip()
@@ -147,25 +169,23 @@ class Scheduler:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute, start.minute, 0])
                                 start_s = start
                                 start += timedelta(hours=interval_hours, minutes=interval_minutes)
+                                # print(start)
                                 continue
 
                             if start.hour != start_s.hour:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
-                                                                  (start - timedelta(hours=interval_hours,
-                                                                                     minutes=interval_minutes)).minute,
+                                                                  (start - timedelta(minutes=interval_minutes)).minute,
                                                                   interval])
                                 start_s = start
                                 continue
 
-                            if start + timedelta(hours=interval_hours,
-                                                 minutes=interval_minutes) > end and start.hour != end.hour:
+                            if start + timedelta(minutes=interval_minutes) > end:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
                                                                   start.minute,
                                                                   interval])
                                 start_s = start + timedelta(hours=interval_hours, minutes=interval_minutes)
 
-                            if start + timedelta(hours=interval_hours,
-                                                 minutes=interval_minutes) == end and start.hour != end.hour:
+                            if start + timedelta(minutes=interval_minutes) == end:
                                 weekdays_cleaned[weekday].append([start_s.hour, start_s.minute,
                                                                   start.minute,
                                                                   interval])
@@ -174,6 +194,6 @@ class Scheduler:
                                                                   start.minute,
                                                                   0])
 
-                            start += timedelta(hours=interval_hours, minutes=interval_minutes)
+                            start += timedelta(minutes=interval_minutes)
 
         return weekdays_cleaned
