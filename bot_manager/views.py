@@ -159,6 +159,11 @@ class BotCreationView(APIView):
         if new_bot.ignored_sources:
             ignored_sources_ = '\n'.join(new_bot.ignored_sources)
 
+        if ts == 'Kadam':
+            api_key = json.dumps(new_bot.ts_api_key)
+        else:
+            api_key = new_bot.ts_api_key['api_key']
+
         _bot = Bot.objects.create(name=new_bot.name,
                                   type=new_bot.type,
                                   user_id=new_bot.user_id,
@@ -169,7 +174,7 @@ class BotCreationView(APIView):
                                   tracker=new_bot.tracker,
                                   tracker_requests_url=new_bot.tracker_requests_url,
                                   tracker_api_key=new_bot.tracker_api_key,
-                                  ts_api_key=new_bot.ts_api_key,
+                                  ts_api_key=api_key,
                                   schedule=new_bot.schedule,
                                   period=new_bot.period,
                                   client_id=client_id,
@@ -213,6 +218,11 @@ class BotUpdatingView(APIView):
 
         ts = TrafficSource.objects.get(name=bot_to_update.traffic_source)
 
+        if ts == 'Kadam':
+            api_key = json.dumps(bot_to_update.ts_api_key)
+        else:
+            api_key = bot_to_update.ts_api_key['api_key']
+
         bot_to_update_db = Bot.objects.get(pk=bot_to_update.bot_id)
 
         bot_to_update_db.name = bot_to_update.name
@@ -222,7 +232,7 @@ class BotUpdatingView(APIView):
         bot_to_update_db.condition = bot_to_update.condition
         bot_to_update_db.status = bot_to_update.status
         bot_to_update_db.action = bot_to_update.action
-        bot_to_update_db.ts_api_key = bot_to_update.ts_api_key
+        bot_to_update_db.ts_api_key = api_key
         bot_to_update_db.tracker = bot_to_update.tracker
         bot_to_update_db.tracker_requests_url = bot_to_update.tracker_requests_url
         bot_to_update_db.tracker_api_key = bot_to_update.tracker_api_key

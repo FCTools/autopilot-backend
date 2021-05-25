@@ -6,7 +6,7 @@
 # Proprietary and confidential
 # Author: German Yakimov <german13yakimov@gmail.com>
 
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from django.conf import settings
 from pydantic import BaseModel, validator
@@ -26,7 +26,7 @@ class Bot(BaseModel):
     condition: str
     schedule: str
     traffic_source: str
-    ts_api_key: str
+    ts_api_key: Dict
     tracker: str
     tracker_requests_url: str
     status: str
